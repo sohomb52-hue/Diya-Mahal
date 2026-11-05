@@ -2,23 +2,24 @@ import React, { useRef, useState, useEffect } from 'react';
 import { RotateCcw, Download, Sparkles, Paintbrush, Undo } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '../../utils/audio';
+import { calculateSymmetryPoints } from '../../utils/gameLogic';
 
 const RANGOLI_COLORS = [
-  { name: 'Vermilion Red', hex: '#FF5A1F' },
-  { name: 'Saffron Orange', hex: '#FF9F1C' },
-  { name: 'Golden Yellow', hex: '#FFD166' },
-  { name: 'Festive Magenta', hex: '#A51C69' },
-  { name: 'Peacock Turquoise', hex: '#00B4D8' },
-  { name: 'Emerald Green', hex: '#06D6A0' },
-  { name: 'Royal Violet', hex: '#7209B7' },
-  { name: 'Pure White', hex: '#FFFFFF' },
+  { name: 'Rani Pink', hex: '#E91E63' },
+  { name: 'Hot Magenta', hex: '#FF2E88' },
+  { name: 'Sindoor Red', hex: '#E63946' },
+  { name: 'Vermilion Orange', hex: '#FF5722' },
+  { name: 'Marigold Yellow', hex: '#FFB000' },
+  { name: 'Peacock Teal', hex: '#008C95' },
+  { name: 'Turquoise Blue', hex: '#20C9C3' },
+  { name: 'Leaf Green', hex: '#2E9D50' },
 ];
 
 type SymmetryMode = 4 | 8 | 12 | 1;
 
 export const RangoliMaster: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [selectedColor, setSelectedColor] = useState('#FFD166');
+  const [selectedColor, setSelectedColor] = useState('#FFB000');
   const [brushSize, setBrushSize] = useState(8);
   const [symmetry, setSymmetry] = useState<SymmetryMode>(8);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -42,13 +43,13 @@ export const RangoliMaster: React.FC = () => {
   }, []);
 
   const drawBackground = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
-    ctx.fillStyle = '#160B2B';
+    ctx.fillStyle = '#0F1126';
     ctx.fillRect(0, 0, width, height);
 
-    // Subtle guide mandala circles
+    // Subtle guide mandala circles in Peacock & Marigold
     const cx = width / 2;
     const cy = height / 2;
-    ctx.strokeStyle = 'rgba(255, 209, 102, 0.12)';
+    ctx.strokeStyle = 'rgba(32, 201, 195, 0.16)';
     ctx.lineWidth = 1;
 
     [50, 100, 160, 220, 270].forEach((r) => {
@@ -105,22 +106,15 @@ export const RangoliMaster: React.FC = () => {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
 
-    const dx = x - cx;
-    const dy = y - cy;
-    const radius = Math.sqrt(dx * dx + dy * dy);
-    const angle = Math.atan2(dy, dx);
+    const points = calculateSymmetryPoints(cx, cy, x, y, symmetry);
 
     ctx.fillStyle = selectedColor;
     ctx.shadowColor = selectedColor;
     ctx.shadowBlur = 6;
 
-    for (let i = 0; i < symmetry; i++) {
-      const symAngle = angle + (i * 2 * Math.PI) / symmetry;
-      const px = cx + radius * Math.cos(symAngle);
-      const py = cy + radius * Math.sin(symAngle);
-
+    for (const pt of points) {
       ctx.beginPath();
-      ctx.arc(px, py, brushSize / 2, 0, Math.PI * 2);
+      ctx.arc(pt.x, pt.y, brushSize / 2, 0, Math.PI * 2);
       ctx.fill();
     }
   };
@@ -189,10 +183,10 @@ export const RangoliMaster: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 bg-[#38145E]/40 p-6 rounded-3xl border border-[#A51C69]/30 backdrop-blur-md shadow-2xl">
+    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 bg-[#0F1126]/90 p-6 rounded-3xl border border-[#008C95]/40 backdrop-blur-md shadow-2xl">
       {/* Canvas Viewport */}
       <div className="relative flex flex-col items-center">
-        <div className="relative rounded-full overflow-hidden border-4 border-[#FFD166]/60 shadow-[0_0_30px_rgba(255,209,102,0.3)] touch-none cursor-crosshair">
+        <div className="relative rounded-full overflow-hidden border-4 border-[#20C9C3]/70 shadow-[0_0_35px_rgba(32,201,195,0.35)] touch-none cursor-crosshair">
           <canvas
             ref={canvasRef}
             onMouseDown={startDrawing}
@@ -202,20 +196,20 @@ export const RangoliMaster: React.FC = () => {
             onTouchStart={startDrawing}
             onTouchMove={draw}
             onTouchEnd={stopDrawing}
-            className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[480px] md:h-[480px] bg-[#160B2B]"
+            className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[480px] md:h-[480px] bg-[#0F1126]"
           />
         </div>
 
         {/* Completion Message Modal Overlay */}
         {isCompleted && (
-          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-[#A51C69] to-[#FF5A1F] text-white text-center shadow-lg animate-fade-in flex items-center justify-between gap-4 w-full max-w-md">
+          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] text-white text-center shadow-lg animate-fade-in flex items-center justify-between gap-4 w-full max-w-md">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#FFD166]" />
+              <Sparkles className="w-5 h-5 text-[#FFF1D6]" />
               <span className="font-semibold text-sm">Rangoli Masterpiece Complete!</span>
             </div>
             <button
               onClick={handleDownload}
-              className="px-3 py-1.5 rounded-lg bg-[#FFD166] text-[#160B2B] text-xs font-bold hover:bg-white transition-colors flex items-center gap-1"
+              className="px-3 py-1.5 rounded-lg bg-[#0F1126] text-[#FFB000] text-xs font-bold hover:bg-white hover:text-[#0F1126] transition-colors flex items-center gap-1"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Save</span>
@@ -228,8 +222,8 @@ export const RangoliMaster: React.FC = () => {
       <div className="flex flex-col gap-6 w-full max-w-xs text-[#FFF1D6]">
         {/* Title */}
         <div>
-          <h3 className="text-xl font-bold font-serif text-[#FFD166] flex items-center gap-2">
-            <Paintbrush className="w-5 h-5 text-[#FF5A1F]" />
+          <h3 className="text-xl font-bold font-serif text-[#FFB000] flex items-center gap-2">
+            <Paintbrush className="w-5 h-5 text-[#E91E63]" />
             <span>Rangoli Studio</span>
           </h3>
           <p className="text-xs text-[#FFF1D6]/70 mt-1">
@@ -239,8 +233,8 @@ export const RangoliMaster: React.FC = () => {
 
         {/* Color Swatches */}
         <div>
-          <label className="text-xs font-semibold uppercase tracking-wider text-[#FFD166] block mb-2">
-            Color Palette
+          <label className="text-xs font-semibold uppercase tracking-wider text-[#FFB000] block mb-2">
+            Festival Palette
           </label>
           <div className="grid grid-cols-4 gap-2.5">
             {RANGOLI_COLORS.map((c) => (
@@ -251,7 +245,7 @@ export const RangoliMaster: React.FC = () => {
                   setSelectedColor(c.hex);
                 }}
                 className={`w-9 h-9 rounded-full border-2 transition-transform ${
-                  selectedColor === c.hex ? 'border-white scale-110 shadow-[0_0_10px_white]' : 'border-transparent hover:scale-105'
+                  selectedColor === c.hex ? 'border-white scale-110 shadow-[0_0_12px_white]' : 'border-transparent hover:scale-105'
                 }`}
                 style={{ backgroundColor: c.hex }}
                 title={c.name}
@@ -262,7 +256,7 @@ export const RangoliMaster: React.FC = () => {
 
         {/* Symmetry Selector */}
         <div>
-          <label className="text-xs font-semibold uppercase tracking-wider text-[#FFD166] block mb-2">
+          <label className="text-xs font-semibold uppercase tracking-wider text-[#FFB000] block mb-2">
             Mandala Symmetry
           </label>
           <div className="grid grid-cols-4 gap-2">
@@ -275,8 +269,8 @@ export const RangoliMaster: React.FC = () => {
                 }}
                 className={`py-1.5 text-xs font-bold rounded-lg border transition-all ${
                   symmetry === m
-                    ? 'bg-[#FF5A1F] text-white border-[#FFD166]'
-                    : 'bg-[#160B2B]/60 text-[#FFF1D6]/80 border-[#A51C69]/30 hover:border-[#FFD166]'
+                    ? 'bg-[#E91E63] text-white border-[#FFB000]'
+                    : 'bg-[#0F1126]/80 text-[#FFF1D6]/80 border-[#008C95]/40 hover:border-[#20C9C3]'
                 }`}
               >
                 {m === 1 ? 'Free' : `${m}-Fold`}
@@ -287,7 +281,7 @@ export const RangoliMaster: React.FC = () => {
 
         {/* Brush Thickness Slider */}
         <div>
-          <div className="flex justify-between text-xs font-semibold text-[#FFD166] mb-1">
+          <div className="flex justify-between text-xs font-semibold text-[#FFB000] mb-1">
             <span>Brush Size</span>
             <span>{brushSize}px</span>
           </div>
@@ -297,7 +291,7 @@ export const RangoliMaster: React.FC = () => {
             max="20"
             value={brushSize}
             onChange={(e) => setBrushSize(Number(e.target.value))}
-            className="w-full accent-[#FF5A1F] cursor-pointer"
+            className="w-full accent-[#E91E63] cursor-pointer"
           />
         </div>
 
@@ -306,7 +300,7 @@ export const RangoliMaster: React.FC = () => {
           <button
             onClick={handleUndo}
             disabled={history.length <= 1}
-            className="flex-1 py-2 rounded-xl bg-[#160B2B] border border-[#A51C69]/40 text-xs font-medium hover:border-[#FFD166] disabled:opacity-40 flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 py-2 rounded-xl bg-[#0F1126] border border-[#008C95]/40 text-xs font-medium hover:border-[#FFB000] disabled:opacity-40 flex items-center justify-center gap-1.5 transition-colors"
           >
             <Undo className="w-3.5 h-3.5" />
             <span>Undo</span>
@@ -314,7 +308,7 @@ export const RangoliMaster: React.FC = () => {
 
           <button
             onClick={handleClear}
-            className="flex-1 py-2 rounded-xl bg-[#160B2B] border border-[#A51C69]/40 text-xs font-medium hover:border-[#FFD166] flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 py-2 rounded-xl bg-[#0F1126] border border-[#008C95]/40 text-xs font-medium hover:border-[#FFB000] flex items-center justify-center gap-1.5 transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Reset</span>
@@ -324,7 +318,7 @@ export const RangoliMaster: React.FC = () => {
         {/* Complete CTA */}
         <button
           onClick={handleFinishRangoli}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF5A1F] to-[#FF9F1C] text-[#160B2B] font-bold text-sm shadow-md hover:shadow-[0_0_20px_rgba(255,90,31,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] text-white font-bold text-sm shadow-md hover:shadow-[0_0_20px_rgba(233,30,99,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />
           <span>Complete Rangoli ✨</span>

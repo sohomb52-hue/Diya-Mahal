@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Timer, Flame, RefreshCw, Trophy } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '../../utils/audio';
+import { isCourtyardFullyLit } from '../../utils/gameLogic';
 
 interface DiyaItem {
   id: number;
@@ -12,15 +13,15 @@ interface DiyaItem {
 }
 
 const INITIAL_DIYAS: DiyaItem[] = [
-  { id: 1, x: 50, y: 18, isLit: false, color: '#FFD166' },
-  { id: 2, x: 74, y: 30, isLit: false, color: '#FF9F1C' },
-  { id: 3, x: 84, y: 52, isLit: false, color: '#FF5A1F' },
-  { id: 4, x: 74, y: 74, isLit: false, color: '#A51C69' },
-  { id: 5, x: 50, y: 84, isLit: false, color: '#FFD166' },
-  { id: 6, x: 26, y: 74, isLit: false, color: '#FF9F1C' },
-  { id: 7, x: 16, y: 52, isLit: false, color: '#FF5A1F' },
-  { id: 8, x: 26, y: 30, isLit: false, color: '#A51C69' },
-  { id: 9, x: 50, y: 52, isLit: false, color: '#FFF1D6' }, // Center Diya
+  { id: 1, x: 50, y: 18, isLit: false, color: '#FFB000' }, // Marigold
+  { id: 2, x: 74, y: 30, isLit: false, color: '#E91E63' }, // Rani Pink
+  { id: 3, x: 84, y: 52, isLit: false, color: '#20C9C3' }, // Turquoise
+  { id: 4, x: 74, y: 74, isLit: false, color: '#FF5722' }, // Vermilion
+  { id: 5, x: 50, y: 84, isLit: false, color: '#FF8F00' }, // Saffron
+  { id: 6, x: 26, y: 74, isLit: false, color: '#E63946' }, // Sindoor Red
+  { id: 7, x: 16, y: 52, isLit: false, color: '#20C9C3' }, // Turquoise
+  { id: 8, x: 26, y: 30, isLit: false, color: '#E91E63' }, // Rani Pink
+  { id: 9, x: 50, y: 52, isLit: false, color: '#FFB000' }, // Center Diya (Marigold)
 ];
 
 export const LightUpDiyas: React.FC = () => {
@@ -63,7 +64,7 @@ export const LightUpDiyas: React.FC = () => {
     setDiyas(updated);
 
     // Check if all lit
-    if (updated.every((d) => d.isLit)) {
+    if (isCourtyardFullyLit(updated)) {
       setIsVictorious(true);
       setIsGameActive(false);
       soundManager.playVictory();
@@ -72,7 +73,7 @@ export const LightUpDiyas: React.FC = () => {
         particleCount: 150,
         spread: 100,
         origin: { y: 0.6 },
-        colors: ['#FFD166', '#FF9F1C', '#FF5A1F', '#A51C69'],
+        colors: ['#E91E63', '#FF2E88', '#FFB000', '#20C9C3', '#FF5722'],
       });
     }
   };
@@ -86,40 +87,40 @@ export const LightUpDiyas: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-[#38145E]/40 p-6 rounded-3xl border border-[#A51C69]/30 backdrop-blur-md shadow-2xl w-full max-w-3xl mx-auto">
+    <div className="flex flex-col items-center gap-6 bg-[#0F1126]/90 p-6 rounded-3xl border border-[#008C95]/40 backdrop-blur-md shadow-2xl w-full max-w-3xl mx-auto">
       {/* HUD Header */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#A51C69]/30 pb-4">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#008C95]/30 pb-4">
         <div>
-          <h3 className="text-xl font-bold font-serif text-[#FFD166] flex items-center gap-2">
-            <Flame className="w-5 h-5 text-[#FF5A1F]" />
+          <h3 className="text-xl font-bold font-serif text-[#FFB000] flex items-center gap-2">
+            <Flame className="w-5 h-5 text-[#20C9C3]" />
             <span>Light Up The Courtyard</span>
           </h3>
           <p className="text-xs text-[#FFF1D6]/70 mt-1">
-            Click on every unlit diya to awaken the festive lights!
+            Click on every unlit diya to awaken the colourful festive lights!
           </p>
         </div>
 
         {/* Status Counters */}
         <div className="flex items-center gap-4">
-          <div className="px-3.5 py-1.5 rounded-xl bg-[#160B2B]/70 border border-[#FFD166]/30 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#FFD166]" />
+          <div className="px-3.5 py-1.5 rounded-xl bg-[#002B30]/80 border border-[#008C95]/40 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#FFB000]" />
             <span className="text-xs font-semibold text-[#FFF1D6]">
-              Lit: <strong className="text-[#FFD166]">{litCount} / {diyas.length}</strong>
+              Lit: <strong className="text-[#FFB000]">{litCount} / {diyas.length}</strong>
             </span>
           </div>
 
           {isTimedMode && (
             <div className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-2 ${
-              timeLeft < 8 ? 'bg-red-900/60 border-red-500 text-red-200 animate-pulse' : 'bg-[#160B2B]/70 border-[#FF5A1F]/40 text-[#FFF1D6]'
+              timeLeft < 8 ? 'bg-red-900/60 border-red-500 text-red-200 animate-pulse' : 'bg-[#002B30]/80 border-[#FF5722]/40 text-[#FFF1D6]'
             }`}>
-              <Timer className="w-4 h-4 text-[#FF5A1F]" />
+              <Timer className="w-4 h-4 text-[#FF5722]" />
               <span className="text-xs font-bold tabular-nums">{timeLeft}s</span>
             </div>
           )}
 
           <button
             onClick={handleReset}
-            className="p-2 rounded-xl bg-[#160B2B] border border-[#A51C69]/40 text-[#FFF1D6] hover:border-[#FFD166] transition-colors"
+            className="p-2 rounded-xl bg-[#002B30] border border-[#008C95]/40 text-[#FFF1D6] hover:border-[#20C9C3] transition-colors"
             title="Reset Diyas"
           >
             <RefreshCw className="w-4 h-4" />
@@ -128,14 +129,14 @@ export const LightUpDiyas: React.FC = () => {
       </div>
 
       {/* Mode Switcher */}
-      <div className="flex items-center gap-2 p-1 rounded-xl bg-[#160B2B]/60 border border-[#A51C69]/30">
+      <div className="flex items-center gap-2 p-1 rounded-xl bg-[#002B30]/80 border border-[#008C95]/40">
         <button
           onClick={() => {
             setIsTimedMode(false);
             handleReset();
           }}
           className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-            !isTimedMode ? 'bg-[#FF5A1F] text-white' : 'text-[#FFF1D6]/70 hover:text-white'
+            !isTimedMode ? 'bg-[#008C95] text-white shadow-sm' : 'text-[#FFF1D6]/70 hover:text-white'
           }`}
         >
           Relaxed Mode
@@ -146,19 +147,20 @@ export const LightUpDiyas: React.FC = () => {
             handleReset();
           }}
           className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-            isTimedMode ? 'bg-[#FF5A1F] text-white' : 'text-[#FFF1D6]/70 hover:text-white'
+            isTimedMode ? 'bg-[#008C95] text-white shadow-sm' : 'text-[#FFF1D6]/70 hover:text-white'
           }`}
         >
           30s Challenge
         </button>
       </div>
 
-      {/* Courtyard Interactive Diya Canvas Area */}
-      <div className="relative w-full aspect-[4/3] max-w-lg bg-[#160B2B] rounded-2xl border-2 border-[#FFD166]/30 overflow-hidden shadow-[inner_0_0_40px_rgba(0,0,0,0.8)]">
+      {/* Courtyard Interactive Diya Canvas Area with Peacock Teal and Marigold Mandalas */}
+      <div className="relative w-full aspect-[4/3] max-w-lg bg-gradient-to-b from-[#002B30] to-[#0F1126] rounded-2xl border-2 border-[#20C9C3]/40 overflow-hidden shadow-[inner_0_0_40px_rgba(0,0,0,0.8)]">
         {/* Floor Mandala Geometry Pattern */}
-        <div className="absolute inset-0 pointer-events-none opacity-20 flex items-center justify-center">
-          <div className="w-64 h-64 rounded-full border-2 border-dashed border-[#FFD166] animate-spin-slow" />
-          <div className="absolute w-40 h-40 rounded-full border border-[#FF5A1F]" />
+        <div className="absolute inset-0 pointer-events-none opacity-25 flex items-center justify-center">
+          <div className="w-64 h-64 rounded-full border-2 border-dashed border-[#20C9C3] animate-spin-slow" />
+          <div className="absolute w-40 h-40 rounded-full border border-[#FFB000]" />
+          <div className="absolute w-20 h-20 rounded-full border border-[#E91E63]" />
         </div>
 
         {/* Diyas Positioned in Mandala Pattern */}
@@ -171,20 +173,25 @@ export const LightUpDiyas: React.FC = () => {
               d.isLit ? 'scale-110' : 'hover:scale-105 opacity-80 hover:opacity-100'
             }`}
           >
-            {/* Diya SVG Graphics */}
+            {/* Diya Graphics with Multi-coloured Flame */}
             <div className="relative flex flex-col items-center">
               {/* Flame (Visible when lit) */}
               {d.isLit && (
                 <div className="absolute -top-6 animate-flame z-10 flex flex-col items-center">
-                  {/* Glowing Flame Core */}
+                  {/* Glowing Flame Core with Diya's Distinctive Color */}
                   <div
-                    className="w-4 h-7 rounded-full bg-gradient-to-t from-[#FF5A1F] via-[#FFD166] to-white shadow-[0_0_20px_#FFD166]"
+                    className="w-4 h-7 shadow-lg"
                     style={{
+                      background: `linear-gradient(to top, ${d.color}, #FFF1D6)`,
+                      boxShadow: `0 0 18px ${d.color}`,
                       borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
                     }}
                   />
                   {/* Ambient Light Ring */}
-                  <div className="absolute -inset-2 bg-[#FFD166]/30 rounded-full blur-md" />
+                  <div
+                    className="absolute -inset-2 rounded-full blur-md"
+                    style={{ backgroundColor: `${d.color}50` }}
+                  />
                 </div>
               )}
 
@@ -193,7 +200,7 @@ export const LightUpDiyas: React.FC = () => {
                 <path
                   d="M5,5 Q30,32 55,5 Q45,28 30,28 Q15,28 5,5 Z"
                   fill={d.isLit ? '#A8431D' : '#6E2A12'}
-                  stroke={d.isLit ? '#FFD166' : '#3D1508'}
+                  stroke={d.isLit ? d.color : '#3D1508'}
                   strokeWidth="2"
                 />
                 <ellipse cx="30" cy="5" rx="25" ry="4" fill={d.isLit ? '#D48817' : '#3A180C'} />
@@ -204,17 +211,17 @@ export const LightUpDiyas: React.FC = () => {
 
         {/* Victory Overlay Modal */}
         {isVictorious && (
-          <div className="absolute inset-0 bg-[#160B2B]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
-            <Trophy className="w-16 h-16 text-[#FFD166] mb-3 animate-bounce" />
-            <h4 className="text-3xl font-bold font-serif text-gold-gradient mb-2">
+          <div className="absolute inset-0 bg-[#0F1126]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
+            <Trophy className="w-16 h-16 text-[#FFB000] mb-3 animate-bounce" />
+            <h4 className="text-3xl font-bold font-serif text-festive-gradient mb-2">
               Courtyard Illuminated!
             </h4>
             <p className="text-sm text-[#FFF1D6]/80 max-w-xs mb-6">
-              You lit all {diyas.length} diyas and brought warmth and radiance to the darkness!
+              You lit all {diyas.length} festive diyas and brought warmth and radiance to the courtyard!
             </p>
             <button
               onClick={handleReset}
-              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#FF5A1F] to-[#FF9F1C] text-[#160B2B] font-bold text-sm shadow-lg hover:scale-105 transition-all"
+              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#008C95] via-[#20C9C3] to-[#FFB000] text-[#0F1126] font-bold text-sm shadow-lg hover:scale-105 transition-all"
             >
               Play Again ✨
             </button>
@@ -223,7 +230,7 @@ export const LightUpDiyas: React.FC = () => {
 
         {/* Time Over Overlay Modal */}
         {!isGameActive && isTimedMode && timeLeft === 0 && !isVictorious && (
-          <div className="absolute inset-0 bg-[#160B2B]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
+          <div className="absolute inset-0 bg-[#0F1126]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
             <Timer className="w-12 h-12 text-red-400 mb-3" />
             <h4 className="text-2xl font-bold font-serif text-red-300 mb-2">Time Expired!</h4>
             <p className="text-sm text-[#FFF1D6]/80 max-w-xs mb-4">
@@ -231,7 +238,7 @@ export const LightUpDiyas: React.FC = () => {
             </p>
             <button
               onClick={handleReset}
-              className="px-5 py-2 rounded-full bg-[#FF5A1F] text-white font-bold text-xs hover:scale-105 transition-all"
+              className="px-5 py-2 rounded-full bg-[#E63946] text-white font-bold text-xs hover:scale-105 transition-all"
             >
               Try Again 🔄
             </button>

@@ -53,25 +53,26 @@ export const DiwaliWishes: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Deep purple royal gradient
+    // Royal Sindoor Red to Deep Midnight Indigo gradient
     const grad = ctx.createLinearGradient(0, 0, 800, 550);
-    grad.addColorStop(0, '#160B2B');
-    grad.addColorStop(0.5, '#38145E');
-    grad.addColorStop(1, '#A51C69');
+    grad.addColorStop(0, '#E63946');
+    grad.addColorStop(0.4, '#A51C69');
+    grad.addColorStop(1, '#0F1126');
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 800, 550);
 
-    // Gold border
-    ctx.strokeStyle = '#FFD166';
+    // Marigold gold outer border
+    ctx.strokeStyle = '#FFB000';
     ctx.lineWidth = 6;
     ctx.strokeRect(20, 20, 760, 510);
 
-    ctx.strokeStyle = '#FF5A1F';
+    // Turquoise inner hairline border
+    ctx.strokeStyle = '#20C9C3';
     ctx.lineWidth = 2;
     ctx.strokeRect(28, 28, 744, 494);
 
     // Title
-    ctx.fillStyle = '#FFD166';
+    ctx.fillStyle = '#FFB000';
     ctx.font = 'bold 36px serif';
     ctx.textAlign = 'center';
     ctx.fillText('🪔  HAPPY DIWALI  🪔', 400, 90);
@@ -101,12 +102,12 @@ export const DiwaliWishes: React.FC = () => {
     ctx.fillText(line, 400, y);
 
     // Sender
-    ctx.fillStyle = '#FFD166';
+    ctx.fillStyle = '#FFB000';
     ctx.font = 'italic bold 24px sans-serif';
     ctx.fillText(`From: ${sender}`, 400, y + 80);
 
     // Footer branding
-    ctx.fillStyle = 'rgba(255, 241, 214, 0.6)';
+    ctx.fillStyle = 'rgba(255, 241, 214, 0.7)';
     ctx.font = '14px sans-serif';
     ctx.fillText('✨ THE LIGHT WITHIN – A Diwali Experience ✨', 400, 505);
 
@@ -117,16 +118,16 @@ export const DiwaliWishes: React.FC = () => {
   };
 
   return (
-    <section id="wishes" className="relative w-full py-24 px-4 bg-gradient-to-b from-[#160B2B] via-[#38145E] to-[#160B2B] overflow-hidden">
+    <section id="wishes" className="relative w-full py-24 px-4 bg-gradient-to-b from-[#0F1126] via-[#1B254B] to-[#0F1126] overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#38145E] border border-[#FFD166]/30 text-[#FFD166] text-xs font-semibold mb-3">
-            <Heart className="w-3.5 h-3.5 text-[#FF5A1F] fill-[#FF5A1F]" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#008C95]/30 border border-[#20C9C3]/40 text-[#FFB000] text-xs font-semibold mb-3 shadow-[0_0_15px_rgba(32,201,195,0.25)]">
+            <Heart className="w-3.5 h-3.5 text-[#E91E63] fill-[#E91E63]" />
             <span>Digital Diwali Greeting Studio</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-gold-gradient glow-gold-text mb-3">
+          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-festive-gradient glow-festive-text mb-3">
             Spread A Little Light
           </h2>
 
@@ -139,11 +140,11 @@ export const DiwaliWishes: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Form Controls (5 cols) */}
-          <div className="lg:col-span-5 bg-[#38145E]/50 p-6 rounded-3xl border border-[#A51C69]/30 backdrop-blur-md flex flex-col gap-5 text-[#FFF1D6]">
+          <div className="lg:col-span-5 bg-[#0F1126]/90 p-6 rounded-3xl border border-[#008C95]/40 backdrop-blur-md flex flex-col gap-5 text-[#FFF1D6] shadow-xl">
             
             {/* Recipient Input */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFD166] block mb-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-1.5">
                 Recipient Name (To)
               </label>
               <input
@@ -151,13 +152,13 @@ export const DiwaliWishes: React.FC = () => {
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder="e.g., Dear Sharma Family"
-                className="w-full px-4 py-2.5 rounded-xl bg-[#160B2B] border border-[#A51C69]/40 text-[#FFF1D6] focus:border-[#FFD166] focus:outline-none text-sm transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#002B30]/70 border border-[#008C95]/40 text-[#FFF1D6] focus:border-[#FFB000] focus:outline-none text-sm transition-colors"
               />
             </div>
 
             {/* Sender Input */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFD166] block mb-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-1.5">
                 Your Name (From)
               </label>
               <input
@@ -165,13 +166,13 @@ export const DiwaliWishes: React.FC = () => {
                 value={sender}
                 onChange={(e) => setSender(e.target.value)}
                 placeholder="e.g., Rohan & Family"
-                className="w-full px-4 py-2.5 rounded-xl bg-[#160B2B] border border-[#A51C69]/40 text-[#FFF1D6] focus:border-[#FFD166] focus:outline-none text-sm transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#002B30]/70 border border-[#008C95]/40 text-[#FFF1D6] focus:border-[#FFB000] focus:outline-none text-sm transition-colors"
               />
             </div>
 
             {/* Wish Template Selection */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFD166] block mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-2">
                 Select Festive Wish
               </label>
               <div className="flex flex-col gap-2">
@@ -184,11 +185,11 @@ export const DiwaliWishes: React.FC = () => {
                     }}
                     className={`p-3 text-left rounded-xl border text-xs transition-all cursor-pointer ${
                       selectedWish === tmpl.text
-                        ? 'bg-[#A51C69]/40 border-[#FFD166] text-white shadow-[0_0_10px_rgba(255,209,102,0.2)]'
-                        : 'bg-[#160B2B]/60 border-[#A51C69]/30 text-[#FFF1D6]/70 hover:border-[#FF5A1F]'
+                        ? 'bg-[#008C95]/40 border-[#FFB000] text-white shadow-[0_0_12px_rgba(32,201,195,0.3)]'
+                        : 'bg-[#002B30]/50 border-[#008C95]/30 text-[#FFF1D6]/70 hover:border-[#20C9C3]'
                     }`}
                   >
-                    <span className="font-semibold text-[#FFD166] block mb-0.5">{tmpl.title}</span>
+                    <span className="font-semibold text-[#FFB000] block mb-0.5">{tmpl.title}</span>
                     <span className="line-clamp-2 text-[11px] font-light">{tmpl.text}</span>
                   </button>
                 ))}
@@ -197,14 +198,14 @@ export const DiwaliWishes: React.FC = () => {
 
             {/* Custom Message Override */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFD166] block mb-1.5">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-1.5">
                 Custom Message
               </label>
               <textarea
                 value={selectedWish}
                 onChange={(e) => setSelectedWish(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#160B2B] border border-[#A51C69]/40 text-[#FFF1D6] focus:border-[#FFD166] focus:outline-none text-xs leading-relaxed transition-colors resize-none"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#002B30]/70 border border-[#008C95]/40 text-[#FFF1D6] focus:border-[#FFB000] focus:outline-none text-xs leading-relaxed transition-colors resize-none"
               />
             </div>
 
@@ -216,37 +217,37 @@ export const DiwaliWishes: React.FC = () => {
             {/* Card Graphic Viewport */}
             <div
               ref={cardRef}
-              className="relative w-full aspect-[16/10] max-w-lg rounded-3xl bg-gradient-to-br from-[#160B2B] via-[#38145E] to-[#A51C69] p-8 border-4 border-[#FFD166] shadow-[0_0_40px_rgba(255,209,102,0.25)] flex flex-col justify-between text-center overflow-hidden"
+              className="relative w-full aspect-[16/10] max-w-lg rounded-3xl bg-gradient-to-br from-[#E63946] via-[#A51C69] to-[#0F1126] p-8 border-4 border-[#FFB000] shadow-[0_0_40px_rgba(230,57,70,0.35)] flex flex-col justify-between text-center overflow-hidden"
             >
               {/* Inner Decorative Hairline Border */}
-              <div className="absolute inset-3 border border-[#FF5A1F]/50 rounded-2xl pointer-events-none" />
+              <div className="absolute inset-3 border border-[#20C9C3]/50 rounded-2xl pointer-events-none" />
 
               {/* Top Diya Icon Header */}
-              <div className="flex items-center justify-between text-[#FFD166]">
-                <Sparkles className="w-5 h-5" />
+              <div className="flex items-center justify-between text-[#FFB000]">
+                <Sparkles className="w-5 h-5 text-[#20C9C3]" />
                 <span className="text-xs font-bold tracking-widest font-serif uppercase">
                   🪔 Happy Diwali 🪔
                 </span>
-                <Sparkles className="w-5 h-5" />
+                <Sparkles className="w-5 h-5 text-[#20C9C3]" />
               </div>
 
               {/* Card Body Copy */}
               <div className="my-auto py-2">
-                <p className="text-sm sm:text-base font-bold text-[#FFD166] mb-3">
+                <p className="text-sm sm:text-base font-bold text-[#FFB000] mb-3">
                   To: {recipient || 'Dear Friend'}
                 </p>
 
-                <p className="text-sm sm:text-lg font-serif italic text-[#FFF1D6] leading-relaxed max-w-md mx-auto">
+                <p className="text-sm sm:text-lg font-serif italic text-[#FFF1D6] leading-relaxed max-w-md mx-auto drop-shadow-sm">
                   "{selectedWish}"
                 </p>
 
-                <p className="text-sm font-semibold text-[#FFD166] mt-4">
+                <p className="text-sm font-semibold text-[#FFB000] mt-4">
                   From: {sender || 'With Warmth'}
                 </p>
               </div>
 
               {/* Bottom Card Footer */}
-              <div className="text-[10px] text-[#FFF1D6]/60 font-medium tracking-wider">
+              <div className="text-[10px] text-[#FFF1D6]/70 font-medium tracking-wider">
                 THE LIGHT WITHIN · A DIWALI EXPERIENCE
               </div>
             </div>
@@ -255,15 +256,15 @@ export const DiwaliWishes: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 w-full">
               <button
                 onClick={handleCopy}
-                className="flex-1 min-w-[140px] py-3 rounded-2xl bg-[#38145E] border border-[#A51C69] text-xs font-bold text-[#FFF1D6] hover:border-[#FFD166] flex items-center justify-center gap-2 transition-all"
+                className="flex-1 min-w-[140px] py-3 rounded-2xl bg-[#0F1126] border border-[#008C95]/50 text-xs font-bold text-[#FFF1D6] hover:border-[#FFB000] flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-[#FFD166]" />}
+                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-[#FFB000]" />}
                 <span>{copied ? 'Copied Text!' : 'Copy Text'}</span>
               </button>
 
               <button
                 onClick={handleDownloadCard}
-                className="flex-1 min-w-[160px] py-3 rounded-2xl bg-gradient-to-r from-[#FF5A1F] to-[#FF9F1C] text-[#160B2B] font-extrabold text-xs shadow-md hover:shadow-[0_0_20px_rgba(255,90,31,0.5)] flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className="flex-1 min-w-[160px] py-3 rounded-2xl bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] text-white font-extrabold text-xs shadow-md hover:shadow-[0_0_20px_rgba(233,30,99,0.5)] flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Save Image Card</span>

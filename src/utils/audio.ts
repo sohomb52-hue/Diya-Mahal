@@ -861,6 +861,162 @@ class SoundManager {
   public playIgnite() {
     this.playLightingFlourish();
   }
+
+  /**
+   * Anar (Fountain): Rising fountain hiss with sparkling shower finish
+   */
+  public playAnarSound() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx || !this.sfxGain) return;
+    const now = this.ctx.currentTime;
+
+    // Rising noise fountain
+    const bufferSize = this.ctx.sampleRate * 0.9;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (0.3 + 0.7 * (i / bufferSize));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(800, now);
+    filter.frequency.exponentialRampToValueAtTime(3500, now + 0.85);
+    filter.Q.setValueAtTime(2.0, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.linearRampToValueAtTime(0.28, now + 0.6);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.sfxGain);
+    noise.start(now);
+  }
+
+  /**
+   * Fuljhuri (Sparkler): Continuous crackling sparkler hiss
+   */
+  public playFuljhuriSound() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx || !this.sfxGain) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = this.ctx.sampleRate * 0.25;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (Math.random() > 0.4 ? 1 : 0.05);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(4000, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.18, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.sfxGain);
+    noise.start(now);
+  }
+
+  /**
+   * Bomb: Safe visual burst sound with deep bass impact and shockwave pop
+   */
+  public playBombSound() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx || !this.sfxGain) return;
+    const now = this.ctx.currentTime;
+
+    // Sub-bass thud
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(140, now);
+    osc.frequency.exponentialRampToValueAtTime(35, now + 0.25);
+
+    gain.gain.setValueAtTime(0.4, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(now);
+    osc.stop(now + 0.3);
+
+    // Crackle noise impact
+    const bufferSize = this.ctx.sampleRate * 0.25;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.15));
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1200, now);
+
+    const nGain = this.ctx.createGain();
+    nGain.gain.setValueAtTime(0.35, now);
+    nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+
+    noise.connect(filter);
+    filter.connect(nGain);
+    nGain.connect(this.sfxGain);
+    noise.start(now);
+  }
+
+  /**
+   * Chakri (Spinner): Rotating whirring rotor pitch sweep
+   */
+  public playChakriSound() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx || !this.sfxGain) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(180, now);
+    osc.frequency.linearRampToValueAtTime(650, now + 0.4);
+    osc.frequency.exponentialRampToValueAtTime(120, now + 0.8);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(1500, now);
+
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.linearRampToValueAtTime(0.22, now + 0.3);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(now);
+    osc.stop(now + 0.85);
+  }
+
+  /**
+   * Rocket: Ascent whistle followed by aerial burst
+   */
+  public playRocketSound() {
+    this.playFirework();
+  }
 }
 
 export const soundManager = new SoundManager();
+

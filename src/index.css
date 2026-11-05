@@ -6,11 +6,26 @@
     --font-cinzel: 'Cinzel', serif;
     --font-cormorant: 'Cormorant Garamond', serif;
     --font-sans: 'Plus Jakarta Sans', sans-serif;
+
+    /* Festival of Colours Semantic Tokens */
+    --color-rani-pink: #E91E63;
+    --color-hot-magenta: #FF2E88;
+    --color-sindoor-red: #E63946;
+    --color-vermilion: #FF5722;
+    --color-marigold: #FFB000;
+    --color-bright-saffron: #FF8F00;
+    --color-peacock-teal: #008C95;
+    --color-turquoise: #20C9C3;
+    --color-electric-blue: #3478F6;
+    --color-indigo: #283593;
+    --color-leaf-green: #2E9D50;
+    --color-warm-ivory: #FFF1D6;
+    --color-midnight-indigo: #0F1126;
   }
 
   body {
     font-family: var(--font-sans);
-    background-color: #160B2B;
+    background-color: #0F1126;
     color: #FFF1D6;
     scroll-behavior: smooth;
   }
@@ -24,19 +39,19 @@
   }
 }
 
-/* Custom Scrollbar */
+/* Custom Festive Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #160B2B;
+  background: #0F1126;
 }
 ::-webkit-scrollbar-thumb {
-  background: #A51C69;
+  background: #E91E63;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF5A1F;
+  background: #FFB000;
 }
 
 /* Custom Spark Cursor Effect */
@@ -45,11 +60,11 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  background: radial-gradient(circle, #FFD166 0%, #FF5A1F 60%, rgba(255, 90, 31, 0) 100%);
-  box-shadow: 0 0 12px #FFD166, 0 0 24px #FF5A1F;
+  background: radial-gradient(circle, #FFF1D6 0%, #FFB000 40%, #E91E63 80%, rgba(233, 30, 99, 0) 100%);
+  box-shadow: 0 0 14px #FFB000, 0 0 28px #E91E63;
   transform: translate(-50%, -50%);
   z-index: 9999;
   mix-blend-mode: screen;
@@ -59,11 +74,11 @@
 .cursor-trail {
   pointer-events: none;
   position: fixed;
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #FFCB69;
-  box-shadow: 0 0 8px #FFD166;
+  background: #FFB000;
+  box-shadow: 0 0 10px #FFB000, 0 0 16px #E91E63;
   z-index: 9998;
   animation: sparkFade 0.6s ease-out forwards;
 }
@@ -75,42 +90,83 @@
   }
   100% {
     opacity: 0;
-    transform: scale(0.2) translateY(-15px);
+    transform: scale(0.2) translateY(-18px);
   }
 }
 
-/* Glowing text and gold gradient utilities */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #FFF1D6 0%, #FFD166 40%, #FF9F1C 70%, #FF5A1F 100%);
+/* Festival of Colours Glowing Typography Gradients */
+.text-festive-gradient {
+  background: linear-gradient(135deg, #FFF1D6 0%, #FFB000 30%, #FF5722 65%, #FF2E88 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.glow-gold-text {
-  text-shadow: 0 0 10px rgba(255, 209, 102, 0.5), 0 0 25px rgba(255, 90, 31, 0.4), 0 0 40px rgba(165, 28, 105, 0.3);
+.text-peacock-gradient {
+  background: linear-gradient(135deg, #FFF1D6 0%, #20C9C3 35%, #008C95 70%, #3478F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.glow-diya-box {
-  box-shadow: 0 0 30px rgba(255, 203, 105, 0.25), 0 0 60px rgba(255, 90, 31, 0.15);
+.text-sindoor-gradient {
+  background: linear-gradient(135deg, #FFF1D6 0%, #FFB000 35%, #FF5722 65%, #E63946 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-festive-text {
+  text-shadow: 0 0 12px rgba(255, 176, 0, 0.6), 0 0 28px rgba(233, 30, 99, 0.5), 0 0 45px rgba(32, 201, 195, 0.35);
+}
+
+.glow-peacock-text {
+  text-shadow: 0 0 12px rgba(32, 201, 195, 0.6), 0 0 25px rgba(0, 140, 149, 0.5), 0 0 40px rgba(52, 120, 246, 0.4);
+}
+
+/* Traditional Indian Textile & Rangoli Patterns */
+.bg-bandhani-pattern {
+  background-image:
+    radial-gradient(circle, rgba(255, 176, 0, 0.18) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(233, 30, 99, 0.16) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
+
+.bg-comic-halftone {
+  background-image: radial-gradient(rgba(255, 176, 0, 0.15) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+.bg-comic-halftone-teal {
+  background-image: radial-gradient(rgba(32, 201, 195, 0.18) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+.bg-comic-halftone-magenta {
+  background-image: radial-gradient(rgba(233, 30, 99, 0.2) 2px, transparent 2px);
+  background-size: 12px 12px;
+}
+
+/* Spider-Verse Chromatic Aberration Fringe */
+.chromatic-comic-glitch {
+  text-shadow: -2px 0 rgba(32, 201, 195, 0.8), 2px 0 rgba(233, 30, 99, 0.8);
 }
 
 /* Flame Flicker Keyframes */
 @keyframes flameFlicker {
   0%, 100% {
     transform: scale(1) rotate(-1deg);
-    filter: drop-shadow(0 0 15px #FFD166);
+    filter: drop-shadow(0 0 16px #FFB000);
   }
   25% {
-    transform: scale(1.05, 0.95) rotate(1deg);
-    filter: drop-shadow(0 0 22px #FF5A1F);
+    transform: scale(1.06, 0.94) rotate(1deg);
+    filter: drop-shadow(0 0 24px #FF5722);
   }
   50% {
-    transform: scale(0.98, 1.03) rotate(-2deg);
-    filter: drop-shadow(0 0 18px #FFD166);
+    transform: scale(0.97, 1.04) rotate(-2deg);
+    filter: drop-shadow(0 0 20px #FFB000);
   }
   75% {
-    transform: scale(1.02, 0.98) rotate(2deg);
-    filter: drop-shadow(0 0 25px #FF9F1C);
+    transform: scale(1.03, 0.97) rotate(2deg);
+    filter: drop-shadow(0 0 26px #E91E63);
   }
 }
 
@@ -140,4 +196,39 @@
 
 .animate-spin-slow {
   animation: slowRotate 60s linear infinite;
+}
+
+/* Hand-Drawn Stepped 2D Flame Animation (Animated on twos) */
+@keyframes steppedFlicker {
+  0% { transform: scale(1, 1) rotate(0deg); }
+  20% { transform: scale(1.08, 0.94) rotate(-3deg); }
+  40% { transform: scale(0.95, 1.05) rotate(2deg); }
+  60% { transform: scale(1.04, 0.97) rotate(-1deg); }
+  80% { transform: scale(0.98, 1.02) rotate(3deg); }
+  100% { transform: scale(1, 1) rotate(0deg); }
+}
+
+.animate-stepped-flame {
+  animation: steppedFlicker 0.4s steps(5) infinite;
+  transform-origin: bottom center;
+}
+
+/* Comic Impact Burst Flash */
+@keyframes comicBurstFade {
+  0% {
+    transform: scale(0.2) rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2) rotate(15deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.5) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+.animate-comic-burst {
+  animation: comicBurstFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

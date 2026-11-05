@@ -10,9 +10,35 @@ import { DiwaliWishes } from './components/DiwaliWishes';
 import { FinalSection } from './components/FinalSection';
 import { CornerDiya } from './components/CornerDiya';
 import { soundManager } from './utils/audio';
+import { AmbientThemeId, getAmbientThemeConfig } from './utils/gameLogic';
 
 export default function App() {
-  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('autostart') === '1';
+    }
+    return false;
+  });
+
+  const [ambientTheme, setAmbientTheme] = useState<AmbientThemeId>(() => {
+    try {
+      const saved = sessionStorage.getItem('diwali_ambient_theme');
+      if (saved) return saved as AmbientThemeId;
+    } catch {
+      // safe fallback
+    }
+    return 'midnight';
+  });
+
+  const handleThemeChange = (newTheme: AmbientThemeId) => {
+    setAmbientTheme(newTheme);
+    try {
+      sessionStorage.setItem('diwali_ambient_theme', newTheme);
+    } catch {
+      // safe fallback
+    }
+  };
 
   // Auto-initiate ambient soundscape on first user touch/click
   useEffect(() => {
@@ -43,8 +69,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
+  const themeConfig = getAmbientThemeConfig(ambientTheme);
+
   return (
-    <div className="relative min-h-screen bg-[#160B2B] text-[#FFF1D6] selection:bg-[#FF5A1F] selection:text-white pb-20">
+    <div
+      className={`relative min-h-screen bg-gradient-to-b ${themeConfig.gradient} text-[#FFF1D6] selection:bg-[#E91E63] selection:text-white pb-20 transition-colors duration-700`}
+    >
       {/* Custom Glowing Spark Cursor on Desktop */}
       <SparkCursor />
 
@@ -77,10 +107,12 @@ export default function App() {
         </main>
       )}
 
-      {/* Persistent Bottom Navigation Bar with Global Audio Mute/Unmute Toggle */}
+      {/* Persistent Bottom Navigation Bar with Global Audio & Ambient Theme Selector */}
       <BottomNavBar
         isUnlocked={isUnlocked}
         onRestartExperience={isUnlocked ? handleRestartExperience : undefined}
+        currentTheme={ambientTheme}
+        onThemeChange={handleThemeChange}
       />
     </div>
   );
