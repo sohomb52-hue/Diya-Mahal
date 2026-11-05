@@ -1,0 +1,6 @@
+{
+  "name": "THE LIGHT WITHIN – A Diwali Experience",
+  "description": "An interactive, cinematic, and immersive Diwali celebration featuring a 3D scroll-lit Diya, Rangoli Master studio, Diya lighting challenge, Diwali memory match, Firecracker simulator, and customizable Diwali wish cards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

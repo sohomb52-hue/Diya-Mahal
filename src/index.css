@@ -1,0 +1,143 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-cinzel: 'Cinzel', serif;
+    --font-cormorant: 'Cormorant Garamond', serif;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #160B2B;
+    color: #FFF1D6;
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, .font-serif-heading {
+    font-family: var(--font-cinzel);
+  }
+
+  .font-cormorant {
+    font-family: var(--font-cormorant);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #160B2B;
+}
+::-webkit-scrollbar-thumb {
+  background: #A51C69;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF5A1F;
+}
+
+/* Custom Spark Cursor Effect */
+.custom-spark-cursor {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #FFD166 0%, #FF5A1F 60%, rgba(255, 90, 31, 0) 100%);
+  box-shadow: 0 0 12px #FFD166, 0 0 24px #FF5A1F;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  mix-blend-mode: screen;
+  transition: transform 0.05s ease-out;
+}
+
+.cursor-trail {
+  pointer-events: none;
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #FFCB69;
+  box-shadow: 0 0 8px #FFD166;
+  z-index: 9998;
+  animation: sparkFade 0.6s ease-out forwards;
+}
+
+@keyframes sparkFade {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2) translateY(-15px);
+  }
+}
+
+/* Glowing text and gold gradient utilities */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #FFF1D6 0%, #FFD166 40%, #FF9F1C 70%, #FF5A1F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glow-gold-text {
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.5), 0 0 25px rgba(255, 90, 31, 0.4), 0 0 40px rgba(165, 28, 105, 0.3);
+}
+
+.glow-diya-box {
+  box-shadow: 0 0 30px rgba(255, 203, 105, 0.25), 0 0 60px rgba(255, 90, 31, 0.15);
+}
+
+/* Flame Flicker Keyframes */
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-1deg);
+    filter: drop-shadow(0 0 15px #FFD166);
+  }
+  25% {
+    transform: scale(1.05, 0.95) rotate(1deg);
+    filter: drop-shadow(0 0 22px #FF5A1F);
+  }
+  50% {
+    transform: scale(0.98, 1.03) rotate(-2deg);
+    filter: drop-shadow(0 0 18px #FFD166);
+  }
+  75% {
+    transform: scale(1.02, 0.98) rotate(2deg);
+    filter: drop-shadow(0 0 25px #FF9F1C);
+  }
+}
+
+.animate-flame {
+  animation: flameFlicker 1.8s infinite ease-in-out;
+}
+
+/* Floating animation */
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+/* Rotating mandala background */
+@keyframes slowRotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: slowRotate 60s linear infinite;
+}
