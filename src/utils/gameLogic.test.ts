@@ -10,6 +10,7 @@ import {
   calculateFirecrackerScore,
   generateFireworkPatternPoints,
   getAmbientThemeConfig,
+  getLivingWorldScene,
 } from './gameLogic';
 
 test('createShuffledDeck produces expected count and pairs', () => {
@@ -129,4 +130,25 @@ test('getAmbientThemeConfig returns default theme for unknown id', () => {
   const fallback = getAmbientThemeConfig('nonexistent');
   assert.equal(fallback.id, 'midnight');
 });
+
+test('getLivingWorldScene smoothly transitions across scroll progress', () => {
+  const s0 = getLivingWorldScene(0.0);
+  assert.equal(s0.sceneId, 'courtyard');
+
+  const s1 = getLivingWorldScene(0.25);
+  assert.equal(s1.sceneId, 'street');
+
+  const s2 = getLivingWorldScene(0.50);
+  assert.equal(s2.sceneId, 'garden');
+
+  const s3 = getLivingWorldScene(0.70);
+  assert.equal(s3.sceneId, 'city');
+
+  const s4 = getLivingWorldScene(0.88);
+  assert.equal(s4.sceneId, 'sky');
+
+  const s5 = getLivingWorldScene(0.98);
+  assert.equal(s5.sceneId, 'finale');
+});
+
 

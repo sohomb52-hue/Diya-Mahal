@@ -261,3 +261,83 @@ export function getAmbientThemeConfig(id: string): AmbientThemeConfig {
   return AMBIENT_THEMES.find((t) => t.id === id) || AMBIENT_THEMES[0];
 }
 
+export interface WorldSceneInfo {
+  sceneId: 'courtyard' | 'street' | 'garden' | 'city' | 'sky' | 'finale';
+  sceneName: string;
+  cameraY: number;
+  cameraZ: number;
+  cameraRotX: number;
+  lightIntensity: number;
+  bgGlowColor: string;
+}
+
+/**
+ * Calculates continuous 3D world scene parameters from scroll progress.
+ */
+export function getLivingWorldScene(scrollProgress: number): WorldSceneInfo {
+  const p = Math.max(0, Math.min(1, scrollProgress));
+
+  if (p < 0.15) {
+    return {
+      sceneId: 'courtyard',
+      sceneName: 'The Diya Courtyard 🪔',
+      cameraY: 3.0,
+      cameraZ: 6.2,
+      cameraRotX: 0.32,
+      lightIntensity: 2.3,
+      bgGlowColor: '#FFB000',
+    };
+  } else if (p < 0.38) {
+    return {
+      sceneId: 'street',
+      sceneName: 'The Festive Street 🏮',
+      cameraY: 4.5,
+      cameraZ: 7.5,
+      cameraRotX: 0.25,
+      lightIntensity: 2.6,
+      bgGlowColor: '#E63946',
+    };
+  } else if (p < 0.60) {
+    return {
+      sceneId: 'garden',
+      sceneName: 'The Rangoli Garden 🌸',
+      cameraY: 6.0,
+      cameraZ: 8.5,
+      cameraRotX: 0.45,
+      lightIntensity: 2.8,
+      bgGlowColor: '#E91E63',
+    };
+  } else if (p < 0.80) {
+    return {
+      sceneId: 'city',
+      sceneName: 'The City of Lights 🌃',
+      cameraY: 8.5,
+      cameraZ: 10.0,
+      cameraRotX: 0.35,
+      lightIntensity: 3.0,
+      bgGlowColor: '#008C95',
+    };
+  } else if (p < 0.94) {
+    return {
+      sceneId: 'sky',
+      sceneName: 'The Festival Night Sky 🎆',
+      cameraY: 12.0,
+      cameraZ: 12.0,
+      cameraRotX: 0.20,
+      lightIntensity: 3.2,
+      bgGlowColor: '#3478F6',
+    };
+  } else {
+    return {
+      sceneId: 'finale',
+      sceneName: 'The Celebration Finale ✨',
+      cameraY: 7.0,
+      cameraZ: 7.8,
+      cameraRotX: 0.30,
+      lightIntensity: 3.5,
+      bgGlowColor: '#FFD166',
+    };
+  }
+}
+
+

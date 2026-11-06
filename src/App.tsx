@@ -4,11 +4,9 @@ import { Header } from './components/Header';
 import { BottomNavBar } from './components/BottomNavBar';
 import { SparkCursor } from './components/SparkCursor';
 import { BigRevealSection } from './components/BigRevealSection';
-import { ExperienceZone } from './components/ExperienceZone/ExperienceZone';
-import { FirecrackerSimulator } from './components/FirecrackerSimulator';
-import { DiwaliWishes } from './components/DiwaliWishes';
-import { FinalSection } from './components/FinalSection';
+import { PalaceDoorWorld } from './components/PalaceDoorWorld';
 import { CornerDiya } from './components/CornerDiya';
+import { LivingDiwaliWorld } from './components/LivingDiwaliWorld';
 import { soundManager } from './utils/audio';
 import { AmbientThemeId, getAmbientThemeConfig } from './utils/gameLogic';
 
@@ -78,36 +76,30 @@ export default function App() {
       {/* Custom Glowing Spark Cursor on Desktop */}
       <SparkCursor />
 
+      {/* Living 3D Diwali World Background Canvas */}
+      <LivingDiwaliWorld isUnlocked={isUnlocked} />
+
       {!isUnlocked ? (
-        /* 1. The Opening Screen — 3D Clay Diya & Physical Lighting Interaction */
+        /* 1. The Opening Gateway Screen — 3D Clay Diya & Physical Gate Sequence */
         <OpeningDiyaScreen onUnlocked={handleUnlocked} />
       ) : (
-        /* 2. The Main Diwali Experience — Unlocked after lighting the Diya */
-        <main className="relative animate-fade-in">
-          {/* Minimal Floating Navigation Header */}
+        /* 2. The Main 3D Diwali Palace World — Explorable 6 Door Corridor */
+        <main className="relative animate-fade-in z-10">
+          {/* Floating Navigation Header */}
           <Header onRestartExperience={handleRestartExperience} />
 
-          {/* Reveal Greeting Section */}
+          {/* Reveal Welcome Banner */}
           <BigRevealSection />
 
-          {/* A. Play & Celebrate (3 Mini Games) */}
-          <ExperienceZone />
+          {/* Continuous 3D Diwali Palace Door Journey */}
+          <PalaceDoorWorld onRestartExperience={handleRestartExperience} />
 
-          {/* B. Fireworks Simulator */}
-          <FirecrackerSimulator />
-
-          {/* C. Spread The Light (Personalized Wishes) */}
-          <DiwaliWishes />
-
-          {/* Final Section & Blessings */}
-          <FinalSection onRestartExperience={handleRestartExperience} />
-
-          {/* Recurring 3D Interactive Corner Diya */}
+          {/* Interactive Corner Diya */}
           <CornerDiya onReplayOpening={handleRestartExperience} />
         </main>
       )}
 
-      {/* Persistent Bottom Navigation Bar with Global Audio & Ambient Theme Selector */}
+      {/* Persistent Bottom Navigation Bar with Audio & Ambient Theme Selector */}
       <BottomNavBar
         isUnlocked={isUnlocked}
         onRestartExperience={isUnlocked ? handleRestartExperience : undefined}

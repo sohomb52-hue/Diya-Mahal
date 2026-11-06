@@ -1,28 +1,69 @@
 /**
  * Vibrant Indian Festive Audio Engine for "THE LIGHT WITHIN – A Diwali Experience"
- * Features:
- * - Energetic Dhol and Tabla percussion rhythms (Keherwa festive groove at 116 BPM)
- * - Joyful Shehnai & Melodious Bansuri flute celebratory leads
- * - Sparkling Manjira (brass hand cymbals) & Ghungroo (ankle bells) accents
- * - Warm orchestral harmomium & brass foundation
- * - Scene-aware sound design:
- *     1. Opening: Gentle festive prelude with soft flute & manjira
- *     2. Lighting: Sacred temple bell flourish & rising crescendo
- *     3. Reveal: Grand celebratory Shehnai fanfare & dhol roll
- *     4. Main: Full energetic celebratory Indian festival instrumental track
- *     5. Fireworks: Realistic crackling, whistling and booming festive pyrotechnics
- * - Session storage persistence for mute/unmute
- * - Smooth scene crossfades with zero sudden volume jumps
+ * Features 4 Vibrant Indian Festive Tunes:
+ *   1. "Royal Keherwa Celebration" (Shehnai, Dhol & Tabla in Raag Bilawal - 118 BPM)
+ *   2. "Dandiya Garba Beats" (Sitar, Manjira & Upbeat Garba in Raag Desh - 128 BPM)
+ *   3. "Lakshmi Puja Harmonium" (Serene Temple Flute & Chimes in Raag Yaman - 98 BPM)
+ *   4. "Explosive Dhol Parade" (Punjabi Dhol, Ghungroo & Fanfare in Raag Bhairavi - 134 BPM)
+ * - Session storage persistence for mute/unmute and tune selection
+ * - Smooth crossfades with zero sudden volume jumps
  * 100% Procedural Web Audio API — Zero external MP3/CORS dependencies!
  */
 
-type AudioScene = 'opening' | 'lighting' | 'reveal' | 'main';
-type AudioStateListener = (isMuted: boolean, scene: AudioScene) => void;
+export type AudioScene = 'opening' | 'lighting' | 'reveal' | 'main';
+export type FestiveTuneId = 'tune-keherwa' | 'tune-garba' | 'tune-yaman' | 'tune-bhangra';
+
+export interface FestiveTuneConfig {
+  id: FestiveTuneId;
+  name: string;
+  hindiName: string;
+  icon: string;
+  description: string;
+  bpm: number;
+}
+
+export const FESTIVE_TUNES: FestiveTuneConfig[] = [
+  {
+    id: 'tune-keherwa',
+    name: 'Royal Keherwa Celebration',
+    hindiName: 'राजसी कहरवा उत्सव',
+    icon: '🎺',
+    description: 'Joyful Dhol, Tabla & Shehnai in Raag Bilawal (118 BPM)',
+    bpm: 118,
+  },
+  {
+    id: 'tune-garba',
+    name: 'Dandiya Garba Beats',
+    hindiName: 'डांडिया गरबा ताल',
+    icon: '🪘',
+    description: 'Upbeat Garba rhythms with Sitar & Manjira (128 BPM)',
+    bpm: 128,
+  },
+  {
+    id: 'tune-yaman',
+    name: 'Lakshmi Puja Harmonium',
+    hindiName: 'लक्ष्मी पूजा बाँसुरी',
+    icon: '🪈',
+    description: 'Serene Temple Flute & Harmonium in Raag Yaman (98 BPM)',
+    bpm: 98,
+  },
+  {
+    id: 'tune-bhangra',
+    name: 'Explosive Dhol Parade',
+    hindiName: 'धमाकेदार ढोल गर्जना',
+    icon: '🎆',
+    description: 'High-octane Punjabi Dhol & Shehnai fanfare (134 BPM)',
+    bpm: 134,
+  },
+];
+
+type AudioStateListener = (isMuted: boolean, scene: AudioScene, tuneId: FestiveTuneId) => void;
 
 class SoundManager {
   private ctx: AudioContext | null = null;
   public isMuted: boolean = false;
   public currentScene: AudioScene = 'opening';
+  public currentTuneId: FestiveTuneId = 'tune-keherwa';
   public isEngineRunning: boolean = false;
 
   public get isBgMusicPlaying(): boolean {
@@ -48,14 +89,20 @@ class SoundManager {
   private listeners: Set<AudioStateListener> = new Set();
 
   constructor() {
-    // Restore user mute preference from current session
+    // Restore user mute preference & tune selection from current session
     try {
-      const saved = sessionStorage.getItem('diwali_festive_audio_muted');
-      if (saved !== null) {
-        this.isMuted = saved === 'true';
+      const savedMuted = sessionStorage.getItem('diwali_festive_audio_muted');
+      if (savedMuted !== null) {
+        this.isMuted = savedMuted === 'true';
+      }
+
+      const savedTune = sessionStorage.getItem('diwali_festive_tune_id') as FestiveTuneId;
+      if (savedTune && FESTIVE_TUNES.some((t) => t.id === savedTune)) {
+        this.currentTuneId = savedTune;
       }
     } catch {
       this.isMuted = false;
+      this.currentTuneId = 'tune-keherwa';
     }
   }
 
@@ -69,7 +116,7 @@ class SoundManager {
 
         // 1. Master Music Bus
         this.masterMusicGain = this.ctx.createGain();
-        this.masterMusicGain.gain.setValueAtTime(this.isMuted ? 0 : 0.35, this.ctx.currentTime);
+        this.masterMusicGain.gain.setValueAtTime(this.isMuted ? 0 : 0.38, this.ctx.currentTime);
         this.masterMusicGain.connect(this.ctx.destination);
 
         // 2. Sub-busses
@@ -99,14 +146,14 @@ class SoundManager {
 
   public subscribe(listener: AudioStateListener) {
     this.listeners.add(listener);
-    listener(this.isMuted, this.currentScene);
+    listener(this.isMuted, this.currentScene, this.currentTuneId);
     return () => {
       this.listeners.delete(listener);
     };
   }
 
   private notify() {
-    this.listeners.forEach((l) => l(this.isMuted, this.currentScene));
+    this.listeners.forEach((l) => l(this.isMuted, this.currentScene, this.currentTuneId));
   }
 
   public setMute(muted: boolean): boolean {
@@ -122,14 +169,13 @@ class SoundManager {
     if (this.ctx) {
       const now = this.ctx.currentTime;
       if (this.masterMusicGain) {
-        this.masterMusicGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.35, now, 0.08);
+        this.masterMusicGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.38, now, 0.08);
       }
       if (this.sfxGain) {
         this.sfxGain.gain.setTargetAtTime(this.isMuted ? 0 : 0.55, now, 0.05);
       }
     }
 
-    // Auto-start music engine if unmuting
     if (!this.isMuted && !this.isEngineRunning) {
       this.startFestiveMusic();
     }
@@ -140,6 +186,26 @@ class SoundManager {
 
   public toggleMute(): boolean {
     return this.setMute(!this.isMuted);
+  }
+
+  /**
+   * Select a new Festive Tune and restart audio loops dynamically
+   */
+  public setTune(tuneId: FestiveTuneId) {
+    if (this.currentTuneId === tuneId && this.isEngineRunning) return;
+    this.currentTuneId = tuneId;
+
+    try {
+      sessionStorage.setItem('diwali_festive_tune_id', tuneId);
+    } catch {
+      // safe
+    }
+
+    if (this.isEngineRunning) {
+      this.restartMusicLoops();
+    }
+
+    this.notify();
   }
 
   /**
@@ -156,24 +222,20 @@ class SoundManager {
     if (!this.ctx) return;
     const now = this.ctx.currentTime;
 
-    // Smooth gain crossfades between scenes
     if (this.percussionGain && this.melodyGain && this.droneGain) {
       switch (scene) {
         case 'opening':
-          // Subtle, expectant festive prelude (light percussion, calm flute)
           this.percussionGain.gain.setTargetAtTime(0.2, now, 0.4);
           this.melodyGain.gain.setTargetAtTime(0.28, now, 0.4);
           this.droneGain.gain.setTargetAtTime(0.25, now, 0.4);
           break;
         case 'lighting':
-          // Rising energy, bells, shimmer
           this.percussionGain.gain.setTargetAtTime(0.35, now, 0.2);
           this.melodyGain.gain.setTargetAtTime(0.45, now, 0.2);
           this.droneGain.gain.setTargetAtTime(0.3, now, 0.2);
           break;
         case 'reveal':
         case 'main':
-          // Full celebratory energy: driving dhol, energetic tabla, joyful shehnai & flute
           this.percussionGain.gain.setTargetAtTime(0.55, now, 0.3);
           this.melodyGain.gain.setTargetAtTime(0.5, now, 0.3);
           this.droneGain.gain.setTargetAtTime(0.2, now, 0.3);
@@ -184,9 +246,6 @@ class SoundManager {
     this.notify();
   }
 
-  /**
-   * Start the festive music loops (Rhythm + Melodies)
-   */
   public startFestiveMusic() {
     this.initCtx();
     if (!this.ctx || !this.masterMusicGain) return;
@@ -199,14 +258,17 @@ class SoundManager {
     this.notify();
   }
 
-  /**
-   * Warm Tanpura & Festive Harmonium / Brass Bed
-   */
+  private restartMusicLoops() {
+    if (this.rhythmTimer) window.clearInterval(this.rhythmTimer);
+    if (this.melodyTimer) window.clearInterval(this.melodyTimer);
+    this.startPercussionLoop();
+    this.startMelodyLoop();
+  }
+
   private initTanpuraAndBrassBed() {
     if (!this.ctx || !this.droneGain) return;
     const now = this.ctx.currentTime;
 
-    // Root chord in D: D3 (146.83 Hz), A3 (220 Hz), D4 (293.66 Hz), F#4 (369.99 Hz)
     const freqs = [146.83, 220.0, 293.66, 369.99];
     this.droneOscs = [];
 
@@ -234,13 +296,14 @@ class SoundManager {
   }
 
   /**
-   * Energetic Festive Indian Percussion Engine:
-   * Driving Dhol, energetic Tabla, Manjira cymbals, and Ghungroo bells
-   * Playing traditional 8-step Keherwa rhythm at 116 BPM
+   * Multi-Tune Percussion Engine (Dynamic BPM & Patterns)
    */
   private startPercussionLoop() {
-    // 116 BPM => 8th note is (60 / 116) / 2 = ~129ms
-    const stepInterval = (60 / 116) / 2 * 1000;
+    if (this.rhythmTimer) window.clearInterval(this.rhythmTimer);
+
+    const activeTune = FESTIVE_TUNES.find((t) => t.id === this.currentTuneId) || FESTIVE_TUNES[0];
+    const bpm = activeTune.bpm;
+    const stepInterval = (60 / bpm) / 2 * 1000;
 
     this.stepCount = 0;
     this.rhythmTimer = window.setInterval(() => {
@@ -249,39 +312,51 @@ class SoundManager {
       const step = this.stepCount % 8;
       const isFullFestive = this.currentScene === 'main' || this.currentScene === 'reveal';
 
-      // 1. Manjira (Hand cymbals) on festive off-beats & downbeats
-      if (step === 0 || step === 2 || step === 4 || step === 6) {
-        this.triggerManjira(step === 0 ? 0.35 : 0.22);
-      }
-
-      // 2. Ghungroo (Ankle bell clusters) shimmering rhythm
-      if (isFullFestive && (step === 1 || step === 3 || step === 5 || step === 7)) {
-        this.triggerGhungroo(0.18);
-      }
-
-      // 3. Dhol Bass & Slap
-      if (isFullFestive) {
-        if (step === 0) {
-          this.triggerDholBass(0.7); // DHA!
-        } else if (step === 4) {
-          this.triggerDholBass(0.55); // Secondary Dhol hit
-        } else if (step === 2 || step === 6) {
-          this.triggerDholSlap(0.4); // TILLI RIM
+      switch (this.currentTuneId) {
+        case 'tune-garba': {
+          // Garba 6/8 Fast Rhythm
+          if (step === 0 || step === 3) this.triggerManjira(0.4);
+          if (step === 1 || step === 4) this.triggerGhungroo(0.22);
+          if (isFullFestive) {
+            if (step === 0) this.triggerDholBass(0.7);
+            if (step === 2 || step === 5) this.triggerDholSlap(0.45);
+            if (step === 1 || step === 3) this.triggerTablaBayan(0.35);
+          }
+          break;
         }
-      } else {
-        // In opening scene, subtle soft dhol heartbeat
-        if (step === 0) {
-          this.triggerDholBass(0.25);
+        case 'tune-yaman': {
+          // Yaman Gentle Temple Groove
+          if (step === 0 || step === 4) this.triggerManjira(0.3);
+          if (isFullFestive) {
+            if (step === 0) this.triggerDholBass(0.45);
+            if (step === 2 || step === 6) this.triggerTablaDayan(0.28);
+          }
+          break;
         }
-      }
-
-      // 4. Tabla Bayan (Bass modulation) & Dayan (Metallic ring)
-      if (isFullFestive) {
-        if (step === 1 || step === 5) {
-          this.triggerTablaBayan(0.35); // GHE / DHIN
+        case 'tune-bhangra': {
+          // Bhangra 12/8 High-Octane Dhol Bounce
+          if (step % 2 === 0) this.triggerManjira(0.38);
+          this.triggerGhungroo(0.18);
+          if (isFullFestive) {
+            if (step === 0 || step === 4) this.triggerDholBass(0.8);
+            if (step === 2 || step === 6) this.triggerDholSlap(0.5);
+            if (step % 2 === 1) this.triggerTablaBayan(0.4);
+          }
+          break;
         }
-        if (step === 3 || step === 7) {
-          this.triggerTablaDayan(0.28); // TIN / TA
+        case 'tune-keherwa':
+        default: {
+          // Classic Keherwa
+          if (step === 0 || step === 2 || step === 4 || step === 6) this.triggerManjira(step === 0 ? 0.35 : 0.22);
+          if (isFullFestive && (step === 1 || step === 3 || step === 5 || step === 7)) this.triggerGhungroo(0.18);
+          if (isFullFestive) {
+            if (step === 0) this.triggerDholBass(0.7);
+            else if (step === 4) this.triggerDholBass(0.55);
+            else if (step === 2 || step === 6) this.triggerDholSlap(0.4);
+            if (step === 1 || step === 5) this.triggerTablaBayan(0.35);
+            if (step === 3 || step === 7) this.triggerTablaDayan(0.28);
+          }
+          break;
         }
       }
 
@@ -290,7 +365,106 @@ class SoundManager {
   }
 
   /**
-   * Dhol Bass Drum: Deep resonant punch with pitch sweep (65Hz -> 42Hz)
+   * Multi-Tune Melodic Engine (Dynamic Raag Scales & Instrument Synthesizers)
+   */
+  private startMelodyLoop() {
+    if (this.melodyTimer) window.clearInterval(this.melodyTimer);
+
+    // 1. Tune Scales
+    const scales: Record<FestiveTuneId, number[]> = {
+      'tune-keherwa': [293.66, 329.63, 369.99, 440.0, 493.88, 587.33, 493.88, 440.0, 369.99, 440.0, 587.33, 659.25], // Raag Bilawal
+      'tune-garba': [293.66, 369.99, 392.0, 440.0, 523.25, 493.88, 440.0, 392.0, 369.99, 329.63, 293.66, 440.0], // Raag Desh
+      'tune-yaman': [329.63, 415.3, 440.0, 493.88, 554.37, 622.25, 659.25, 493.88, 415.3, 329.63], // Raag Yaman
+      'tune-bhangra': [293.66, 349.23, 392.0, 415.3, 466.16, 523.25, 587.33, 622.25, 587.33, 523.25, 466.16, 415.3], // Raag Bhairavi
+    };
+
+    const currentScale = scales[this.currentTuneId] || scales['tune-keherwa'];
+    const activeTune = FESTIVE_TUNES.find((t) => t.id === this.currentTuneId) || FESTIVE_TUNES[0];
+    const melodyInterval = Math.round((60 / activeTune.bpm) * 1000);
+
+    this.melodyStep = 0;
+    this.melodyTimer = window.setInterval(() => {
+      if (this.isMuted || !this.ctx || !this.melodyGain) return;
+
+      const isMain = this.currentScene === 'main' || this.currentScene === 'reveal';
+      const noteFreq = currentScale[this.melodyStep % currentScale.length];
+
+      switch (this.currentTuneId) {
+        case 'tune-garba': {
+          if (isMain) {
+            this.playSitarNote(noteFreq, 0.35);
+            if (this.melodyStep % 2 === 0) this.playBansuriNote(noteFreq * 1.5, 0.2);
+          } else {
+            if (this.melodyStep % 3 === 0) this.playSitarNote(noteFreq, 0.25);
+          }
+          break;
+        }
+        case 'tune-yaman': {
+          if (isMain) {
+            this.playBansuriNote(noteFreq, 0.32);
+            if (this.melodyStep % 2 === 0) this.playBansuriNote(noteFreq * 0.75, 0.2);
+          } else {
+            if (this.melodyStep % 3 === 0) this.playBansuriNote(noteFreq, 0.22);
+          }
+          break;
+        }
+        case 'tune-bhangra': {
+          if (isMain) {
+            this.playShehnaiNote(noteFreq, 0.36);
+            if (this.melodyStep % 2 === 0) this.playSitarNote(noteFreq * 1.25, 0.28);
+          } else {
+            if (this.melodyStep % 3 === 0) this.playShehnaiNote(noteFreq, 0.24);
+          }
+          break;
+        }
+        case 'tune-keherwa':
+        default: {
+          if (isMain) {
+            this.playShehnaiNote(noteFreq, 0.32);
+            if (this.melodyStep % 2 === 0) this.playBansuriNote(noteFreq * 1.5, 0.22);
+          } else {
+            if (this.melodyStep % 3 === 0) this.playBansuriNote(noteFreq, 0.25);
+          }
+          break;
+        }
+      }
+
+      this.melodyStep++;
+    }, melodyInterval);
+  }
+
+  /**
+   * Sitar Synthesizer:
+   * Bright metallic string pluck with pitch glide
+   */
+  private playSitarNote(freq: number, vol: number) {
+    if (!this.ctx || !this.melodyGain) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq * 1.04, now);
+    osc.frequency.exponentialRampToValueAtTime(freq, now + 0.05);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.setValueAtTime(1200, now);
+
+    gain.gain.setValueAtTime(vol * 0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.melodyGain);
+
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
+
+  /**
+   * Dhol Bass Drum
    */
   private triggerDholBass(vol: number) {
     if (!this.ctx || !this.percussionGain) return;
@@ -319,7 +493,7 @@ class SoundManager {
   }
 
   /**
-   * Dhol Tilli / Slap: Snappy acoustic wooden rim slap
+   * Dhol Tilli / Slap
    */
   private triggerDholSlap(vol: number) {
     if (!this.ctx || !this.percussionGain) return;
@@ -352,7 +526,7 @@ class SoundManager {
   }
 
   /**
-   * Tabla Bayan: Resonant sliding pitch bass drum
+   * Tabla Bayan
    */
   private triggerTablaBayan(vol: number) {
     if (!this.ctx || !this.percussionGain) return;
@@ -377,7 +551,7 @@ class SoundManager {
   }
 
   /**
-   * Tabla Dayan: Tuned metallic ping with harmonic resonance (320 Hz)
+   * Tabla Dayan
    */
   private triggerTablaDayan(vol: number) {
     if (!this.ctx || !this.percussionGain) return;
@@ -388,7 +562,7 @@ class SoundManager {
     const filter = this.ctx.createBiquadFilter();
 
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(329.63, now); // E4
+    osc.frequency.setValueAtTime(329.63, now);
 
     filter.type = 'bandpass';
     filter.frequency.setValueAtTime(330, now);
@@ -406,7 +580,7 @@ class SoundManager {
   }
 
   /**
-   * Manjira (Hand cymbals): Bright, sparkling metallic clinks (2800 Hz & 4100 Hz)
+   * Manjira
    */
   private triggerManjira(vol: number) {
     if (!this.ctx || !this.percussionGain) return;
@@ -432,7 +606,7 @@ class SoundManager {
   }
 
   /**
-   * Ghungroo: Dense metallic ankle bell cluster
+   * Ghungroo
    */
   private triggerGhungroo(vol: number) {
     if (!this.ctx || !this.percussionGain) return;
@@ -464,60 +638,7 @@ class SoundManager {
   }
 
   /**
-   * Joyful Shehnai & Festive Bansuri Melodic Engine
-   * Plays celebratory, uplifting melodies in Raag Bilawal / Desh
-   */
-  private startMelodyLoop() {
-    // Festive melodic phrase notes (in D Major/Bilawal festive scale)
-    // D4, E4, F#4, G4, A4, B4, C#5, D5
-    const festiveMelodyNotes = [
-      293.66, // D4 (Sa)
-      329.63, // E4 (Re)
-      369.99, // F#4 (Ga)
-      440.0,  // A4 (Pa)
-      493.88, // B4 (Dha)
-      587.33, // D5 (Sa')
-      493.88, // B4
-      440.0,  // A4
-      369.99, // F#4
-      440.0,  // A4
-      587.33, // D5
-      659.25, // E5
-      587.33, // D5
-      440.0,  // A4
-      369.99, // F#4
-      293.66, // D4
-    ];
-
-    this.melodyStep = 0;
-    this.melodyTimer = window.setInterval(() => {
-      if (this.isMuted || !this.ctx || !this.melodyGain) return;
-
-      const isMain = this.currentScene === 'main' || this.currentScene === 'reveal';
-      const noteFreq = festiveMelodyNotes[this.melodyStep % festiveMelodyNotes.length];
-
-      if (isMain) {
-        // Energetic Shehnai festive lead
-        this.playShehnaiNote(noteFreq, 0.32);
-
-        // Harmonizing Bansuri flute every 2nd beat
-        if (this.melodyStep % 2 === 0) {
-          this.playBansuriNote(noteFreq * 1.5, 0.22);
-        }
-      } else {
-        // Opening scene: Gentle, melodious bansuri flute
-        if (this.melodyStep % 3 === 0) {
-          this.playBansuriNote(noteFreq, 0.25);
-        }
-      }
-
-      this.melodyStep++;
-    }, 450);
-  }
-
-  /**
-   * Shehnai Synthesizer:
-   * Nasal, reedy timbre with dual detuned sawtooth waves, formant filtering & celebratory vibrato
+   * Shehnai Synthesizer
    */
   private playShehnaiNote(freq: number, vol: number) {
     if (!this.ctx || !this.melodyGain) return;
@@ -530,13 +651,10 @@ class SoundManager {
     osc1.type = 'sawtooth';
     osc2.type = 'square';
 
-    // Slight microtonal slide (meend) characteristic of Shehnai
     osc1.frequency.setValueAtTime(freq * 0.98, now);
     osc1.frequency.linearRampToValueAtTime(freq, now + 0.08);
-
     osc2.frequency.setValueAtTime(freq * 1.006, now);
 
-    // Festive vocal vibrato
     const vibrato = this.ctx.createOscillator();
     const vibGain = this.ctx.createGain();
     vibrato.frequency.setValueAtTime(6.0, now);
@@ -547,7 +665,6 @@ class SoundManager {
     vibrato.start(now);
     vibrato.stop(now + 0.42);
 
-    // Formant filter (nasal double-reed envelope)
     const formant = this.ctx.createBiquadFilter();
     formant.type = 'bandpass';
     formant.frequency.setValueAtTime(freq * 1.6, now);
@@ -569,8 +686,7 @@ class SoundManager {
   }
 
   /**
-   * Bansuri Flute:
-   * Warm breathy tone with gentle acoustic envelope
+   * Bansuri Flute
    */
   private playBansuriNote(freq: number, vol: number) {
     if (!this.ctx || !this.melodyGain) return;
@@ -582,7 +698,6 @@ class SoundManager {
     osc.type = 'sine';
     osc.frequency.setValueAtTime(freq, now);
 
-    // Gentle vibrato
     const vib = this.ctx.createOscillator();
     const vibG = this.ctx.createGain();
     vib.frequency.setValueAtTime(5.2, now);
@@ -607,10 +722,6 @@ class SoundManager {
   // SCENE-SPECIFIC MUSICAL MOMENTS & SOUND FX
   // ==========================================
 
-  /**
-   * 1. Lighting Flourish:
-   * Temple bells, manjira resonance & rising celebratory crescendo when wick catches fire
-   */
   public playLightingFlourish() {
     this.setScene('lighting');
     if (this.isMuted) return;
@@ -618,8 +729,6 @@ class SoundManager {
     if (!this.ctx || !this.sfxGain) return;
 
     const now = this.ctx.currentTime;
-
-    // Temple brass bells chime arpeggio: D5 -> F#5 -> A5 -> D6
     const bellNotes = [587.33, 739.99, 880.0, 1174.66];
     bellNotes.forEach((f, i) => {
       if (!this.ctx || !this.sfxGain) return;
@@ -640,7 +749,6 @@ class SoundManager {
       osc.stop(now + i * 0.1 + 1.2);
     });
 
-    // Rising orchestral crescendo sweep
     const sweep = this.ctx.createOscillator();
     const sweepGain = this.ctx.createGain();
     sweep.type = 'sawtooth';
@@ -664,10 +772,6 @@ class SoundManager {
     sweep.stop(now + 0.85);
   }
 
-  /**
-   * 2. Happy Diwali Reveal Accent:
-   * Grand celebratory Shehnai fanfare + dhol roll + festive cymbal crash
-   */
   public playRevealCelebration() {
     this.setScene('reveal');
     if (this.isMuted) return;
@@ -675,8 +779,6 @@ class SoundManager {
     if (!this.ctx || !this.sfxGain) return;
 
     const now = this.ctx.currentTime;
-
-    // Fast Dhol crescendo roll (6 rapid beats)
     for (let i = 0; i < 6; i++) {
       setTimeout(() => {
         this.triggerDholBass(0.35 + i * 0.08);
@@ -684,7 +786,6 @@ class SoundManager {
       }, i * 65);
     }
 
-    // Grand celebratory Shehnai fanfare chord (D4, A4, D5, F#5)
     const fanfareNotes = [293.66, 440.0, 587.33, 739.99];
     fanfareNotes.forEach((f) => {
       if (!this.ctx || !this.sfxGain) return;
@@ -711,24 +812,17 @@ class SoundManager {
       osc.stop(now + 1.8);
     });
 
-    // Grand Manjira crash
     setTimeout(() => {
       this.triggerManjira(0.4);
     }, 400);
   }
 
-  /**
-   * 3. Synchronized Firework Sound:
-   * Whistle ascension + explosive boom + sparkling crackles
-   */
   public playFirework() {
     if (this.isMuted) return;
     this.initCtx();
     if (!this.ctx || !this.sfxGain) return;
 
     const now = this.ctx.currentTime;
-
-    // Rocket ascent whistle
     const whistle = this.ctx.createOscillator();
     const whistleGain = this.ctx.createGain();
     whistle.type = 'sine';
@@ -744,9 +838,7 @@ class SoundManager {
     whistle.start(now);
     whistle.stop(now + 0.26);
 
-    // Deep explosive burst (triggered as rocket peaks)
     const burstTime = now + 0.22;
-
     const bufferSize = this.ctx.sampleRate * 0.45;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -771,7 +863,6 @@ class SoundManager {
     gain.connect(this.sfxGain);
     noise.start(burstTime);
 
-    // Sparkling festive sizzle trail
     const sizzleBuffer = this.ctx.createBuffer(1, this.ctx.sampleRate * 0.4, this.ctx.sampleRate);
     const sData = sizzleBuffer.getChannelData(0);
     for (let i = 0; i < sData.length; i++) {
@@ -794,9 +885,6 @@ class SoundManager {
     sizzle.start(burstTime + 0.05);
   }
 
-  /**
-   * UI Click Sound
-   */
   public playClick() {
     if (this.isMuted) return;
     this.initCtx();
@@ -820,15 +908,12 @@ class SoundManager {
     osc.stop(now + 0.06);
   }
 
-  /**
-   * Victory Chime with festive bell notes
-   */
   public playVictory() {
     if (this.isMuted) return;
     this.initCtx();
     if (!this.ctx || !this.sfxGain) return;
 
-    const notes = [587.33, 739.99, 880.0, 1174.66]; // D5, F#5, A5, D6
+    const notes = [587.33, 739.99, 880.0, 1174.66];
     const now = this.ctx.currentTime;
 
     notes.forEach((freq, i) => {
@@ -855,23 +940,16 @@ class SoundManager {
     }, 200);
   }
 
-  /**
-   * Backward-compatible alias for Diya ignition
-   */
   public playIgnite() {
     this.playLightingFlourish();
   }
 
-  /**
-   * Anar (Fountain): Rising fountain hiss with sparkling shower finish
-   */
   public playAnarSound() {
     if (this.isMuted) return;
     this.initCtx();
     if (!this.ctx || !this.sfxGain) return;
     const now = this.ctx.currentTime;
 
-    // Rising noise fountain
     const bufferSize = this.ctx.sampleRate * 0.9;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -898,9 +976,6 @@ class SoundManager {
     noise.start(now);
   }
 
-  /**
-   * Fuljhuri (Sparkler): Continuous crackling sparkler hiss
-   */
   public playFuljhuriSound() {
     if (this.isMuted) return;
     this.initCtx();
@@ -930,16 +1005,12 @@ class SoundManager {
     noise.start(now);
   }
 
-  /**
-   * Bomb: Safe visual burst sound with deep bass impact and shockwave pop
-   */
   public playBombSound() {
     if (this.isMuted) return;
     this.initCtx();
     if (!this.ctx || !this.sfxGain) return;
     const now = this.ctx.currentTime;
 
-    // Sub-bass thud
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
     osc.type = 'sine';
@@ -954,7 +1025,6 @@ class SoundManager {
     osc.start(now);
     osc.stop(now + 0.3);
 
-    // Crackle noise impact
     const bufferSize = this.ctx.sampleRate * 0.25;
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -978,9 +1048,6 @@ class SoundManager {
     noise.start(now);
   }
 
-  /**
-   * Chakri (Spinner): Rotating whirring rotor pitch sweep
-   */
   public playChakriSound() {
     if (this.isMuted) return;
     this.initCtx();
@@ -1010,13 +1077,9 @@ class SoundManager {
     osc.stop(now + 0.85);
   }
 
-  /**
-   * Rocket: Ascent whistle followed by aerial burst
-   */
   public playRocketSound() {
     this.playFirework();
   }
 }
 
 export const soundManager = new SoundManager();
-
