@@ -2,6 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { soundManager } from '../utils/audio';
 import { FastForward, ArrowDown, Sparkles } from 'lucide-react';
+import {
+  createHaveliGatePortalCanvas,
+  createHaveliDoorPanelCanvas,
+  createCourtyardMuralWallCanvas,
+  createPalaceBackdropCanvas,
+  createCourtyardFloorCanvas,
+  createTerracottaDiyaCanvas,
+} from './3d/folkArtTextures';
 
 interface OpeningDiyaScreenProps {
   onUnlocked: () => void;
@@ -42,755 +50,7 @@ const FESTIVE_PALETTE_HEX = [
   0xfff1d6, // Warm Ivory
 ];
 
-/* =========================================================================
-   HIGH-RESOLUTION PROCEDURAL TEXTURE GENERATORS (INDIAN FOLK ART & HAVELI)
-   ========================================================================= */
-
-/**
- * Creates an ultra-detailed 2048x2048 Indian Haveli Wooden Double Door Texture
- * with rich seasoned rosewood grain, carved moldings, brass gul-meekh studs,
- * and intricate Madhubani-painted panels (Surya, Mayura, Kamal, Gaja).
- */
-function createHaveliDoorCanvas(): HTMLCanvasElement {
-  const canvas = document.createElement('canvas');
-  canvas.width = 2048;
-  canvas.height = 2048;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return canvas;
-
-  // 1. Rich Seasoned Rosewood & Teak Base with Warm Amber Undertones
-  const woodGrad = ctx.createLinearGradient(0, 0, 2048, 2048);
-  woodGrad.addColorStop(0, '#260F07');
-  woodGrad.addColorStop(0.3, '#3D180A');
-  woodGrad.addColorStop(0.7, '#2D1107');
-  woodGrad.addColorStop(1, '#1A0A04');
-  ctx.fillStyle = woodGrad;
-  ctx.fillRect(0, 0, 2048, 2048);
-
-  // Smooth Wood Grain Ribbons (Subtle organic variation, anti-aliased)
-  ctx.save();
-  for (let y = 0; y < 2048; y += 8) {
-    const alpha = 0.08 + Math.sin(y * 0.02) * 0.04;
-    ctx.strokeStyle = y % 24 === 0 ? `rgba(255, 176, 0, ${alpha * 0.5})` : `rgba(15, 5, 2, ${alpha * 1.5})`;
-    ctx.lineWidth = 2 + Math.sin(y * 0.05) * 1.5;
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.bezierCurveTo(
-      600,
-      y + Math.sin(y * 0.015) * 45,
-      1400,
-      y - Math.sin(y * 0.012) * 40,
-      2048,
-      y + Math.cos(y * 0.018) * 30
-    );
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // 2. Heavy Carved Outer Border with Gold Leaf & Vermilion Trim
-  ctx.save();
-  // Outer bevel
-  ctx.lineWidth = 36;
-  ctx.strokeStyle = '#150602';
-  ctx.strokeRect(30, 30, 1988, 1988);
-
-  // Gold metallic border with Pattachitra chevron tooling
-  ctx.lineWidth = 18;
-  ctx.strokeStyle = '#FFB000';
-  ctx.strokeRect(60, 60, 1928, 1928);
-
-  ctx.lineWidth = 8;
-  ctx.strokeStyle = '#E63946';
-  ctx.strokeRect(84, 84, 1880, 1880);
-
-  // Running Pattachitra vine border around door perimeter
-  ctx.strokeStyle = '#FF8F00';
-  ctx.lineWidth = 4;
-  for (let x = 110; x < 1938; x += 40) {
-    ctx.beginPath();
-    ctx.arc(x, 105, 12, 0, Math.PI);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(x + 20, 1943, 12, Math.PI, 0);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // 3. Four Ornate Recessed Panels (Madhubani Folk-Art Masterpieces)
-  const panelWidth = 840;
-  const panelHeight = 840;
-  const panels = [
-    { x: 140, y: 140, type: 'surya' }, // Top-Left: Sacred Sun (Surya)
-    { x: 1068, y: 140, type: 'mayura' }, // Top-Right: Royal Peacock (Mayura)
-    { x: 140, y: 1068, type: 'kamal' }, // Bottom-Left: Sacred Lotus (Kamal)
-    { x: 1068, y: 1068, type: 'gaja' }, // Bottom-Right: Auspicious Elephant (Gaja)
-  ];
-
-  panels.forEach(({ x, y, type }) => {
-    ctx.save();
-    ctx.translate(x, y);
-
-    // Deep recessed carved panel frame
-    ctx.fillStyle = '#1D0904';
-    ctx.fillRect(0, 0, panelWidth, panelHeight);
-
-    // Inner gold-bordered background with subtle vermilion wash
-    const pGrad = ctx.createRadialGradient(panelWidth / 2, panelHeight / 2, 40, panelWidth / 2, panelHeight / 2, panelWidth / 2);
-    pGrad.addColorStop(0, '#3A1509');
-    pGrad.addColorStop(0.7, '#250C05');
-    pGrad.addColorStop(1, '#150602');
-    ctx.fillStyle = pGrad;
-    ctx.fillRect(24, 24, panelWidth - 48, panelHeight - 48);
-
-    // Multi-line gold and ivory frame
-    ctx.strokeStyle = '#FFB000';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(30, 30, panelWidth - 60, panelHeight - 60);
-
-    ctx.strokeStyle = '#FFF1D6';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(44, 44, panelWidth - 88, panelHeight - 88);
-
-    // Corner ornate brass spandrels
-    const drawCornerBracket = (cx: number, cy: number, rot: number) => {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(rot);
-      ctx.fillStyle = '#FFB000';
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(70, 0);
-      ctx.quadraticCurveTo(45, 25, 25, 45);
-      ctx.quadraticCurveTo(25, 45, 0, 70);
-      ctx.closePath();
-      ctx.fill();
-      ctx.restore();
-    };
-    drawCornerBracket(44, 44, 0);
-    drawCornerBracket(panelWidth - 44, 44, Math.PI / 2);
-    drawCornerBracket(panelWidth - 44, panelHeight - 44, Math.PI);
-    drawCornerBracket(44, panelHeight - 44, (Math.PI * 3) / 2);
-
-    const pcx = panelWidth / 2;
-    const pcy = panelHeight / 2;
-
-    if (type === 'surya') {
-      // --- MADHUBANI SURYA (Sacred Sun God) ---
-      // Outer flame rays
-      ctx.save();
-      ctx.translate(pcx, pcy);
-      for (let r = 0; r < 24; r++) {
-        const angle = (r * Math.PI * 2) / 24;
-        ctx.rotate(angle);
-        ctx.fillStyle = r % 2 === 0 ? '#FF5722' : '#FFB000';
-        ctx.beginPath();
-        ctx.moveTo(0, 160);
-        ctx.lineTo(25, 260);
-        ctx.lineTo(0, 300);
-        ctx.lineTo(-25, 260);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#FFF1D6';
-        ctx.lineWidth = 2.5;
-        ctx.stroke();
-        ctx.rotate(-angle);
-      }
-
-      // Sun Face Disc
-      ctx.fillStyle = '#FF8F00';
-      ctx.beginPath();
-      ctx.arc(0, 0, 160, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#FFF1D6';
-      ctx.lineWidth = 5;
-      ctx.stroke();
-
-      ctx.strokeStyle = '#E63946';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(0, 0, 145, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Madhubani double-line fish eyes & auspicious Tilak
-      ctx.fillStyle = '#FFF1D6';
-      ctx.beginPath();
-      ctx.ellipse(-50, -25, 32, 16, -0.1, 0, Math.PI * 2);
-      ctx.ellipse(50, -25, 32, 16, 0.1, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#0F1126';
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
-
-      // Pupils
-      ctx.fillStyle = '#0F1126';
-      ctx.beginPath();
-      ctx.arc(-45, -25, 10, 0, Math.PI * 2);
-      ctx.arc(45, -25, 10, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Tilak
-      ctx.fillStyle = '#E63946';
-      ctx.beginPath();
-      ctx.moveTo(0, -90);
-      ctx.quadraticCurveTo(16, -50, 0, -20);
-      ctx.quadraticCurveTo(-16, -50, 0, -90);
-      ctx.fill();
-
-      // Serene Smiling Lips
-      ctx.strokeStyle = '#E63946';
-      ctx.lineWidth = 5;
-      ctx.beginPath();
-      ctx.arc(0, 35, 45, 0.15 * Math.PI, 0.85 * Math.PI);
-      ctx.stroke();
-      ctx.restore();
-    } else if (type === 'mayura') {
-      // --- MADHUBANI MAYURA (Royal Peacock) ---
-      ctx.save();
-      ctx.translate(pcx, pcy);
-
-      // Magnificent fan of peacock feathers
-      for (let f = 0; f < 14; f++) {
-        const fAngle = -Math.PI * 0.8 + (f * Math.PI * 0.9) / 13;
-        ctx.save();
-        ctx.rotate(fAngle);
-        // Feather Stem
-        ctx.strokeStyle = '#20C9C3';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(0, 20);
-        ctx.lineTo(0, 250);
-        ctx.stroke();
-
-        // Eye Feather
-        ctx.fillStyle = '#008C95';
-        ctx.beginPath();
-        ctx.ellipse(0, 260, 35, 55, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#FFB000';
-        ctx.lineWidth = 4;
-        ctx.stroke();
-
-        ctx.fillStyle = '#3478F6';
-        ctx.beginPath();
-        ctx.ellipse(0, 265, 22, 34, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#FFB000';
-        ctx.beginPath();
-        ctx.arc(0, 272, 12, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      // Graceful Peacock Body & Crown
-      ctx.fillStyle = '#008C95';
-      ctx.beginPath();
-      ctx.moveTo(-40, 100);
-      ctx.bezierCurveTo(-70, 0, -50, -80, -10, -120);
-      ctx.bezierCurveTo(30, -90, 40, -40, 20, 20);
-      ctx.bezierCurveTo(40, 60, 20, 120, -40, 100);
-      ctx.fill();
-      ctx.strokeStyle = '#FFF1D6';
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-      // Peacock Head & Crest
-      ctx.fillStyle = '#20C9C3';
-      ctx.beginPath();
-      ctx.arc(-10, -135, 26, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#FFF1D6';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Golden Beak
-      ctx.fillStyle = '#FFB000';
-      ctx.beginPath();
-      ctx.moveTo(10, -140);
-      ctx.lineTo(38, -135);
-      ctx.lineTo(10, -125);
-      ctx.closePath();
-      ctx.fill();
-
-      // 3 Crown Crest Plumes (Kalgi)
-      for (let c = -1; c <= 1; c++) {
-        ctx.strokeStyle = '#FFB000';
-        ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.moveTo(-10, -160);
-        ctx.lineTo(-10 + c * 22, -195);
-        ctx.stroke();
-        ctx.fillStyle = '#E91E63';
-        ctx.beginPath();
-        ctx.arc(-10 + c * 22, -200, 7, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    } else if (type === 'kamal') {
-      // --- SACRED LOTUS (Kamal Mandala) ---
-      ctx.save();
-      ctx.translate(pcx, pcy);
-
-      // Concentric rippling waters
-      ctx.strokeStyle = '#20C9C3';
-      ctx.lineWidth = 3;
-      for (let w = 180; w <= 260; w += 28) {
-        ctx.beginPath();
-        ctx.arc(0, 0, w, 0, Math.PI * 2);
-        ctx.stroke();
-      }
-
-      // Outer Layer of Lotus Petals (Rani Pink & Gold Outlines)
-      for (let l = 0; l < 12; l++) {
-        const lAngle = (l * Math.PI * 2) / 12;
-        ctx.save();
-        ctx.rotate(lAngle);
-        ctx.fillStyle = '#E91E63';
-        ctx.beginPath();
-        ctx.moveTo(0, 50);
-        ctx.quadraticCurveTo(65, 140, 0, 220);
-        ctx.quadraticCurveTo(-65, 140, 0, 50);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#FFF1D6';
-        ctx.lineWidth = 3.5;
-        ctx.stroke();
-        // Inner petal vein
-        ctx.strokeStyle = '#FFB000';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(0, 60);
-        ctx.lineTo(0, 205);
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // Inner Layer of Saffron Petals
-      for (let l = 0; l < 12; l++) {
-        const lAngle = (l * Math.PI * 2) / 12 + Math.PI / 12;
-        ctx.save();
-        ctx.rotate(lAngle);
-        ctx.fillStyle = '#FF8F00';
-        ctx.beginPath();
-        ctx.moveTo(0, 30);
-        ctx.quadraticCurveTo(45, 100, 0, 160);
-        ctx.quadraticCurveTo(-45, 100, 0, 30);
-        ctx.closePath();
-        ctx.fill();
-        ctx.strokeStyle = '#FFF1D6';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // Center Seed Head (Karnika)
-      ctx.fillStyle = '#FFB000';
-      ctx.beginPath();
-      ctx.arc(0, 0, 48, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = '#E63946';
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-      ctx.fillStyle = '#E63946';
-      for (let s = 0; s < 8; s++) {
-        const sa = (s * Math.PI * 2) / 8;
-        ctx.beginPath();
-        ctx.arc(Math.cos(sa) * 26, Math.sin(sa) * 26, 6, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    } else {
-      // --- GAJA (Auspicious Festive Elephant) ---
-      ctx.save();
-      ctx.translate(pcx, pcy + 30);
-
-      // Body & Legs
-      ctx.fillStyle = '#3A1E14';
-      ctx.beginPath();
-      ctx.moveTo(-180, 80);
-      ctx.bezierCurveTo(-220, -40, -140, -130, 40, -110);
-      ctx.bezierCurveTo(140, -100, 180, -30, 170, 70);
-      ctx.lineTo(130, 130);
-      ctx.lineTo(90, 130);
-      ctx.lineTo(80, 60);
-      ctx.lineTo(-30, 60);
-      ctx.lineTo(-40, 130);
-      ctx.lineTo(-80, 130);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = '#FFF1D6';
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-      // Raised Auspicious Trunk holding Lotus
-      ctx.fillStyle = '#3A1E14';
-      ctx.beginPath();
-      ctx.moveTo(150, -40);
-      ctx.bezierCurveTo(230, -50, 240, -160, 170, -180);
-      ctx.bezierCurveTo(140, -170, 180, -120, 130, -70);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = '#FFF1D6';
-      ctx.lineWidth = 4;
-      ctx.stroke();
-
-      // Tusk
-      ctx.fillStyle = '#FFF1D6';
-      ctx.beginPath();
-      ctx.moveTo(140, -20);
-      ctx.quadraticCurveTo(190, -40, 180, -80);
-      ctx.quadraticCurveTo(160, -40, 135, -5);
-      ctx.fill();
-
-      // Royal Jhool (Embroidered Saddle Cloth)
-      ctx.fillStyle = '#E91E63';
-      ctx.beginPath();
-      ctx.rect(-90, -90, 160, 110);
-      ctx.fill();
-      ctx.strokeStyle = '#FFB000';
-      ctx.lineWidth = 6;
-      ctx.stroke();
-
-      // Gold tassels on saddle cloth
-      ctx.fillStyle = '#FFB000';
-      for (let t = -80; t <= 60; t += 20) {
-        ctx.beginPath();
-        ctx.arc(t, 25, 7, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Eye
-      ctx.fillStyle = '#FFF1D6';
-      ctx.beginPath();
-      ctx.ellipse(90, -70, 14, 8, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#0F1126';
-      ctx.beginPath();
-      ctx.arc(92, -70, 5, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.restore();
-    }
-
-    ctx.restore();
-  });
-
-  // 4. Brass Hardware: Rows of Conical Brass Studs (Gul-Meekh)
-  ctx.save();
-  const studPositions: Array<[number, number]> = [];
-  // Vertical stiles
-  for (const sx of [110, 1024, 1938]) {
-    for (let sy = 120; sy <= 1928; sy += 180) {
-      studPositions.push([sx, sy]);
-    }
-  }
-  // Horizontal rails
-  for (const sy of [110, 1024, 1938]) {
-    for (let sx = 260; sx <= 1788; sx += 220) {
-      if (Math.abs(sx - 1024) > 100) studPositions.push([sx, sy]);
-    }
-  }
-
-  studPositions.forEach(([x, y]) => {
-    // Cast shadow
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-    ctx.beginPath();
-    ctx.arc(x + 5, y + 6, 24, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Spiked brass stud base ring
-    ctx.fillStyle = '#8B6508';
-    ctx.beginPath();
-    ctx.arc(x, y, 22, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Gleaming conical brass cap
-    const sGrad = ctx.createRadialGradient(x - 6, y - 6, 2, x, y, 20);
-    sGrad.addColorStop(0, '#FFF1D6');
-    sGrad.addColorStop(0.3, '#FFB000');
-    sGrad.addColorStop(0.8, '#D48806');
-    sGrad.addColorStop(1, '#664200');
-    ctx.fillStyle = sGrad;
-    ctx.beginPath();
-    ctx.arc(x, y, 18, 0, Math.PI * 2);
-    ctx.fill();
-  });
-  ctx.restore();
-
-  // 5. Central Vertical Meeting Stile (Interlocking Brass Astragal Bar)
-  ctx.save();
-  ctx.fillStyle = '#0F0402';
-  ctx.fillRect(1008, 0, 32, 2048);
-
-  const astGrad = ctx.createLinearGradient(1000, 0, 1048, 0);
-  astGrad.addColorStop(0, '#5A3D06');
-  astGrad.addColorStop(0.3, '#FFB000');
-  astGrad.addColorStop(0.6, '#FFF1D6');
-  astGrad.addColorStop(0.9, '#B87A04');
-  astGrad.addColorStop(1, '#3D2502');
-  ctx.fillStyle = astGrad;
-  ctx.fillRect(1014, 0, 20, 2048);
-  ctx.restore();
-
-  return canvas;
-}
-
-/**
- * Creates an ultra-detailed 2048x2048 Royal Courtyard Sandstone & Central Rangoli Floor Texture
- */
-function createCourtyardFloorCanvas(): HTMLCanvasElement {
-  const canvas = document.createElement('canvas');
-  canvas.width = 2048;
-  canvas.height = 2048;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return canvas;
-
-  // 1. Warm Rajasthan Sandstone Flagstone Floor
-  const baseGrad = ctx.createLinearGradient(0, 0, 2048, 2048);
-  baseGrad.addColorStop(0, '#150A20');
-  baseGrad.addColorStop(0.5, '#1B0D2A');
-  baseGrad.addColorStop(1, '#0E0616');
-  ctx.fillStyle = baseGrad;
-  ctx.fillRect(0, 0, 2048, 2048);
-
-  // Flagstone paving grid with soft illuminated mortar lines
-  ctx.save();
-  ctx.strokeStyle = 'rgba(255, 241, 214, 0.08)';
-  ctx.lineWidth = 4;
-  for (let x = 0; x <= 2048; x += 128) {
-    ctx.beginPath();
-    ctx.moveTo(x, 0);
-    ctx.lineTo(x, 2048);
-    ctx.stroke();
-  }
-  for (let y = 0; y <= 2048; y += 128) {
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(2048, y);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // 2. Central Breathtaking Royal Rangoli Mandala
-  const cx = 1024;
-  const cy = 1024;
-  ctx.save();
-  ctx.translate(cx, cy);
-
-  // Soft radiant colored powder glow behind rangoli
-  const glow = ctx.createRadialGradient(0, 0, 200, 0, 0, 950);
-  glow.addColorStop(0, 'rgba(255, 87, 34, 0.45)');
-  glow.addColorStop(0.4, 'rgba(233, 30, 99, 0.35)');
-  glow.addColorStop(0.7, 'rgba(32, 201, 195, 0.2)');
-  glow.addColorStop(1, 'rgba(0, 0, 0, 0)');
-  ctx.fillStyle = glow;
-  ctx.beginPath();
-  ctx.arc(0, 0, 950, 0, Math.PI * 2);
-  ctx.fill();
-
-  // Outermost Ring of 24 Diya Motifs & Petals
-  for (let d = 0; d < 24; d++) {
-    const angle = (d * Math.PI * 2) / 24;
-    ctx.save();
-    ctx.rotate(angle);
-    // Outer scallop
-    ctx.fillStyle = d % 2 === 0 ? '#FF5722' : '#FFB000';
-    ctx.beginPath();
-    ctx.arc(0, 860, 42, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#FFF1D6';
-    ctx.lineWidth = 4;
-    ctx.stroke();
-
-    // Tiny flame tip
-    ctx.fillStyle = '#FFF1D6';
-    ctx.beginPath();
-    ctx.moveTo(0, 920);
-    ctx.quadraticCurveTo(14, 890, 0, 870);
-    ctx.quadraticCurveTo(-14, 890, 0, 920);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  // Concentric Mandala Circles with Pattachitra Trims
-  const rings = [
-    { r: 820, col: '#FFB000', w: 12 },
-    { r: 790, col: '#FFF1D6', w: 5 },
-    { r: 730, col: '#E91E63', w: 10 },
-    { r: 660, col: '#20C9C3', w: 8 },
-    { r: 540, col: '#FF8F00', w: 9 },
-    { r: 420, col: '#008C95', w: 7 },
-    { r: 300, col: '#FF5722', w: 6 },
-    { r: 180, col: '#FFB000', w: 5 },
-  ];
-
-  rings.forEach((ring) => {
-    ctx.strokeStyle = ring.col;
-    ctx.lineWidth = ring.w;
-    ctx.beginPath();
-    ctx.arc(0, 0, ring.r, 0, Math.PI * 2);
-    ctx.stroke();
-  });
-
-  // Layer 1: 16 Giant Lotus Petals (Rani Pink & Bright Saffron)
-  for (let i = 0; i < 16; i++) {
-    const a = (i * Math.PI * 2) / 16;
-    ctx.save();
-    ctx.rotate(a);
-
-    ctx.fillStyle = i % 2 === 0 ? '#E91E63' : '#FF5722';
-    ctx.beginPath();
-    ctx.moveTo(0, 300);
-    ctx.quadraticCurveTo(110, 520, 0, 780);
-    ctx.quadraticCurveTo(-110, 520, 0, 300);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = '#FFF1D6';
-    ctx.lineWidth = 4.5;
-    ctx.stroke();
-
-    // Inner petal filigree
-    ctx.strokeStyle = '#FFB000';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(0, 320);
-    ctx.lineTo(0, 750);
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // Layer 2: 16 Peacock Teal & Turquoise Secondary Petals
-  for (let i = 0; i < 16; i++) {
-    const a = (i * Math.PI * 2) / 16 + Math.PI / 16;
-    ctx.save();
-    ctx.rotate(a);
-
-    ctx.fillStyle = i % 2 === 0 ? '#008C95' : '#20C9C3';
-    ctx.beginPath();
-    ctx.moveTo(0, 200);
-    ctx.quadraticCurveTo(80, 380, 0, 600);
-    ctx.quadraticCurveTo(-80, 380, 0, 200);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = '#FFF1D6';
-    ctx.lineWidth = 4;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // Layer 3: Central Golden Star Mandir Platform
-  ctx.fillStyle = '#FFB000';
-  ctx.beginPath();
-  ctx.arc(0, 0, 180, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = '#FFF1D6';
-  ctx.lineWidth = 6;
-  ctx.stroke();
-
-  // Fine Sacred Alpana Dots
-  ctx.fillStyle = '#FFF1D6';
-  for (let p = 0; p < 32; p++) {
-    const pa = (p * Math.PI * 2) / 32;
-    ctx.beginPath();
-    ctx.arc(Math.cos(pa) * 160, Math.sin(pa) * 160, 6, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  ctx.restore();
-
-  return canvas;
-}
-
-/**
- * Creates an ultra-detailed 2048x2048 Handcrafted Terracotta Diya Texture
- * with rich baked earthen clay gradients, burnished rim highlights,
- * and engraved Madhubani floral motifs.
- */
-function createTerracottaDiyaCanvas(): HTMLCanvasElement {
-  const canvas = document.createElement('canvas');
-  canvas.width = 2048;
-  canvas.height = 2048;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return canvas;
-
-  // 1. Rich Baked Earthen Terracotta Gradation
-  const clayGrad = ctx.createRadialGradient(1024, 1024, 200, 1024, 1024, 1024);
-  clayGrad.addColorStop(0, '#E66838');
-  clayGrad.addColorStop(0.4, '#C64E22');
-  clayGrad.addColorStop(0.8, '#9E3816');
-  clayGrad.addColorStop(1, '#6E2008');
-  ctx.fillStyle = clayGrad;
-  ctx.fillRect(0, 0, 2048, 2048);
-
-  // 2. Subtle Ceramic Hand-Burnished Clay Striations (Smooth, Non-Pixelated)
-  ctx.save();
-  for (let i = 0; i < 48; i++) {
-    const radius = 250 + i * 36;
-    ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 176, 0, 0.12)' : 'rgba(70, 20, 6, 0.2)';
-    ctx.lineWidth = 4 + (i % 3) * 2;
-    ctx.beginPath();
-    ctx.arc(1024, 1024, radius, 0, Math.PI * 2);
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // 3. Hand-Engraved Madhubani Border along Diya Rim
-  ctx.save();
-  ctx.translate(1024, 1024);
-
-  // Outer gold inlay band
-  ctx.strokeStyle = '#FFB000';
-  ctx.lineWidth = 16;
-  ctx.beginPath();
-  ctx.arc(0, 0, 880, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // White rice-flour engraved rim trim
-  ctx.strokeStyle = '#FFF1D6';
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.arc(0, 0, 840, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // 36 Engraved Lotus Petals along Diya Lip
-  for (let i = 0; i < 36; i++) {
-    const angle = (i * Math.PI * 2) / 36;
-    ctx.save();
-    ctx.rotate(angle);
-
-    ctx.fillStyle = '#FF5722';
-    ctx.beginPath();
-    ctx.moveTo(0, 720);
-    ctx.quadraticCurveTo(24, 800, 0, 880);
-    ctx.quadraticCurveTo(-24, 800, 0, 720);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = '#FFB000';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // Auspicious Inner Ring of Chevron Engravings
-  for (let i = 0; i < 72; i++) {
-    const angle = (i * Math.PI * 2) / 72;
-    ctx.save();
-    ctx.rotate(angle);
-    ctx.strokeStyle = '#FFF1D6';
-    ctx.lineWidth = 3.5;
-    ctx.beginPath();
-    ctx.moveTo(-10, 650);
-    ctx.lineTo(0, 675);
-    ctx.lineTo(10, 650);
-    ctx.stroke();
-    ctx.restore();
-  }
-  ctx.restore();
-
-  return canvas;
-}
+/* Procedural 2048x2048 Indian folk-art canvas textures are imported from ./3d/folkArtTextures */
 
 /* =========================================================================
    MAIN OPENING DIYA SCREEN COMPONENT
@@ -985,14 +245,42 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       metalness: 0.88,
     });
 
-    // 5. HIGH RESOLUTION PROCEDURAL TEXTURES
+    // 5. HIGH RESOLUTION PROCEDURAL TEXTURES (INDIAN FOLK ART)
     const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 
-    const doorCanvas = createHaveliDoorCanvas();
-    const doorTex = new THREE.CanvasTexture(doorCanvas);
-    doorTex.colorSpace = THREE.SRGBColorSpace;
-    doorTex.anisotropy = maxAnisotropy;
+    // Sandstone Portal Archway with Kalash, Peacocks & Floral Creepers
+    const portalCanvas = createHaveliGatePortalCanvas();
+    const portalTex = new THREE.CanvasTexture(portalCanvas);
+    portalTex.colorSpace = THREE.SRGBColorSpace;
+    portalTex.anisotropy = maxAnisotropy;
 
+    // Left Door Panel (Madhubani Surya & Mayura)
+    const leftDoorCanvas = createHaveliDoorPanelCanvas('left');
+    const leftDoorTex = new THREE.CanvasTexture(leftDoorCanvas);
+    leftDoorTex.colorSpace = THREE.SRGBColorSpace;
+    leftDoorTex.anisotropy = maxAnisotropy;
+
+    // Right Door Panel (Madhubani Gaja & Sahasrara Kamal)
+    const rightDoorCanvas = createHaveliDoorPanelCanvas('right');
+    const rightDoorTex = new THREE.CanvasTexture(rightDoorCanvas);
+    rightDoorTex.colorSpace = THREE.SRGBColorSpace;
+    rightDoorTex.anisotropy = maxAnisotropy;
+
+    // Flanking 2.5D Courtyard Mural Walls (Tree of Life, Peacocks, Deer, Lit Jharokhas)
+    const wallCanvas = createCourtyardMuralWallCanvas();
+    const wallTex = new THREE.CanvasTexture(wallCanvas);
+    wallTex.colorSpace = THREE.SRGBColorSpace;
+    wallTex.anisotropy = maxAnisotropy;
+    wallTex.wrapS = THREE.RepeatWrapping;
+    wallTex.wrapT = THREE.RepeatWrapping;
+
+    // Deep Horizon Indian Miniature Palace Twilight Skyline
+    const backdropCanvas = createPalaceBackdropCanvas();
+    const backdropTex = new THREE.CanvasTexture(backdropCanvas);
+    backdropTex.colorSpace = THREE.SRGBColorSpace;
+    backdropTex.anisotropy = maxAnisotropy;
+
+    // Courtyard Terrace Floor with 16-Petal Lotus Rangoli Mandala
     const floorCanvas = createCourtyardFloorCanvas();
     const floorTex = new THREE.CanvasTexture(floorCanvas);
     floorTex.colorSpace = THREE.SRGBColorSpace;
@@ -1000,6 +288,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     floorTex.wrapS = THREE.RepeatWrapping;
     floorTex.wrapT = THREE.RepeatWrapping;
 
+    // Handcrafted Terracotta Diya with Hand-painted Alpana Trim
     const clayCanvas = createTerracottaDiyaCanvas();
     const clayTex = new THREE.CanvasTexture(clayCanvas);
     clayTex.colorSpace = THREE.SRGBColorSpace;
@@ -1010,15 +299,21 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     gateGroup.position.set(0, 0, 3.4);
     scene.add(gateGroup);
 
-    const woodMat = new THREE.MeshStandardMaterial({
-      map: doorTex,
+    const leftDoorMat = new THREE.MeshStandardMaterial({
+      map: leftDoorTex,
+      roughness: 0.38,
+      metalness: 0.15,
+    });
+
+    const rightDoorMat = new THREE.MeshStandardMaterial({
+      map: rightDoorTex,
       roughness: 0.38,
       metalness: 0.15,
     });
 
     const sandstoneArchMat = new THREE.MeshStandardMaterial({
-      color: 0x3d1b28,
-      roughness: 0.65,
+      map: portalTex,
+      roughness: 0.55,
       metalness: 0.1,
     });
 
@@ -1161,7 +456,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     gateGroup.add(leftDoorPivot);
 
     const doorPanelGeo = new THREE.BoxGeometry(doorWidth, doorHeight, 0.18);
-    const leftDoorMesh = new THREE.Mesh(doorPanelGeo, woodMat);
+    const leftDoorMesh = new THREE.Mesh(doorPanelGeo, leftDoorMat);
     leftDoorMesh.position.set(doorWidth / 2, doorHeight / 2, 0);
     if (!isSoftwareGl) {
       leftDoorMesh.castShadow = true;
@@ -1169,17 +464,36 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     }
     leftDoorPivot.add(leftDoorMesh);
 
-    // Heavy Brass Lion-Head Knockers & Rings
+    // 3D Pyramid Brass Studs (Gul-Meekh) along Left Door
+    const studGeo = new THREE.ConeGeometry(0.048, 0.055, 4);
+    studGeo.rotateX(Math.PI / 2);
+    const studOffsetsX = [-0.85, -0.4, 0.4, 0.85];
+    const studOffsetsY = [-2.0, -1.0, 0.0, 1.0, 2.0];
+    studOffsetsX.forEach((sox) => {
+      studOffsetsY.forEach((soy) => {
+        const stud = new THREE.Mesh(studGeo, brassMat);
+        stud.position.set(sox, soy, 0.1);
+        leftDoorMesh.add(stud);
+      });
+    });
+
+    // Lion-Head Knocker Medallion Backplate & Ring (Left Door)
+    const backplateGeo = new THREE.CylinderGeometry(0.18, 0.18, 0.04, 8);
+    backplateGeo.rotateX(Math.PI / 2);
+    const leftBackplate = new THREE.Mesh(backplateGeo, brassMat);
+    leftBackplate.position.set(doorWidth - 0.38, 0, 0.1);
+    leftDoorMesh.add(leftBackplate);
+
     const handleRingGeo = new THREE.TorusGeometry(0.22, 0.045, 12, 24);
     const leftHandleRing = new THREE.Mesh(handleRingGeo, brassMat);
-    leftHandleRing.position.set(doorWidth - 0.38, doorHeight / 2, 0.14);
+    leftHandleRing.position.set(doorWidth - 0.38, 0, 0.14);
     leftDoorMesh.add(leftHandleRing);
 
     const rightDoorPivot = new THREE.Group();
     rightDoorPivot.position.set(2.22, 0, 0);
     gateGroup.add(rightDoorPivot);
 
-    const rightDoorMesh = new THREE.Mesh(doorPanelGeo, woodMat);
+    const rightDoorMesh = new THREE.Mesh(doorPanelGeo, rightDoorMat);
     rightDoorMesh.position.set(-doorWidth / 2, doorHeight / 2, 0);
     if (!isSoftwareGl) {
       rightDoorMesh.castShadow = true;
@@ -1187,8 +501,22 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     }
     rightDoorPivot.add(rightDoorMesh);
 
+    // 3D Pyramid Brass Studs (Gul-Meekh) along Right Door
+    studOffsetsX.forEach((sox) => {
+      studOffsetsY.forEach((soy) => {
+        const stud = new THREE.Mesh(studGeo, brassMat);
+        stud.position.set(sox, soy, 0.1);
+        rightDoorMesh.add(stud);
+      });
+    });
+
+    // Lion-Head Knocker Medallion Backplate & Ring (Right Door)
+    const rightBackplate = new THREE.Mesh(backplateGeo, brassMat);
+    rightBackplate.position.set(-doorWidth + 0.38, 0, 0.1);
+    rightDoorMesh.add(rightBackplate);
+
     const rightHandleRing = new THREE.Mesh(handleRingGeo, brassMat);
-    rightHandleRing.position.set(-doorWidth + 0.38, doorHeight / 2, 0.14);
+    rightHandleRing.position.set(-doorWidth + 0.38, 0, 0.14);
     rightDoorMesh.add(rightHandleRing);
 
     // 7. THE COURTYARD ENVIRONMENT (A LIVING FOLK-ART PAINTING)
@@ -1196,7 +524,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     scene.add(courtyardGroup);
 
     // Polished Courtyard Terrace Floor with Central Rangoli
-    const floorGeo = new THREE.PlaneGeometry(16, 42);
+    const floorGeo = new THREE.PlaneGeometry(18, 48);
     const floorMat = new THREE.MeshStandardMaterial({
       map: floorTex,
       roughness: 0.35,
@@ -1204,9 +532,39 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     });
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.rotation.x = -Math.PI / 2;
-    floorMesh.position.set(0, 0, -10);
+    floorMesh.position.set(0, 0, -8);
     if (!isSoftwareGl) floorMesh.receiveShadow = true;
     courtyardGroup.add(floorMesh);
+
+    // Flanking 2.5D Courtyard Mural Walls (Tree of Life, Peacocks, Deer, Lit Jharokhas)
+    const wallMat = new THREE.MeshStandardMaterial({
+      map: wallTex,
+      roughness: 0.65,
+      metalness: 0.08,
+      side: THREE.DoubleSide,
+    });
+
+    const leftWallGeo = new THREE.PlaneGeometry(38, 8.5);
+    const leftWallMesh = new THREE.Mesh(leftWallGeo, wallMat);
+    leftWallMesh.position.set(-5.4, 4.0, 3.5);
+    leftWallMesh.rotation.y = Math.PI / 2;
+    courtyardGroup.add(leftWallMesh);
+
+    const rightWallMesh = new THREE.Mesh(leftWallGeo, wallMat);
+    rightWallMesh.position.set(5.4, 4.0, 3.5);
+    rightWallMesh.rotation.y = -Math.PI / 2;
+    courtyardGroup.add(rightWallMesh);
+
+    // Deep Horizon Indian Miniature Palace Twilight Skyline
+    const backdropMat = new THREE.MeshBasicMaterial({
+      map: backdropTex,
+      transparent: true,
+      side: THREE.DoubleSide,
+    });
+    const backdropGeo = new THREE.PlaneGeometry(38, 16);
+    const backdropMesh = new THREE.Mesh(backdropGeo, backdropMat);
+    backdropMesh.position.set(0, 7.5, -19.5);
+    courtyardGroup.add(backdropMesh);
 
     // Rajasthani Sandstone Colonnade Pillars with Scalloped Arches
     const pillarMat = new THREE.MeshStandardMaterial({
@@ -1891,7 +1249,11 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       container.removeEventListener('click', handleContainerClick);
 
       renderer.dispose();
-      doorTex.dispose();
+      portalTex.dispose();
+      leftDoorTex.dispose();
+      rightDoorTex.dispose();
+      wallTex.dispose();
+      backdropTex.dispose();
       floorTex.dispose();
       clayTex.dispose();
       if (mountRef.current && renderer.domElement) {
