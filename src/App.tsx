@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OpeningDiyaScreen } from './components/OpeningDiyaScreen';
-import { Header } from './components/Header';
-import { BottomNavBar } from './components/BottomNavBar';
+import { PalaceSettingsModal } from './components/PalaceSettingsModal';
 import { SparkCursor } from './components/SparkCursor';
 import { BigRevealSection } from './components/BigRevealSection';
 import { PalaceDoorWorld } from './components/PalaceDoorWorld';
@@ -71,7 +70,7 @@ export default function App() {
 
   return (
     <div
-      className={`relative min-h-screen bg-gradient-to-b ${themeConfig.gradient} text-[#FFF1D6] selection:bg-[#E91E63] selection:text-white pb-20 transition-colors duration-700`}
+      className={`relative min-h-screen bg-gradient-to-b ${themeConfig.gradient} text-[#FFF8E7] selection:bg-[#D4AF37] selection:text-[#0B1021] transition-colors duration-700`}
     >
       {/* Custom Glowing Spark Cursor on Desktop */}
       <SparkCursor />
@@ -79,33 +78,29 @@ export default function App() {
       {/* Living 3D Diwali World Background Canvas */}
       <LivingDiwaliWorld isUnlocked={isUnlocked} />
 
+      {/* Discrete Floating Indian Settings Icon (Music, Themes, Relight Diya) */}
+      <PalaceSettingsModal
+        currentTheme={ambientTheme}
+        onThemeChange={handleThemeChange}
+        onRestartExperience={handleRestartExperience}
+      />
+
       {!isUnlocked ? (
         /* 1. The Opening Gateway Screen — 3D Clay Diya & Physical Gate Sequence */
         <OpeningDiyaScreen onUnlocked={handleUnlocked} />
       ) : (
         /* 2. The Main 3D Diwali Palace World — Explorable 6 Door Corridor */
         <main className="relative animate-fade-in z-10">
-          {/* Floating Navigation Header */}
-          <Header onRestartExperience={handleRestartExperience} />
-
           {/* Reveal Welcome Banner */}
           <BigRevealSection />
 
-          {/* Continuous 3D Diwali Palace Door Journey */}
+          {/* Continuous 3D Diwali Palace Door Journey (Primary Navigation) */}
           <PalaceDoorWorld onRestartExperience={handleRestartExperience} />
 
           {/* Interactive Corner Diya */}
           <CornerDiya onReplayOpening={handleRestartExperience} />
         </main>
       )}
-
-      {/* Persistent Bottom Navigation Bar with Audio & Ambient Theme Selector */}
-      <BottomNavBar
-        isUnlocked={isUnlocked}
-        onRestartExperience={isUnlocked ? handleRestartExperience : undefined}
-        currentTheme={ambientTheme}
-        onThemeChange={handleThemeChange}
-      />
     </div>
   );
 }

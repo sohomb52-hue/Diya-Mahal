@@ -118,20 +118,20 @@ export const DiwaliWishes: React.FC = () => {
   };
 
   return (
-    <section id="wishes" className="relative w-full py-24 px-4 bg-gradient-to-b from-[#0F1126] via-[#1B254B] to-[#0F1126] overflow-hidden">
+    <section id="wishes" className="relative w-full py-24 px-4 bg-gradient-to-b from-[#0B1021] via-[#141C38] to-[#0B1021] overflow-hidden">
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#008C95]/30 border border-[#20C9C3]/40 text-[#FFB000] text-xs font-semibold mb-3 shadow-[0_0_15px_rgba(32,201,195,0.25)]">
-            <Heart className="w-3.5 h-3.5 text-[#E91E63] fill-[#E91E63]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#141C38]/90 border border-[#D4AF37]/35 text-[#E5C158] text-xs font-semibold mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+            <Heart className="w-3.5 h-3.5 text-[#E5C158] fill-[#E5C158]" />
             <span>Digital Diwali Greeting Studio</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-festive-gradient glow-festive-text mb-3">
+          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-royal-gold-gradient glow-royal-gold mb-3">
             Spread A Little Light
           </h2>
 
-          <p className="text-base sm:text-lg text-[#FFF1D6]/80 max-w-xl mx-auto font-light">
+          <p className="text-base sm:text-lg text-[#FFF8E7]/80 max-w-xl mx-auto font-light">
             Craft a personalized Diwali greeting card to share warm wishes, peace, and festive joy with friends and family.
           </p>
         </div>
@@ -140,7 +140,7 @@ export const DiwaliWishes: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Left Form Controls (5 cols) */}
-          <div className="lg:col-span-5 bg-[#0F1126]/90 p-6 rounded-3xl border border-[#008C95]/40 backdrop-blur-md flex flex-col gap-5 text-[#FFF1D6] shadow-xl">
+          <div className="lg:col-span-5 bg-[#0B1021]/90 p-6 rounded-3xl border border-[#D4AF37]/35 backdrop-blur-md flex flex-col gap-5 text-[#FFF8E7] shadow-xl">
             
             {/* Recipient Input */}
             <div>

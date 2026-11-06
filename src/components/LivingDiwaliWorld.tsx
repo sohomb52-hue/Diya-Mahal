@@ -50,7 +50,7 @@ export const LivingDiwaliWorld: React.FC<LivingDiwaliWorldProps> = ({ isUnlocked
 
     // 1. Three.js Scene Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0f1126, 0.04);
+    scene.fog = new THREE.FogExp2(0x0b1021, 0.035);
 
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -74,19 +74,19 @@ export const LivingDiwaliWorld: React.FC<LivingDiwaliWorldProps> = ({ isUnlocked
 
     container.appendChild(renderer.domElement);
 
-    // 2. World Lighting Setup
-    const ambientLight = new THREE.AmbientLight(0x4a2a6b, 2.0);
+    // 2. World Lighting Setup (Royal Twilight Palace & Vintage Courtyard)
+    const ambientLight = new THREE.AmbientLight(0x161c38, 2.0);
     scene.add(ambientLight);
 
     const keyLight = new THREE.DirectionalLight(0xffd166, 2.2);
     keyLight.position.set(5, 10, 5);
     scene.add(keyLight);
 
-    const rimLight = new THREE.DirectionalLight(0xff2e88, 1.8);
+    const rimLight = new THREE.DirectionalLight(0xd4af37, 1.8);
     rimLight.position.set(-5, 4, -4);
     scene.add(rimLight);
 
-    const fillLight = new THREE.DirectionalLight(0x20c9c3, 1.2);
+    const fillLight = new THREE.DirectionalLight(0x008c95, 1.2);
     fillLight.position.set(0, -2, 4);
     scene.add(fillLight);
 
@@ -156,7 +156,7 @@ export const LivingDiwaliWorld: React.FC<LivingDiwaliWorldProps> = ({ isUnlocked
     scene.add(kandilGroup);
 
     const swayingKandils: SwayingKandil[] = [];
-    const kandilColors = [0xffb000, 0xe91e63, 0x20c9c3, 0xff5722];
+    const kandilColors = [0xd4af37, 0xa8422b, 0x008c95, 0xffb74d];
 
     for (let i = 0; i < (isSoftwareGl ? 6 : 14); i++) {
       const kGroup = new THREE.Group();
@@ -281,7 +281,7 @@ export const LivingDiwaliWorld: React.FC<LivingDiwaliWorldProps> = ({ isUnlocked
     const petalGeo = new THREE.SphereGeometry(0.1, 10, 8);
     petalGeo.scale(1.2, 0.22, 1.8);
 
-    const petalColors = [0xffb000, 0xff8f00, 0xff5722, 0xe91e63, 0x20c9c3];
+    const petalColors = [0xd4af37, 0xffb74d, 0xa8422b, 0xe5c158, 0x008c95];
 
     for (let p = 0; p < petalCount; p++) {
       const col = petalColors[p % petalColors.length];
@@ -504,8 +504,8 @@ export const LivingDiwaliWorld: React.FC<LivingDiwaliWorldProps> = ({ isUnlocked
 
       {/* Floating Scene Location Badge (Top-Left under Header) */}
       <div className="fixed top-20 left-4 z-40 pointer-events-none transition-all duration-300">
-        <div className="px-3.5 py-1.5 rounded-full bg-[#0F1126]/90 border border-[#008C95]/40 backdrop-blur-md shadow-[0_0_20px_rgba(0,140,149,0.3)] flex items-center gap-2 text-xs font-bold text-[#FFB000]">
-          <span className="w-2 h-2 rounded-full bg-[#20C9C3] animate-pulse" />
+        <div className="px-3.5 py-1.5 rounded-full bg-[#0B1021]/92 border border-[#D4AF37]/35 backdrop-blur-md shadow-[0_0_20px_rgba(212,175,55,0.2)] flex items-center gap-2 text-xs font-bold text-[#E5C158]">
+          <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse" />
           <span>{currentSceneName}</span>
         </div>
       </div>

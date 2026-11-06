@@ -43,11 +43,11 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
     <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-[96vw] transition-all duration-300">
       {/* 1. Festive Audio Tune Selector Popover */}
       {showMusicMenu && (
-        <div className="absolute bottom-16 left-2 sm:left-4 mb-2 p-3 rounded-2xl bg-[#0F1126]/95 border border-[#FF2E88]/50 shadow-[0_8px_32px_rgba(0,0,0,0.85)] backdrop-blur-md flex flex-col gap-2 z-50 w-[280px] sm:w-[320px] text-[#FFF1D6] animate-in fade-in slide-in-from-bottom-2">
-          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+        <div className="absolute bottom-16 left-2 sm:left-4 mb-2 p-3 rounded-2xl bg-[#0B1021]/96 border border-[#D4AF37]/45 shadow-[0_8px_36px_rgba(0,0,0,0.9),0_0_20px_rgba(212,175,55,0.15)] backdrop-blur-md flex flex-col gap-2 z-50 w-[280px] sm:w-[320px] text-[#FFF8E7] animate-in fade-in slide-in-from-bottom-2">
+          <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
             <div className="flex items-center gap-2">
-              <Music className="w-4 h-4 text-[#FF2E88]" />
-              <span className="text-xs uppercase font-extrabold tracking-wider text-[#FFB000]">
+              <Music className="w-4 h-4 text-[#E5C158]" />
+              <span className="text-xs uppercase font-extrabold tracking-wider text-[#E5C158]">
                 Select Festive Tune
               </span>
             </div>
@@ -55,8 +55,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
               onClick={handleToggleAudio}
               className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all cursor-pointer ${
                 !isMuted
-                  ? 'bg-[#E91E63]/30 text-[#FF2E88] border border-[#FF2E88]/40'
-                  : 'bg-red-500/20 text-red-400 border border-red-500/30'
+                  ? 'bg-[#004D54]/50 text-[#E5C158] border border-[#D4AF37]/50'
+                  : 'bg-[#A8422B]/30 text-[#FFF8E7] border border-[#A8422B]/40'
               }`}
             >
               {!isMuted ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
@@ -79,24 +79,24 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
                   }}
                   className={`flex items-start gap-2.5 p-2.5 rounded-xl text-xs transition-all text-left cursor-pointer border ${
                     isSelected
-                      ? 'bg-gradient-to-r from-[#E91E63]/30 to-[#FF5722]/20 text-[#FFF1D6] border-[#FF2E88] shadow-[0_0_12px_rgba(233,30,99,0.3)]'
-                      : 'bg-white/5 border-white/5 hover:bg-white/10 text-[#FFF1D6]/80 hover:border-white/20'
+                      ? 'bg-gradient-to-r from-[#A8422B]/40 to-[#C59B27]/30 text-[#FFF8E7] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.3)]'
+                      : 'bg-white/5 border-white/5 hover:bg-white/10 text-[#FFF8E7]/80 hover:border-[#D4AF37]/30'
                   }`}
                 >
-                  <span className="text-xl p-1 rounded-lg bg-black/30 shrink-0">{tune.icon}</span>
+                  <span className="text-xl p-1 rounded-lg bg-black/40 shrink-0">{tune.icon}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-1">
-                      <span className="font-bold text-xs truncate text-[#FFF1D6]">{tune.name}</span>
+                      <span className="font-bold text-xs truncate text-[#FFF8E7]">{tune.name}</span>
                       {isSelected && (
-                        <span className="text-[10px] bg-[#FF2E88] text-white px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider shrink-0 animate-pulse">
+                        <span className="text-[10px] bg-[#D4AF37] text-[#0B1021] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider shrink-0 animate-pulse">
                           Playing
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] text-[#FFB000] font-medium block truncate">
+                    <span className="text-[10px] text-[#E5C158] font-medium block truncate">
                       {tune.hindiName}
                     </span>
-                    <p className="text-[10px] text-[#FFF1D6]/60 leading-tight mt-0.5 line-clamp-2">
+                    <p className="text-[10px] text-[#FFF8E7]/60 leading-tight mt-0.5 line-clamp-2">
                       {tune.description}
                     </p>
                   </div>
@@ -109,10 +109,10 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
 
       {/* 2. Theme Selector Popover Menu */}
       {showThemeMenu && onThemeChange && (
-        <div className="absolute bottom-16 right-2 sm:right-4 mb-2 p-2.5 rounded-2xl bg-[#0F1126]/95 border border-[#008C95]/50 shadow-[0_8px_32px_rgba(0,0,0,0.85)] backdrop-blur-md flex flex-col gap-1 z-50 min-w-[210px] text-[#FFF1D6] animate-in fade-in slide-in-from-bottom-2">
-          <div className="text-[10px] uppercase font-bold text-[#FFB000] px-3 py-1 border-b border-white/10 flex items-center justify-between">
+        <div className="absolute bottom-16 right-2 sm:right-4 mb-2 p-2.5 rounded-2xl bg-[#0B1021]/96 border border-[#D4AF37]/45 shadow-[0_8px_36px_rgba(0,0,0,0.9),0_0_20px_rgba(212,175,55,0.15)] backdrop-blur-md flex flex-col gap-1 z-50 min-w-[220px] text-[#FFF8E7] animate-in fade-in slide-in-from-bottom-2">
+          <div className="text-[10px] uppercase font-bold text-[#E5C158] px-3 py-1 border-b border-[#D4AF37]/20 flex items-center justify-between">
             <span>Ambient Atmosphere</span>
-            <Palette className="w-3.5 h-3.5" />
+            <Palette className="w-3.5 h-3.5 text-[#D4AF37]" />
           </div>
           {AMBIENT_THEMES.map((theme) => {
             const isSelected = theme.id === currentTheme;
@@ -126,8 +126,8 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
                 }}
                 className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium transition-all text-left cursor-pointer ${
                   isSelected
-                    ? 'bg-[#008C95]/40 text-[#FFB000] border border-[#20C9C3]/40 font-bold'
-                    : 'hover:bg-white/10 text-[#FFF1D6]/80'
+                    ? 'bg-[#004D54]/50 text-[#E5C158] border border-[#D4AF37]/50 font-bold'
+                    : 'hover:bg-white/10 text-[#FFF8E7]/80'
                 }`}
               >
                 <span className="text-base">{theme.icon}</span>
@@ -140,27 +140,27 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
 
       <nav
         aria-label="Global Festive Navigation and Audio Bar"
-        className="flex items-center gap-1.5 sm:gap-3 px-3 sm:px-4 py-2 rounded-full bg-[#0F1126]/95 backdrop-blur-md border border-[#008C95]/40 shadow-[0_8px_32px_rgba(0,0,0,0.7)] text-[#FFF1D6]"
+        className="flex items-center gap-1.5 sm:gap-3 px-3 sm:px-4 py-2 rounded-full bg-[#0B1021]/94 backdrop-blur-md border border-[#D4AF37]/35 shadow-[0_8px_32px_rgba(0,0,0,0.8),0_0_16px_rgba(212,175,55,0.12)] text-[#FFF8E7]"
       >
         {/* Global Ambient Audio Button & Tune Popover Toggle */}
-        <div className="flex items-center rounded-full bg-[#160B2B] border border-[#008C95]/40 overflow-hidden">
+        <div className="flex items-center rounded-full bg-[#070B17] border border-[#D4AF37]/30 overflow-hidden">
           <button
             onClick={handleToggleAudio}
             className={`flex items-center gap-2 px-2.5 sm:px-3 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
               !isMuted && isPlaying
-                ? 'bg-[#008C95]/30 text-[#20C9C3]'
-                : 'text-[#FFF1D6]/75 hover:text-[#FFB000]'
+                ? 'bg-[#004D54]/50 text-[#E5C158]'
+                : 'text-[#FFF8E7]/75 hover:text-[#E5C158]'
             }`}
             title={!isMuted ? 'Mute audio' : 'Unmute audio'}
           >
             {!isMuted && isPlaying ? (
               <div className="flex items-end gap-0.5 h-3.5 w-3.5 shrink-0" aria-hidden="true">
-                <span className="w-0.5 bg-[#20C9C3] rounded-full animate-[bounce_0.8s_infinite_ease-in-out_0.1s] h-3" />
-                <span className="w-0.5 bg-[#FFB000] rounded-full animate-[bounce_0.8s_infinite_ease-in-out_0.3s] h-2" />
-                <span className="w-0.5 bg-[#E91E63] rounded-full animate-[bounce_0.8s_infinite_ease-in-out_0.2s] h-3.5" />
+                <span className="w-0.5 bg-[#E5C158] rounded-full animate-[bounce_0.8s_infinite_ease-in-out_0.1s] h-3" />
+                <span className="w-0.5 bg-[#FFB74D] rounded-full animate-[bounce_0.8s_infinite_ease-in-out_0.3s] h-2" />
+                <span className="w-0.5 bg-[#A8422B] rounded-full animate-[bounce_0.8s_infinite_ease-in-out_0.2s] h-3.5" />
               </div>
             ) : (
-              <VolumeX className="w-3.5 h-3.5 text-red-400 shrink-0" />
+              <VolumeX className="w-3.5 h-3.5 text-[#B85338] shrink-0" />
             )}
 
             <span className="text-[11px] sm:text-xs font-bold whitespace-nowrap">
@@ -173,13 +173,13 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
               setShowMusicMenu(!showMusicMenu);
               setShowThemeMenu(false);
             }}
-            className="px-2 py-1.5 hover:bg-white/10 text-[#FFB000] transition-colors border-l border-white/10 flex items-center gap-0.5 cursor-pointer text-xs font-bold"
+            className="px-2 py-1.5 hover:bg-white/10 text-[#E5C158] transition-colors border-l border-[#D4AF37]/20 flex items-center gap-0.5 cursor-pointer text-xs font-bold"
             title="Change Indian Festive Audio Tune (4 Available)"
           >
-            <span className="hidden sm:inline text-[11px] font-semibold text-[#FFF1D6]/90 truncate max-w-[90px]">
+            <span className="hidden sm:inline text-[11px] font-semibold text-[#FFF8E7]/90 truncate max-w-[90px]">
               {activeTuneConfig.name.split(' ')[0]}
             </span>
-            <ChevronUp className={`w-3 h-3 text-[#FF2E88] transition-transform ${showMusicMenu ? 'rotate-180' : ''}`} />
+            <ChevronUp className={`w-3 h-3 text-[#E5C158] transition-transform ${showMusicMenu ? 'rotate-180' : ''}`} />
           </button>
         </div>
 
@@ -190,63 +190,63 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
               setShowThemeMenu(!showThemeMenu);
               setShowMusicMenu(false);
             }}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#160B2B] border border-[#008C95]/40 text-xs font-medium text-[#FFF1D6]/90 hover:border-[#FFB000] hover:text-[#FFB000] transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-[#070B17] border border-[#D4AF37]/30 text-xs font-medium text-[#FFF8E7]/90 hover:border-[#D4AF37] hover:text-[#E5C158] transition-all cursor-pointer"
             title="Switch Ambient Atmosphere Lighting Theme"
           >
             <span className="text-sm">{activeThemeConfig.icon}</span>
             <span className="hidden md:inline font-bold">{activeThemeConfig.name}</span>
-            <ChevronUp className={`w-3 h-3 text-[#20C9C3] transition-transform ${showThemeMenu ? 'rotate-180' : ''}`} />
+            <ChevronUp className={`w-3 h-3 text-[#D4AF37] transition-transform ${showThemeMenu ? 'rotate-180' : ''}`} />
           </button>
         )}
 
         {/* Unlocked Navigation Controls */}
         {isUnlocked && (
           <>
-            <div className="h-5 w-[1px] bg-[#008C95]/40 shrink-0 hidden sm:block" />
+            <div className="h-5 w-[1px] bg-[#D4AF37]/30 shrink-0 hidden sm:block" />
 
             <div className="flex items-center gap-1 sm:gap-2 text-xs font-medium">
               <a
                 href="#reveal"
-                className="px-2.5 py-1 rounded-full text-[#FFF1D6]/80 hover:text-[#FFB000] hover:bg-[#008C95]/20 transition-colors whitespace-nowrap hidden sm:flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full text-[#FFF8E7]/80 hover:text-[#E5C158] hover:bg-[#D4AF37]/15 transition-colors whitespace-nowrap hidden sm:flex items-center gap-1"
               >
-                <Sparkles className="w-3 h-3 text-[#FFB000]" />
+                <Sparkles className="w-3 h-3 text-[#E5C158]" />
                 <span>Celebrate</span>
               </a>
 
               <a
                 href="#games"
-                className="px-2.5 py-1 rounded-full text-[#FFF1D6]/80 hover:text-[#FFB000] hover:bg-[#008C95]/20 transition-colors whitespace-nowrap flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full text-[#FFF8E7]/80 hover:text-[#E5C158] hover:bg-[#D4AF37]/15 transition-colors whitespace-nowrap flex items-center gap-1"
               >
-                <Flame className="w-3 h-3 text-[#FF5722]" />
+                <Flame className="w-3 h-3 text-[#FFB74D]" />
                 <span>Games</span>
               </a>
 
               <a
                 href="#fireworks"
-                className="px-2.5 py-1 rounded-full text-[#FFF1D6]/80 hover:text-[#20C9C3] hover:bg-[#008C95]/20 transition-colors whitespace-nowrap flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full text-[#FFF8E7]/80 hover:text-[#E5C158] hover:bg-[#D4AF37]/15 transition-colors whitespace-nowrap flex items-center gap-1"
               >
-                <Rocket className="w-3 h-3 text-[#20C9C3]" />
+                <Rocket className="w-3 h-3 text-[#008C95]" />
                 <span>Sky</span>
               </a>
 
               <a
                 href="#wishes"
-                className="px-2.5 py-1 rounded-full text-[#FFF1D6]/80 hover:text-[#E91E63] hover:bg-[#008C95]/20 transition-colors whitespace-nowrap hidden sm:flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full text-[#FFF8E7]/80 hover:text-[#E5C158] hover:bg-[#D4AF37]/15 transition-colors whitespace-nowrap hidden sm:flex items-center gap-1"
               >
-                <Heart className="w-3 h-3 text-[#E91E63]" />
+                <Heart className="w-3 h-3 text-[#B85338]" />
                 <span>Wishes</span>
               </a>
             </div>
 
             {onRestartExperience && (
               <>
-                <div className="h-5 w-[1px] bg-[#008C95]/40 shrink-0" />
+                <div className="h-5 w-[1px] bg-[#D4AF37]/30 shrink-0" />
                 <button
                   onClick={onRestartExperience}
-                  className="p-1.5 sm:px-2.5 sm:py-1 rounded-full bg-gradient-to-r from-[#E91E63] to-[#FF5722] text-white hover:from-[#FF5722] hover:to-[#FFB000] text-xs font-semibold transition-all flex items-center gap-1 whitespace-nowrap shadow-sm cursor-pointer"
+                  className="p-1.5 sm:px-2.5 sm:py-1 rounded-full bg-gradient-to-r from-[#A8422B] via-[#C59B27] to-[#E5C158] text-[#0B1021] hover:brightness-110 text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap shadow-sm cursor-pointer"
                   title="Relight 3D Opening Diya"
                 >
-                  <RotateCcw className="w-3 h-3 text-[#FFB000]" />
+                  <RotateCcw className="w-3 h-3 text-[#0B1021]" />
                   <span className="hidden md:inline">Relight</span>
                 </button>
               </>

@@ -11,7 +11,7 @@
  */
 
 export type AudioScene = 'opening' | 'lighting' | 'reveal' | 'main';
-export type FestiveTuneId = 'tune-keherwa' | 'tune-garba' | 'tune-yaman' | 'tune-bhangra';
+export type FestiveTuneId = 'tune-palace-fusion' | 'tune-keherwa' | 'tune-garba' | 'tune-yaman' | 'tune-bhangra';
 
 export interface FestiveTuneConfig {
   id: FestiveTuneId;
@@ -23,6 +23,14 @@ export interface FestiveTuneConfig {
 }
 
 export const FESTIVE_TUNES: FestiveTuneConfig[] = [
+  {
+    id: 'tune-palace-fusion',
+    name: 'Royal Palace Folk Fusion',
+    hindiName: 'राजसी महल लोक संगम',
+    icon: '🪕',
+    description: 'Authentic Shehnai, Bansuri, Santoor, Dholak, Tabla, Khartal & Sarangi folk instrumental (124 BPM)',
+    bpm: 124,
+  },
   {
     id: 'tune-keherwa',
     name: 'Royal Keherwa Celebration',
@@ -63,7 +71,7 @@ class SoundManager {
   private ctx: AudioContext | null = null;
   public isMuted: boolean = false;
   public currentScene: AudioScene = 'opening';
-  public currentTuneId: FestiveTuneId = 'tune-keherwa';
+  public currentTuneId: FestiveTuneId = 'tune-palace-fusion';
   public isEngineRunning: boolean = false;
 
   public get isBgMusicPlaying(): boolean {
@@ -102,7 +110,7 @@ class SoundManager {
       }
     } catch {
       this.isMuted = false;
-      this.currentTuneId = 'tune-keherwa';
+      this.currentTuneId = 'tune-palace-fusion';
     }
   }
 
@@ -298,19 +306,119 @@ class SoundManager {
   /**
    * Multi-Tune Percussion Engine (Dynamic BPM & Patterns)
    */
+  /**
+   * Multi-Tune Percussion Engine (Dynamic BPM & Patterns)
+   */
   private startPercussionLoop() {
     if (this.rhythmTimer) window.clearInterval(this.rhythmTimer);
 
     const activeTune = FESTIVE_TUNES.find((t) => t.id === this.currentTuneId) || FESTIVE_TUNES[0];
     const bpm = activeTune.bpm;
-    const stepInterval = (60 / bpm) / 2 * 1000;
+    const isPalaceFusion = this.currentTuneId === 'tune-palace-fusion';
+    // 16th-note resolution for authentic Indian folk syncopation in Palace Fusion
+    const stepInterval = isPalaceFusion
+      ? ((60 / bpm) / 4) * 1000
+      : ((60 / bpm) / 2) * 1000;
 
     this.stepCount = 0;
     this.rhythmTimer = window.setInterval(() => {
       if (this.isMuted || !this.ctx || !this.percussionGain) return;
 
-      const step = this.stepCount % 8;
       const isFullFestive = this.currentScene === 'main' || this.currentScene === 'reveal';
+
+      if (this.currentTuneId === 'tune-palace-fusion') {
+        const step = this.stepCount % 64; // 4-measure cycle at 16 sixteenths per bar
+        const phrase = Math.floor(step / 16); // 0: intro/soft, 1: groove, 2: syncopated folk, 3: grand crescendo
+
+        // Humanized dynamic micro-fluctuation for live acoustic feel
+        const velJitter = 0.94 + Math.random() * 0.12;
+
+        if (phrase === 0) {
+          // Movement 1: Playful Shehnai opening with soft Dholak & gentle Manjira
+          if (step === 0) {
+            this.triggerDholakBayan(0.55 * velJitter, true);
+            this.triggerManjira(0.24);
+          } else if (step === 8) {
+            this.triggerDholakBayan(0.46 * velJitter, true);
+          } else if (step === 4 || step === 12) {
+            this.triggerDholakChaati(0.32 * velJitter);
+          }
+        } else if (phrase === 1) {
+          // Movement 2: Lively Folk Rhythm introduces Tabla, Manjira & Khartal
+          const subStep = step % 16;
+          if (subStep === 0) {
+            this.triggerDholakBayan(0.72 * velJitter, true);
+            this.triggerManjira(0.35);
+          } else if (subStep === 2) {
+            this.triggerTablaBayan(0.35 * velJitter);
+          } else if (subStep === 4) {
+            this.triggerKhartal(0.44 * velJitter);
+            this.triggerDholakChaati(0.42 * velJitter);
+          } else if (subStep === 6) {
+            this.triggerTablaDayan(0.32 * velJitter);
+          } else if (subStep === 8) {
+            this.triggerDholakBayan(0.65 * velJitter, false);
+            this.triggerManjira(0.28);
+          } else if (subStep === 10) {
+            this.triggerTablaBayan(0.38 * velJitter);
+          } else if (subStep === 12) {
+            this.triggerKhartal(0.48 * velJitter);
+            this.triggerDholakChaati(0.46 * velJitter);
+          } else if (subStep === 14) {
+            this.triggerTablaDayan(0.34 * velJitter);
+          }
+        } else if (phrase === 2) {
+          // Movement 3: Intricate Folk Syncopations with Bansuri & Santoor dialogue
+          const subStep = step % 16;
+          if (subStep === 0) {
+            this.triggerDholakBayan(0.78 * velJitter, true);
+            this.triggerManjira(0.38);
+          } else if (subStep === 2) {
+            this.triggerTablaBayan(0.42 * velJitter);
+          } else if (subStep === 4) {
+            this.triggerKhartal(0.5 * velJitter);
+            this.triggerDholakChaati(0.45 * velJitter);
+          } else if (subStep === 6) {
+            // Bengali folk syncopated clap
+            this.triggerKhartal(0.4 * velJitter);
+            this.triggerTablaDayan(0.34 * velJitter);
+          } else if (subStep === 8) {
+            this.triggerDholakBayan(0.74 * velJitter, true);
+            this.triggerManjira(0.32);
+          } else if (subStep === 10) {
+            this.triggerTablaBayan(0.44 * velJitter);
+          } else if (subStep === 12) {
+            this.triggerKhartal(0.54 * velJitter);
+            this.triggerDholakChaati(0.5 * velJitter);
+          } else if (subStep === 14) {
+            this.triggerKhartal(0.46 * velJitter);
+            this.triggerTablaDayan(0.38 * velJitter);
+          }
+        } else {
+          // Movement 4: Full Ensemble Festive Energy, High-Spirit Folk Celebration!
+          const subStep = step % 16;
+          if (subStep === 0 || subStep === 8) {
+            this.triggerDholakBayan(0.86 * velJitter, true);
+            this.triggerManjira(0.42);
+          } else if (subStep === 4 || subStep === 12) {
+            this.triggerDholakChaati(0.56 * velJitter);
+            this.triggerKhartal(0.6 * velJitter);
+          }
+          if (subStep === 2 || subStep === 6 || subStep === 10 || subStep === 14) {
+            this.triggerTablaBayan(0.42 * velJitter);
+            this.triggerTablaDayan(0.36 * velJitter);
+          }
+          if (subStep === 3 || subStep === 7 || subStep === 11 || subStep === 15) {
+            this.triggerKhartal(0.48 * velJitter);
+            this.triggerGhungroo(0.2);
+          }
+        }
+
+        this.stepCount++;
+        return;
+      }
+
+      const step = this.stepCount % 8;
 
       switch (this.currentTuneId) {
         case 'tune-garba': {
@@ -372,21 +480,94 @@ class SoundManager {
 
     // 1. Tune Scales
     const scales: Record<FestiveTuneId, number[]> = {
+      'tune-palace-fusion': [293.66, 329.63, 369.99, 392.0, 440.0, 493.88, 554.37, 587.33, 659.25, 739.99], // Raag Khamaj / Bilawal Folk Fusion (Sa=D4)
       'tune-keherwa': [293.66, 329.63, 369.99, 440.0, 493.88, 587.33, 493.88, 440.0, 369.99, 440.0, 587.33, 659.25], // Raag Bilawal
       'tune-garba': [293.66, 369.99, 392.0, 440.0, 523.25, 493.88, 440.0, 392.0, 369.99, 329.63, 293.66, 440.0], // Raag Desh
       'tune-yaman': [329.63, 415.3, 440.0, 493.88, 554.37, 622.25, 659.25, 493.88, 415.3, 329.63], // Raag Yaman
       'tune-bhangra': [293.66, 349.23, 392.0, 415.3, 466.16, 523.25, 587.33, 622.25, 587.33, 523.25, 466.16, 415.3], // Raag Bhairavi
     };
 
-    const currentScale = scales[this.currentTuneId] || scales['tune-keherwa'];
+    const isPalaceFusion = this.currentTuneId === 'tune-palace-fusion';
+    const currentScale = scales[this.currentTuneId] || scales['tune-palace-fusion'];
     const activeTune = FESTIVE_TUNES.find((t) => t.id === this.currentTuneId) || FESTIVE_TUNES[0];
-    const melodyInterval = Math.round((60 / activeTune.bpm) * 1000);
+    // Eighth-note interval for palace fusion (approx 242ms at 124 BPM)
+    const melodyInterval = isPalaceFusion
+      ? Math.round(((60 / activeTune.bpm) / 2) * 1000)
+      : Math.round((60 / activeTune.bpm) * 1000);
 
     this.melodyStep = 0;
     this.melodyTimer = window.setInterval(() => {
       if (this.isMuted || !this.ctx || !this.melodyGain) return;
 
       const isMain = this.currentScene === 'main' || this.currentScene === 'reveal';
+
+      if (this.currentTuneId === 'tune-palace-fusion') {
+        const step = this.melodyStep % 32; // 32 eighth notes across 4 distinct palace movements
+
+        // Movement 1: Playful Shehnai Opening with Harmonium Drone (Steps 0-7)
+        if (step === 0) {
+          this.triggerHarmoniumChord([146.83, 220.0, 293.66, 440.0], 0.28, 1.9);
+          this.playShehnaiNote(293.66, 0.36); // Sa (D4)
+        } else if (step === 2) {
+          this.playShehnaiNote(369.99, 0.38); // Ga (F#4)
+        } else if (step === 4) {
+          this.playShehnaiNote(440.0, 0.4); // Pa (A4)
+        } else if (step === 6) {
+          this.playShehnaiNote(493.88, 0.38); // Dha (B4)
+        }
+
+        // Movement 2: Soaring Shehnai & Lively Groove (Steps 8-15)
+        else if (step === 8) {
+          this.triggerHarmoniumChord([220.0, 293.66, 369.99, 440.0], 0.25, 1.9);
+          this.playShehnaiNote(587.33, 0.44); // Tar Sa (D5) soaring!
+        } else if (step === 10) {
+          this.playShehnaiNote(554.37, 0.38); // Ni (C#5)
+        } else if (step === 12) {
+          this.playShehnaiNote(493.88, 0.36); // Dha (B4)
+        } else if (step === 14) {
+          this.playShehnaiNote(440.0, 0.34); // Pa (A4)
+          if (isMain) this.playSantoorNote(587.33, 0.25);
+        }
+
+        // Movement 3: Bansuri & Santoor Melodic Counterpoint Exchange (Steps 16-23)
+        else if (step === 16) {
+          this.triggerHarmoniumChord([196.0, 246.94, 293.66, 392.0], 0.24, 1.9);
+          this.playBansuriNote(440.0, 0.36); // Bansuri counterpoint entry (Pa)
+        } else if (step === 18) {
+          this.playBansuriNote(587.33, 0.4); // Bansuri (Tar Sa)
+        } else if (step === 20) {
+          this.playBansuriNote(659.25, 0.36); // Bansuri (Tar Re)
+        } else if (step === 21) {
+          // Santoor answers with a sparkling rapid jhala cascade!
+          this.playSantoorJhala(293.66, 0.38);
+        } else if (step === 22) {
+          this.playBansuriNote(587.33, 0.34);
+          // Sarangi emotional bowed meend response
+          this.playSarangiNote(369.99, 0.34, 440.0);
+        }
+
+        // Movement 4: Full Ensemble Festive Energy & Grand Celebration (Steps 24-31)
+        else if (step === 24) {
+          this.triggerHarmoniumChord([146.83, 220.0, 293.66, 440.0], 0.3, 1.9);
+          this.playShehnaiNote(587.33, 0.42); // Shehnai triumphant
+          this.playSantoorNote(739.99, 0.32); // Santoor sparkling high shimmer
+        } else if (step === 26) {
+          this.playBansuriNote(440.0, 0.32);
+          this.playShehnaiNote(493.88, 0.36);
+        } else if (step === 28) {
+          this.playSantoorJhala(440.0, 0.38); // Santoor jhala flourish
+          this.playSarangiNote(440.0, 0.32, 369.99); // Sarangi descending meend
+        } else if (step === 30) {
+          this.playShehnaiNote(369.99, 0.34);
+        } else if (step === 31) {
+          this.playShehnaiNote(293.66, 0.36); // Playful resolution to Sa
+          this.playSantoorNote(587.33, 0.34); // Final celebratory sparkle
+        }
+
+        this.melodyStep++;
+        return;
+      }
+
       const noteFreq = currentScale[this.melodyStep % currentScale.length];
 
       switch (this.currentTuneId) {
@@ -716,6 +897,264 @@ class SoundManager {
 
     osc.start(now);
     osc.stop(now + 0.6);
+  }
+
+  /**
+   * Traditional Wooden Khartal Clapper
+   * Sharp, woody transient clap with natural high-frequency wooden ring
+   */
+  private triggerKhartal(vol: number) {
+    if (!this.ctx || !this.percussionGain) return;
+    const now = this.ctx.currentTime;
+
+    // 1. High-frequency impulse click
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.035);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.15));
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    // Bandpass tuned to wooden strike resonance (2200 Hz & Q=3.8)
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2200, now);
+    filter.Q.setValueAtTime(3.8, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(vol * 0.85, now);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.percussionGain);
+    noise.start(now);
+
+    // 2. Wooden body resonance tone
+    const osc = this.ctx.createOscillator();
+    const oscGain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(820, now);
+    osc.frequency.exponentialRampToValueAtTime(340, now + 0.04);
+
+    oscGain.gain.setValueAtTime(vol * 0.5, now);
+    oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
+
+    osc.connect(oscGain);
+    oscGain.connect(this.percussionGain);
+    osc.start(now);
+    osc.stop(now + 0.04);
+  }
+
+  /**
+   * Dholak Bayan (Deep Pitch-Bending Bass Membrane)
+   */
+  private triggerDholakBayan(vol: number, pitchDrop: boolean = true) {
+    if (!this.ctx || !this.percussionGain) return;
+    const now = this.ctx.currentTime;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = 'sine';
+    if (pitchDrop) {
+      osc.frequency.setValueAtTime(105, now);
+      osc.frequency.exponentialRampToValueAtTime(52, now + 0.16);
+    } else {
+      osc.frequency.setValueAtTime(78, now);
+    }
+
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(190, now);
+
+    gain.gain.setValueAtTime(vol * 0.9, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.percussionGain);
+
+    osc.start(now);
+    osc.stop(now + 0.26);
+  }
+
+  /**
+   * Dholak Chaati (Crisp High Treble Head Slap)
+   */
+  private triggerDholakChaati(vol: number) {
+    if (!this.ctx || !this.percussionGain) return;
+    const now = this.ctx.currentTime;
+
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.05);
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.25));
+    }
+
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(2600, now);
+    filter.Q.setValueAtTime(3.2, now);
+
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(vol * 0.75, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.percussionGain);
+
+    noise.start(now);
+  }
+
+  /**
+   * Traditional Indian Harmonium (Reeds with Bellows Air Flow)
+   */
+  private triggerHarmoniumChord(freqs: number[], vol: number, duration: number = 1.2) {
+    if (!this.ctx || !this.droneGain) return;
+    const now = this.ctx.currentTime;
+
+    freqs.forEach((freq) => {
+      if (!this.ctx || !this.droneGain) return;
+      const osc1 = this.ctx.createOscillator();
+      const osc2 = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const filter = this.ctx.createBiquadFilter();
+
+      osc1.type = 'sawtooth';
+      osc2.type = 'triangle';
+
+      osc1.frequency.setValueAtTime(freq, now);
+      // Subtle natural chorus / reed beating (0.25% detune)
+      osc2.frequency.setValueAtTime(freq * 1.0025, now);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1400, now);
+
+      // Bellows swelling envelope
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(vol / (freqs.length * 0.8), now + 0.12);
+      gain.gain.setValueAtTime(vol / (freqs.length * 0.8), now + duration - 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.droneGain);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + duration);
+      osc2.stop(now + duration);
+    });
+  }
+
+  /**
+   * Santoor (Hammered Dulcimer - Sparkling, Metallic Strings)
+   */
+  private playSantoorNote(freq: number, vol: number, delayMs: number = 0) {
+    if (!this.ctx || !this.melodyGain) return;
+    const now = this.ctx.currentTime + delayMs / 1000;
+
+    // Double struck string simulation
+    const osc1 = this.ctx.createOscillator();
+    const osc2 = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc1.type = 'triangle';
+    osc2.type = 'sawtooth';
+
+    // Hammer strike transient pitch dive
+    osc1.frequency.setValueAtTime(freq * 1.05, now);
+    osc1.frequency.exponentialRampToValueAtTime(freq, now + 0.015);
+
+    osc2.frequency.setValueAtTime(freq * 1.002, now); // Metallic shimmer detune
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(freq * 2.2, now);
+    filter.Q.setValueAtTime(3.0, now);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(vol * 0.75, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+
+    osc1.connect(filter);
+    osc2.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.melodyGain);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.55);
+    osc2.stop(now + 0.55);
+  }
+
+  /**
+   * Santoor Jhala (Rapid Sparkling 4-Note Ornamental Arpeggio)
+   */
+  private playSantoorJhala(baseFreq: number, vol: number) {
+    const intervals = [1, 1.25, 1.5, 2]; // Sa, Ga, Pa, Tar Sa
+    intervals.forEach((ratio, i) => {
+      this.playSantoorNote(baseFreq * ratio, vol * 0.7, i * 45);
+    });
+  }
+
+  /**
+   * Sarangi (Expressive Bowed Folk Instrument with Sympathetic Resonance & Soulful Meend)
+   */
+  private playSarangiNote(freq: number, vol: number, slideToFreq?: number) {
+    if (!this.ctx || !this.melodyGain) return;
+    const now = this.ctx.currentTime;
+    const duration = 0.75;
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const formant = this.ctx.createBiquadFilter();
+
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq, now);
+
+    if (slideToFreq) {
+      osc.frequency.setValueAtTime(freq, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(slideToFreq, now + 0.45);
+    }
+
+    // Vibrato LFO for emotional Indian classical touch
+    const vib = this.ctx.createOscillator();
+    const vibG = this.ctx.createGain();
+    vib.frequency.setValueAtTime(5.4, now);
+    vibG.gain.setValueAtTime(freq * 0.016, now);
+    vib.connect(vibG);
+    vibG.connect(osc.frequency);
+    vib.start(now + 0.1);
+    vib.stop(now + duration);
+
+    // Resonant wooden body formant filter
+    formant.type = 'bandpass';
+    formant.frequency.setValueAtTime(1100, now);
+    formant.Q.setValueAtTime(2.8, now);
+
+    // Bowing pressure envelope
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(vol * 0.7, now + 0.09);
+    gain.gain.setValueAtTime(vol * 0.7, now + duration - 0.2);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    osc.connect(formant);
+    formant.connect(gain);
+    gain.connect(this.melodyGain);
+
+    osc.start(now);
+    osc.stop(now + duration);
   }
 
   // ==========================================

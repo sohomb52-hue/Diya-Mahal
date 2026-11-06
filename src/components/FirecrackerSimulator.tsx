@@ -637,36 +637,36 @@ export const FirecrackerSimulator: React.FC = () => {
   };
 
   return (
-    <section id="fireworks" className="relative w-full py-20 px-4 bg-[#0F1126] overflow-hidden">
+    <section id="fireworks" className="relative w-full py-20 px-4 bg-gradient-to-b from-[#0B1021] via-[#141C38] to-[#0B1021] overflow-hidden">
       {/* Background Atmosphere Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[380px] bg-[#008C95]/15 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[380px] bg-[#004D54]/20 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Screen Flash Overlay */}
       {screenFlash && (
-        <div className="absolute inset-0 bg-[#FFB000]/15 pointer-events-none transition-opacity duration-100 z-20" />
+        <div className="absolute inset-0 bg-[#E5C158]/15 pointer-events-none transition-opacity duration-100 z-20" />
       )}
 
       <div className="relative z-10 max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#008C95]/30 border border-[#20C9C3]/40 text-[#FFB000] text-xs font-bold mb-3 shadow-[0_0_15px_rgba(32,201,195,0.25)]">
-            <Sparkles className="w-4 h-4 text-[#20C9C3]" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#141C38]/90 border border-[#D4AF37]/35 text-[#E5C158] text-xs font-semibold mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+            <Sparkles className="w-4 h-4 text-[#E5C158]" />
             <span>Interactive Pyrotechnics Stage</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-festive-gradient glow-festive-text mb-3">
+          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-royal-gold-gradient glow-royal-gold mb-3">
             Diwali Firecracker Simulator
           </h2>
 
-          <p className="text-sm sm:text-base text-[#FFF1D6]/80 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[#FFF8E7]/80 max-w-2xl mx-auto">
             Choose your traditional Diwali firecracker below, then tap or draw anywhere on the dark night sky to launch eco-friendly digital light shows!
           </p>
         </div>
 
         {/* Score & Rank HUD Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 mb-6 rounded-2xl bg-[#160B2B]/90 border border-[#008C95]/40 shadow-md backdrop-blur-sm text-[#FFF1D6]">
+        <div className="flex flex-wrap items-center justify-between gap-4 p-4 mb-6 rounded-2xl bg-[#0B1021]/90 border border-[#D4AF37]/30 shadow-md backdrop-blur-sm text-[#FFF8E7]">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#FFB000]/20 border border-[#FFB000]/40 text-[#FFB000]">
+            <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#E5C158]">
               <Trophy className="w-5 h-5" />
             </div>
             <div>

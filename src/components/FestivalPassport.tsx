@@ -122,8 +122,8 @@ export const FestivalPassport: React.FC = () => {
           onClick={() => handleTabChange('stamps')}
           className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
             activeSubTab === 'stamps'
-              ? 'bg-gradient-to-r from-[#FFB000] to-[#FF5722] text-[#0F1126] shadow-[0_0_20px_rgba(255,176,0,0.5)]'
-              : 'bg-[#0F1126]/80 border border-[#008C95]/40 text-[#FFF1D6]/80 hover:text-white'
+              ? 'bg-gradient-to-r from-[#D4AF37] to-[#E5C158] text-[#0B1021] shadow-[0_0_20px_rgba(212,175,55,0.4)]'
+              : 'bg-[#0B1021]/80 border border-[#D4AF37]/30 text-[#FFF8E7]/80 hover:text-white'
           }`}
         >
           <Award className="w-4 h-4" />
@@ -134,11 +134,11 @@ export const FestivalPassport: React.FC = () => {
           onClick={() => handleTabChange('wishes')}
           className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
             activeSubTab === 'wishes'
-              ? 'bg-gradient-to-r from-[#E91E63] to-[#A51C69] text-white shadow-[0_0_20px_rgba(233,30,99,0.5)]'
-              : 'bg-[#0F1126]/80 border border-[#008C95]/40 text-[#FFF1D6]/80 hover:text-white'
+              ? 'bg-gradient-to-r from-[#A8422B] to-[#C59B27] text-white shadow-[0_0_20px_rgba(168,66,43,0.4)]'
+              : 'bg-[#0B1021]/80 border border-[#D4AF37]/30 text-[#FFF8E7]/80 hover:text-white'
           }`}
         >
-          <Heart className="w-4 h-4 text-[#FF2E88]" />
+          <Heart className="w-4 h-4 text-[#E5C158]" />
           <span>Greeting Card Studio</span>
         </button>
       </div>
@@ -146,31 +146,31 @@ export const FestivalPassport: React.FC = () => {
       {activeSubTab === 'stamps' ? (
         <div className="space-y-8">
           {/* Progress Bar Card */}
-          <div className="bg-[#0F1126]/90 border border-[#FFB000]/30 rounded-3xl p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="bg-[#0B1021]/90 border border-[#D4AF37]/35 rounded-3xl p-6 backdrop-blur-md shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FFB000] to-[#E91E63] p-0.5 flex items-center justify-center shadow-lg">
-                <div className="w-full h-full rounded-[14px] bg-[#0F1126] flex items-center justify-center text-3xl">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#A8422B] p-0.5 flex items-center justify-center shadow-lg">
+                <div className="w-full h-full rounded-[14px] bg-[#0B1021] flex items-center justify-center text-3xl">
                   📜
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-bold font-serif text-[#FFB000]">
+                <h3 className="text-xl font-bold font-serif text-[#E5C158]">
                   Royal Celebration Level: {progressPercent === 100 ? 'Grand Festival Master 👑' : 'Palace Pilgrim ✨'}
                 </h3>
-                <p className="text-xs text-[#FFF1D6]/70">
+                <p className="text-xs text-[#FFF8E7]/70">
                   {unlockedCount} of {stamps.length} Royal Seals Claimed
                 </p>
               </div>
             </div>
 
             <div className="w-full md:w-64 flex flex-col gap-1.5">
-              <div className="flex justify-between text-xs font-bold text-[#FFB000]">
+              <div className="flex justify-between text-xs font-bold text-[#E5C158]">
                 <span>Progress</span>
                 <span>{progressPercent}%</span>
               </div>
-              <div className="w-full h-3 rounded-full bg-[#002B30] overflow-hidden border border-[#008C95]/40">
+              <div className="w-full h-3 rounded-full bg-[#141C38] overflow-hidden border border-[#D4AF37]/30">
                 <div
-                  className="h-full bg-gradient-to-r from-[#FFB000] via-[#FF5722] to-[#E91E63] transition-all duration-700"
+                  className="h-full bg-gradient-to-r from-[#A8422B] via-[#D4AF37] to-[#E5C158] transition-all duration-700"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -184,8 +184,8 @@ export const FestivalPassport: React.FC = () => {
                 key={stamp.id}
                 className={`relative p-6 rounded-3xl border transition-all duration-300 flex flex-col justify-between overflow-hidden ${
                   stamp.unlocked
-                    ? 'bg-gradient-to-br from-[#160B2B]/90 via-[#002B30]/90 to-[#0F1126]/90 border-[#FFB000] shadow-[0_0_25px_rgba(255,176,0,0.25)]'
-                    : 'bg-[#0F1126]/60 border-[#008C95]/20 opacity-75'
+                    ? 'bg-gradient-to-br from-[#141C38]/95 via-[#0B1021]/95 to-[#004D54]/60 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)]'
+                    : 'bg-[#0B1021]/60 border-[#D4AF37]/20 opacity-75'
                 }`}
               >
                 {/* Stamp Seal Graphic */}
@@ -193,8 +193,8 @@ export const FestivalPassport: React.FC = () => {
                   <div
                     className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl border-2 shadow-md ${
                       stamp.unlocked
-                        ? 'bg-gradient-to-br from-[#FFB000] to-[#FF5722] border-[#FFF1D6] text-white shadow-[0_0_15px_rgba(255,176,0,0.5)]'
-                        : 'bg-[#002B30]/50 border-[#008C95]/30 text-[#FFF1D6]/40'
+                        ? 'bg-gradient-to-br from-[#D4AF37] to-[#A8422B] border-[#FFF8E7] text-white shadow-[0_0_15px_rgba(212,175,55,0.5)]'
+                        : 'bg-[#141C38]/50 border-[#D4AF37]/30 text-[#FFF8E7]/40'
                     }`}
                   >
                     {stamp.icon}
@@ -216,19 +216,19 @@ export const FestivalPassport: React.FC = () => {
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#20C9C3] block mb-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#E5C158] block mb-1">
                     {stamp.category}
                   </span>
-                  <h4 className="text-lg font-bold font-serif text-[#FFF1D6] mb-1.5">
+                  <h4 className="text-lg font-bold font-serif text-[#FFF8E7] mb-1.5">
                     {stamp.title}
                   </h4>
-                  <p className="text-xs text-[#FFF1D6]/70 leading-relaxed font-light">
+                  <p className="text-xs text-[#FFF8E7]/70 leading-relaxed font-light">
                     {stamp.description}
                   </p>
                 </div>
 
                 {stamp.unlocked && stamp.dateUnlocked && (
-                  <div className="mt-4 pt-3 border-t border-[#FFB000]/20 flex items-center justify-between text-[10px] text-[#FFB000]/80">
+                  <div className="mt-4 pt-3 border-t border-[#D4AF37]/25 flex items-center justify-between text-[10px] text-[#E5C158]/80">
                     <span className="font-mono">SEAL #DIWALI-2026</span>
                     <span>{stamp.dateUnlocked}</span>
                   </div>
