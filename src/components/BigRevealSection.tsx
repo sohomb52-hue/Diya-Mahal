@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Sparkles, Heart } from 'lucide-react';
 import { soundManager } from '../utils/audio';
+import { MadhubaniBox } from './MadhubaniCard';
 
 export const BigRevealSection: React.FC = () => {
   const [celebratedCount, setCelebratedCount] = useState(0);
@@ -111,14 +112,17 @@ export const BigRevealSection: React.FC = () => {
         <div className="absolute bottom-20 left-1/4 w-60 h-60 rounded-full bg-[#FF9800]/15 blur-3xl" />
       </div>
 
-      {/* 6. Handcrafted Folk Art Center Card with Subtle 3D Elevation */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center px-4 py-8 rounded-3xl bg-[#1A090D]/85 border-2 border-[#D4AF37]/45 shadow-folk-3d backdrop-blur-md">
-        
+      {/* 6. Handcrafted Madhubani Folk Art Center Box with Double-Line Ink Border & Mithila Motifs */}
+      <MadhubaniBox
+        variant="maroon"
+        className="max-w-4xl mx-auto text-center px-6 sm:px-12 py-10"
+        cornerSize={48}
+      >
         {/* Festive Greeting Header Lead-in */}
-        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#E5C158] font-medium tracking-widest uppercase mb-4">
-          <Sparkles className="w-3.5 h-3.5 text-[#E5C158]" />
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm text-[#E8B947] font-medium tracking-widest uppercase mb-4">
+          <Sparkles className="w-3.5 h-3.5 text-[#E8B947]" />
           <span>The Festival of Lights & Royal Blessings</span>
-          <Sparkles className="w-3.5 h-3.5 text-[#E5C158]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#E8B947]" />
         </div>
 
         {/* HAPPY DIWALI Heading with Royal Antique Gold Foil Gradient */}
@@ -132,12 +136,12 @@ export const BigRevealSection: React.FC = () => {
         </p>
 
         {/* Traditional Double-Line Alpana & Rosette Divider */}
-        <div className="flex items-center justify-center gap-4 mb-8 text-[#D4AF37]">
-          <div className="h-[1.5px] w-16 sm:w-28 bg-gradient-to-r from-transparent via-[#D4AF37] to-[#E5C158]" />
-          <div className="w-3.5 h-3.5 rotate-45 border-2 border-[#E5C158] bg-[#A8422B] shadow-[0_0_12px_rgba(212,175,55,0.6)]" />
-          <span className="text-xs text-[#E5C158]">🪔</span>
-          <div className="w-3.5 h-3.5 rotate-45 border-2 border-[#E5C158] bg-[#A8422B] shadow-[0_0_12px_rgba(212,175,55,0.6)]" />
-          <div className="h-[1.5px] w-16 sm:w-28 bg-gradient-to-l from-transparent via-[#D4AF37] to-[#E5C158]" />
+        <div className="flex items-center justify-center gap-4 mb-8 text-[#E8B947]">
+          <div className="h-[2px] w-16 sm:w-28 bg-gradient-to-r from-transparent via-[#E8B947] to-[#A82420]" />
+          <div className="w-3.5 h-3.5 rotate-45 border-2 border-[#E8B947] bg-[#A82420] shadow-[0_0_12px_rgba(232,185,71,0.6)]" />
+          <span className="text-sm text-[#E8B947]">🪔</span>
+          <div className="w-3.5 h-3.5 rotate-45 border-2 border-[#E8B947] bg-[#A8422B] shadow-[0_0_12px_rgba(232,185,71,0.6)]" />
+          <div className="h-[2px] w-16 sm:w-28 bg-gradient-to-l from-transparent via-[#E8B947] to-[#A82420]" />
         </div>
 
         {/* Primary CTA Button with 3D Brass Bevel & Soft Glow */}
@@ -151,14 +155,13 @@ export const BigRevealSection: React.FC = () => {
           </button>
 
           {celebratedCount > 0 && (
-            <p className="text-xs text-[#E5C158] flex items-center gap-1.5 font-semibold animate-pulse mt-1">
-              <Heart className="w-3.5 h-3.5 text-[#A8422B] fill-[#A8422B]" />
+            <p className="text-xs text-[#E8B947] flex items-center gap-1.5 font-semibold animate-pulse mt-1">
+              <Heart className="w-3.5 h-3.5 text-[#A82420] fill-[#A82420]" />
               <span>Celebrated {celebratedCount} {celebratedCount === 1 ? 'time' : 'times'}!</span>
             </p>
           )}
         </div>
-
-      </div>
+      </MadhubaniBox>
     </section>
   );
 };

@@ -3,6 +3,7 @@ import { Sparkles, Timer, Flame, RefreshCw, Trophy } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '../../utils/audio';
 import { isCourtyardFullyLit } from '../../utils/gameLogic';
+import { MadhubaniBox, MadhubaniCorner, MadhubaniDivider } from '../MadhubaniCard';
 
 interface DiyaItem {
   id: number;
@@ -87,52 +88,53 @@ export const LightUpDiyas: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-[#1A0A0E]/95 p-6 md:p-8 rounded-3xl border-2 border-[#D4AF37]/50 shadow-folk-3d backdrop-blur-xl w-full max-w-3xl mx-auto relative overflow-hidden">
-      {/* Background Madhubani Hatching Pattern */}
-      <div className="absolute inset-0 bg-madhubani-katchni opacity-15 pointer-events-none" />
-
+    <MadhubaniBox
+      variant="maroon"
+      className="flex flex-col items-center gap-6 w-full max-w-3xl mx-auto"
+      cornerSize={42}
+    >
       {/* HUD Header */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#D4AF37]/25 pb-4 z-10">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 border-b-2 border-[#E8B947]/30 pb-4 z-10">
         <div>
-          <h3 className="text-xl font-bold font-serif text-[#E5C158] flex items-center gap-2 drop-shadow-sm">
-            <Flame className="w-5 h-5 text-[#FF9800]" />
+          <h3 className="text-xl sm:text-2xl font-bold font-serif text-royal-gold-gradient flex items-center gap-2 drop-shadow-sm">
+            <Flame className="w-5 h-5 text-[#A82420]" />
             <span>Courtyard of Lights</span>
           </h3>
-          <p className="text-xs text-[#FFF8E7]/70 mt-1">
+          <p className="text-xs text-[#FFF8E7]/75 mt-1 font-light">
             Touch every terracotta diya to awaken the sacred festive glow!
           </p>
         </div>
 
-        {/* Status Counters */}
+        {/* Status Counters with Madhubani Double Border Badges */}
         <div className="flex items-center gap-3">
-          <div className="px-3.5 py-1.5 rounded-xl bg-[#120508] border border-[#D4AF37]/40 flex items-center gap-2 shadow-sm">
-            <Sparkles className="w-4 h-4 text-[#E5C158]" />
+          <div className="px-3.5 py-1.5 rounded-xl bg-[#140609] border-2 border-[#E8B947]/60 flex items-center gap-2 shadow-sm">
+            <Sparkles className="w-4 h-4 text-[#E8B947]" />
             <span className="text-xs font-semibold text-[#FFF8E7]">
-              Lit: <strong className="text-[#E5C158] font-mono">{litCount} / {diyas.length}</strong>
+              Lit: <strong className="text-[#E8B947] font-mono">{litCount} / {diyas.length}</strong>
             </span>
           </div>
 
           {isTimedMode && (
-            <div className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-2 shadow-sm ${
-              timeLeft < 8 ? 'bg-[#58111A]/80 border-red-500 text-red-200 animate-pulse' : 'bg-[#120508] border-[#A8422B]/50 text-[#FFF8E7]'
+            <div className={`px-3.5 py-1.5 rounded-xl border-2 flex items-center gap-2 shadow-sm ${
+              timeLeft < 8 ? 'bg-[#58111A]/90 border-red-500 text-red-200 animate-pulse' : 'bg-[#140609] border-[#A82420]/70 text-[#FFF8E7]'
             }`}>
-              <Timer className="w-4 h-4 text-[#FF9800]" />
-              <span className="text-xs font-bold tabular-nums font-mono">{timeLeft}s</span>
+              <Timer className="w-4 h-4 text-[#E8B947]" />
+              <span className="text-xs font-bold tabular-nums font-mono text-[#E8B947]">{timeLeft}s</span>
             </div>
           )}
 
           <button
             onClick={handleReset}
-            className="p-2 rounded-xl bg-[#120508] border border-[#D4AF37]/40 text-[#FFF8E7] hover:border-[#E5C158] transition-colors cursor-pointer shadow-sm"
+            className="p-2 rounded-xl bg-[#140609] border-2 border-[#E8B947]/60 text-[#FFF8E7] hover:border-[#FFF8E7] hover:scale-105 transition-all cursor-pointer shadow-sm"
             title="Reset Diyas"
           >
-            <RefreshCw className="w-4 h-4 text-[#E5C158]" />
+            <RefreshCw className="w-4 h-4 text-[#E8B947]" />
           </button>
         </div>
       </div>
 
       {/* Mode Switcher */}
-      <div className="flex items-center gap-2 p-1 rounded-xl bg-[#120508] border border-[#D4AF37]/40 z-10 shadow-sm">
+      <div className="flex items-center gap-2 p-1 rounded-xl bg-[#140609] border-2 border-[#E8B947]/40 z-10 shadow-sm">
         <button
           onClick={() => {
             setIsTimedMode(false);
@@ -162,7 +164,13 @@ export const LightUpDiyas: React.FC = () => {
       </div>
 
       {/* Courtyard Interactive Diya Canvas Area with Terracotta Pavers & Rangoli Floor */}
-      <div className="relative w-full aspect-[4/3] max-w-lg bg-gradient-to-b from-[#2D0D14] via-[#1D070C] to-[#120407] rounded-2xl border-2 border-[#D4AF37]/50 overflow-hidden shadow-[inner_0_0_40px_rgba(0,0,0,0.85)] z-10">
+      <div className="relative w-full aspect-[4/3] max-w-lg bg-gradient-to-b from-[#2D0D14] via-[#1D070C] to-[#120407] rounded-2xl border-[3px] border-[#211A17] overflow-hidden shadow-[inner_0_0_40px_rgba(0,0,0,0.85)] z-10">
+        {/* Inner double border and corner ornaments */}
+        <div className="absolute inset-1.5 rounded-[12px] border border-[#E8B947]/40 pointer-events-none z-10" />
+        <MadhubaniCorner position="top-left" size={24} className="z-10" />
+        <MadhubaniCorner position="top-right" size={24} className="z-10" />
+        <MadhubaniCorner position="bottom-left" size={24} className="z-10" />
+        <MadhubaniCorner position="bottom-right" size={24} className="z-10" />
         {/* Floor Mandala Geometry Pattern */}
         <div className="absolute inset-0 pointer-events-none opacity-30 flex items-center justify-center">
           <div className="w-64 h-64 rounded-full border-2 border-dashed border-[#D4AF37] animate-spin-slow" />
@@ -258,6 +266,6 @@ export const LightUpDiyas: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
+    </MadhubaniBox>
   );
 };

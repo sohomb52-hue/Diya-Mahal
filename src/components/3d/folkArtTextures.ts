@@ -1,39 +1,168 @@
 /**
- * High-Resolution Indian Folk-Art Procedural Texture Generators
- * Authentic Madhubani, Pattachitra, and Indian Miniature Painting styles.
- * 2048x2048 high-DPI procedural graphics with crisp vector-quality math,
- * natural pigment color palettes, and rich ornamental linework.
+ * High-Resolution Authentic Madhubani (Mithila) Folk-Art Procedural Texture Generators
+ * Implements traditional Mithila painting techniques:
+ * - Authentic 8-pigment palette (Vermilion, Terracotta, Mustard, Turmeric, Leaf Green, Peacock Blue, Ivory Parchment, Ink Black)
+ * - Double-line black ink outlines (Suhani / Katchni linework)
+ * - Fine parallel hatching (Katchni) and bold color fills (Bharni)
+ * - Auspicious folk motifs: Surya (Sun God), Mayura (Peacock), Matsya (Sacred Fish), Gaja (Elephant), Kamal (Lotus), Kalpavriksha (Tree of Life)
+ * - Handcrafted fibrous parchment & natural rice paste textures
  */
 
-/* Traditional Folk-Art Pigment Palette */
-export const FOLK_PALETTE = {
-  peacockTeal: '#004D54',
-  tealBright: '#008C95',
-  turquoise: '#20C9C3',
-  vermilion: '#E63946',
-  sindoor: '#D83025',
-  burntOrange: '#FF5722',
-  brightSaffron: '#FF8F00',
-  marigoldYellow: '#FFB000',
-  goldFoil: '#E5C158',
-  antiqueGold: '#D4AF37',
-  raniPink: '#E91E63',
-  lotusPink: '#F06292',
-  leafGreen: '#2E9D50',
-  forestGreen: '#1B5E20',
-  indigo: '#141C38',
-  midnightBlue: '#0B1021',
-  terracottaDark: '#6E2008',
-  terracottaWarm: '#A8422B',
-  terracottaLight: '#C64E22',
-  warmIvory: '#FFF8E7',
-  charcoalInk: '#1A0C06',
+/* User-Specified Authentic Madhubani Palette */
+export const MADHUBANI_PALETTE = {
+  vermilionRed: '#A82420',
+  terracotta: '#C65D38',
+  mustardYellow: '#E8B947',
+  naturalTurmeric: '#D99A32',
+  leafGreen: '#47764B',
+  peacockBlue: '#236C79',
+  ivoryParchment: '#F4E6C8',
+  inkBlack: '#211A17',
+  warmWhite: '#FCF8EE',
+  earthBrown: '#3D2418',
 };
 
 /**
+ * Applies authentic handmade Mithila parchment texture with organic paper fibers
+ */
+function applyParchmentGround(ctx: CanvasRenderingContext2D, width: number, height: number, baseColor = MADHUBANI_PALETTE.ivoryParchment) {
+  // 1. Warm parchment wash
+  const grad = ctx.createRadialGradient(
+    width / 2, height / 2, width * 0.1,
+    width / 2, height / 2, width * 0.75
+  );
+  grad.addColorStop(0, '#FAF3E3');
+  grad.addColorStop(0.5, baseColor);
+  grad.addColorStop(0.85, '#E8D4B0');
+  grad.addColorStop(1, '#D9C29A');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, width, height);
+
+  // 2. Subtle fibrous striations
+  ctx.save();
+  ctx.strokeStyle = 'rgba(61, 36, 24, 0.04)';
+  ctx.lineWidth = 1.2;
+  for (let y = 0; y < height; y += 14) {
+    ctx.beginPath();
+    ctx.moveTo(0, y + (Math.sin(y * 0.02) * 8));
+    ctx.bezierCurveTo(
+      width * 0.33, y - 6,
+      width * 0.66, y + 6,
+      width, y + (Math.cos(y * 0.03) * 8)
+    );
+    ctx.stroke();
+  }
+
+  // 3. Very subtle speckling (handmade cotton fiber flecks)
+  ctx.fillStyle = 'rgba(33, 26, 23, 0.03)';
+  for (let i = 0; i < 350; i++) {
+    const rx = Math.random() * width;
+    const ry = Math.random() * height;
+    ctx.fillRect(rx, ry, Math.random() * 2 + 1, Math.random() * 2 + 1);
+  }
+  ctx.restore();
+}
+
+/**
+ * Traditional Madhubani double-line stroke with optional hatching
+ */
+function strokeMadhubaniDouble(ctx: CanvasRenderingContext2D, lineWidth = 4, gap = 4) {
+  ctx.save();
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = lineWidth + gap * 2;
+  ctx.stroke();
+  ctx.strokeStyle = MADHUBANI_PALETTE.ivoryParchment;
+  ctx.lineWidth = gap;
+  ctx.stroke();
+  ctx.restore();
+}
+
+/**
+ * Draws Madhubani fish-scale or diagonal Katchni hatching in a region
+ */
+function fillKatchniHatching(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, spacing = 8) {
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(x, y, w, h);
+  ctx.clip();
+  ctx.strokeStyle = 'rgba(33, 26, 23, 0.35)';
+  ctx.lineWidth = 1.5;
+  for (let i = -h; i < w + h; i += spacing) {
+    ctx.beginPath();
+    ctx.moveTo(x + i, y);
+    ctx.lineTo(x + i + h, y + h);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/**
+ * Draws a running Madhubani border of alternating lotus buds, leaves, and geometric chevrons
+ */
+function drawMadhubaniBorder(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, thickness = 40) {
+  ctx.save();
+  // Outer frame
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 5;
+  ctx.strokeRect(x, y, w, h);
+
+  // Inner frame
+  ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(x + 10, y + 10, w - 20, h - 20);
+
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 3;
+  ctx.strokeRect(x + 18, y + 18, w - 36, h - 36);
+
+  // Chevron border filling
+  ctx.strokeStyle = MADHUBANI_PALETTE.terracotta;
+  ctx.lineWidth = 2.5;
+  const step = 28;
+
+  // Top & bottom horizontal border vines
+  for (let bx = x + 30; bx < x + w - 40; bx += step) {
+    // Top floral bud
+    ctx.fillStyle = (bx / step) % 2 === 0 ? MADHUBANI_PALETTE.mustardYellow : MADHUBANI_PALETTE.peacockBlue;
+    ctx.beginPath();
+    ctx.ellipse(bx, y + 28, 7, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Bottom floral bud
+    ctx.fillStyle = (bx / step) % 2 === 0 ? MADHUBANI_PALETTE.vermilionRed : MADHUBANI_PALETTE.leafGreen;
+    ctx.beginPath();
+    ctx.ellipse(bx, y + h - 28, 7, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // Left & right vertical border vines
+  for (let by = y + 30; by < y + h - 40; by += step) {
+    ctx.fillStyle = (by / step) % 2 === 0 ? MADHUBANI_PALETTE.leafGreen : MADHUBANI_PALETTE.mustardYellow;
+    ctx.beginPath();
+    ctx.ellipse(x + 28, by, 5, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.fillStyle = (by / step) % 2 === 0 ? MADHUBANI_PALETTE.peacockBlue : MADHUBANI_PALETTE.vermilionRed;
+    ctx.beginPath();
+    ctx.ellipse(x + w - 28, by, 5, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+/**
  * 1. HAVELI GATE ARCH PORTAL (2048x2048)
- * Carved red sandstone portal with Pattachitra floral running creepers,
- * gold-leaf edging, and Madhubani peacocks on the arch spandrels.
+ * Decorated with traditional Madhubani village entrance murals:
+ * Symmetrical sacred peacocks, Kalash with sprouting mango leaves,
+ * running floral creeper vines (lata-patra), and double-ink borders.
  */
 export function createHaveliGatePortalCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -45,179 +174,246 @@ export function createHaveliGatePortalCanvas(): HTMLCanvasElement {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Rich Rajasthani Sandstone Base with warm earthy undertones
-  const stoneGrad = ctx.createLinearGradient(0, 0, 0, 2048);
-  stoneGrad.addColorStop(0, '#4A1D13');
-  stoneGrad.addColorStop(0.5, '#3D150D');
-  stoneGrad.addColorStop(1, '#2B0E08');
-  ctx.fillStyle = stoneGrad;
-  ctx.fillRect(0, 0, 2048, 2048);
+  // 1. Natural warm terracotta & ivory Mithila wall ground
+  applyParchmentGround(ctx, 2048, 2048, '#F0DEC0');
 
-  // Sandstone texture striations
+  // Terracotta base pilaster wash on edges
+  ctx.fillStyle = 'rgba(198, 93, 56, 0.25)';
+  ctx.fillRect(0, 0, 160, 2048);
+  ctx.fillRect(2048 - 160, 0, 160, 2048);
+  ctx.fillRect(0, 0, 2048, 160);
+
+  // 2. Dense Madhubani outer ornamental borders
+  drawMadhubaniBorder(ctx, 30, 30, 2048 - 60, 2048 - 60, 48);
+
+  // 3. Central Arch Cavity (Intricate double-line cusped arch with floral finials)
   ctx.save();
-  for (let y = 0; y < 2048; y += 12) {
-    ctx.strokeStyle = y % 36 === 0 ? 'rgba(229, 193, 88, 0.08)' : 'rgba(20, 5, 2, 0.12)';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(2048, y + Math.sin(y * 0.01) * 20);
-    ctx.stroke();
-  }
-  ctx.restore();
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 8;
+  ctx.strokeRect(170, 170, 1708, 1708);
 
-  // Multi-tiered Pattachitra Ornamental Border
-  const drawBorderFrame = (inset: number, width: number, color: string) => {
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.strokeRect(inset, inset, 2048 - inset * 2, 2048 - inset * 2);
+  ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(185, 185, 1678, 1678);
+
+  // 4. Sacred Kalash (Auspicious Brass Pot) at Arch Keystone with Sprouting Mango Leaves & Coconut
+  const drawSacredKalash = (cx: number, cy: number) => {
+    ctx.save();
+    ctx.translate(cx, cy);
+
+    // Pot Base
+    ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
+    ctx.beginPath();
+    ctx.arc(0, 0, 55, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 5;
+    ctx.stroke();
+
+    // Fine Katchni hatching on pot
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 2;
+    for (let l = -35; l <= 35; l += 8) {
+      ctx.beginPath();
+      ctx.moveTo(l, -20);
+      ctx.lineTo(l, 35);
+      ctx.stroke();
+    }
+
+    // Sacred Swastika / Shubh symbol in vermilion
+    ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.lineTo(0, 18);
+    ctx.moveTo(-18, 0);
+    ctx.lineTo(18, 0);
+    ctx.moveTo(0, -18);
+    ctx.lineTo(12, -18);
+    ctx.moveTo(0, 18);
+    ctx.lineTo(-12, 18);
+    ctx.moveTo(-18, 0);
+    ctx.lineTo(-18, -12);
+    ctx.moveTo(18, 0);
+    ctx.lineTo(18, 12);
+    ctx.stroke();
+
+    // Sprouting Mango Leaves (Amra-Patra)
+    const leafAngles = [-0.65, -0.38, -0.15, 0.15, 0.38, 0.65];
+    leafAngles.forEach((ang) => {
+      ctx.save();
+      ctx.rotate(ang);
+      ctx.fillStyle = MADHUBANI_PALETTE.leafGreen;
+      ctx.beginPath();
+      ctx.ellipse(0, -85, 14, 45, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Leaf midrib and parallel veins
+      ctx.beginPath();
+      ctx.moveTo(0, -40);
+      ctx.lineTo(0, -128);
+      ctx.stroke();
+      ctx.restore();
+    });
+
+    // Coconut Finial (Nariyal)
+    ctx.fillStyle = MADHUBANI_PALETTE.terracotta;
+    ctx.beginPath();
+    ctx.arc(0, -70, 24, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
+
+    ctx.restore();
   };
 
-  drawBorderFrame(24, 20, FOLK_PALETTE.charcoalInk);
-  drawBorderFrame(48, 14, FOLK_PALETTE.antiqueGold);
-  drawBorderFrame(70, 8, FOLK_PALETTE.vermilion);
+  drawSacredKalash(1024, 280);
 
-  // Running Lotus Bud Border (Pattachitra Bel)
-  ctx.save();
-  ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
-  ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-  ctx.lineWidth = 3;
-
-  for (let x = 110; x < 1940; x += 55) {
-    // Top border lotus buds
-    ctx.beginPath();
-    ctx.ellipse(x, 90, 16, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Bottom border lotus buds
-    ctx.beginPath();
-    ctx.ellipse(x, 1958, 16, 10, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-  }
-
-  for (let y = 110; y < 1940; y += 55) {
-    // Left border lotus buds
-    ctx.beginPath();
-    ctx.ellipse(90, y, 10, 16, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    // Right border lotus buds
-    ctx.beginPath();
-    ctx.ellipse(1958, y, 10, 16, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-  }
-  ctx.restore();
-
-  // Ornate Inner Arch Cavity Cutout Marking & Spandrels
-  ctx.save();
-  ctx.fillStyle = '#220A05';
-  ctx.fillRect(160, 160, 1728, 1728);
-
-  // Madhubani Peacocks on Arch Spandrels (Top-Left & Top-Right)
-  const drawMadhubaniPeacock = (cx: number, cy: number, flip: boolean) => {
+  // 5. Flanking Royal Peacocks (Madhubani Mayura) facing inwards on Arch Spandrels
+  const drawMadhubaniSpandrelPeacock = (cx: number, cy: number, flip: boolean) => {
     ctx.save();
     ctx.translate(cx, cy);
     if (flip) ctx.scale(-1, 1);
 
     // Peacock Crest
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-    ctx.lineWidth = 4;
-    for (let c = -20; c <= 20; c += 10) {
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3;
+    for (let c = -18; c <= 18; c += 9) {
       ctx.beginPath();
-      ctx.moveTo(0, -60);
-      ctx.lineTo(c, -85);
+      ctx.moveTo(0, -75);
+      ctx.lineTo(c * 1.5, -110);
       ctx.stroke();
-      ctx.fillStyle = FOLK_PALETTE.turquoise;
+      ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
       ctx.beginPath();
-      ctx.arc(c, -88, 5, 0, Math.PI * 2);
+      ctx.arc(c * 1.5, -112, 6, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
     }
 
-    // Peacock Graceful S-Curved Neck & Head
-    ctx.fillStyle = FOLK_PALETTE.tealBright;
+    // Graceful Head & Neck
+    ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
     ctx.beginPath();
-    ctx.moveTo(0, -50);
-    ctx.bezierCurveTo(40, -45, 50, 10, 20, 40);
-    ctx.bezierCurveTo(-10, 20, -15, -30, 0, -50);
+    ctx.moveTo(0, -65);
+    ctx.bezierCurveTo(45, -60, 60, 5, 25, 45);
+    ctx.bezierCurveTo(-15, 25, -20, -40, 0, -65);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 4;
     ctx.stroke();
 
-    // Beak & Expressive Madhubani Eye
-    ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
+    // Characteristic Madhubani fish-eye with double ring
+    ctx.fillStyle = MADHUBANI_PALETTE.ivoryParchment;
     ctx.beginPath();
-    ctx.moveTo(25, -45);
-    ctx.lineTo(48, -42);
-    ctx.lineTo(25, -35);
+    ctx.ellipse(14, -50, 11, 6, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    ctx.fillStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.beginPath();
+    ctx.arc(16, -50, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Sharp beak holding a string of pearl beads
+    ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
+    ctx.beginPath();
+    ctx.moveTo(28, -54);
+    ctx.lineTo(54, -50);
+    ctx.lineTo(28, -42);
     ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
 
-    ctx.fillStyle = FOLK_PALETTE.warmIvory;
-    ctx.beginPath();
-    ctx.ellipse(10, -42, 9, 5, 0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = FOLK_PALETTE.charcoalInk;
-    ctx.beginPath();
-    ctx.arc(12, -42, 3.5, 0, Math.PI * 2);
-    ctx.fill();
+    // Fan of 8 Ornate Tail Feathers
+    for (let i = 0; i < 8; i++) {
+      const angle = 0.25 + (i * Math.PI) / 8.5;
+      const fx = Math.cos(angle) * -110 + 10;
+      const fy = Math.sin(angle) * -80 + 35;
 
-    // Fan of Intricate Feathers with Eye Spots
-    for (let i = 0; i < 7; i++) {
-      const angle = 0.2 + (i * Math.PI) / 8;
-      const fx = Math.cos(angle) * -90 + 10;
-      const fy = Math.sin(angle) * -60 + 20;
-
-      ctx.fillStyle = i % 2 === 0 ? FOLK_PALETTE.peacockTeal : FOLK_PALETTE.brightSaffron;
+      ctx.fillStyle = i % 2 === 0 ? MADHUBANI_PALETTE.naturalTurmeric : MADHUBANI_PALETTE.vermilionRed;
       ctx.beginPath();
-      ctx.ellipse(fx, fy, 22, 12, angle, 0, Math.PI * 2);
+      ctx.ellipse(fx, fy, 32, 16, angle, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+      ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Feather Eye Spot
-      ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
+      // Inner Eye Feather
+      ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
       ctx.beginPath();
-      ctx.arc(fx, fy, 6, 0, Math.PI * 2);
+      ctx.arc(fx, fy, 8, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
     }
+
     ctx.restore();
   };
 
-  drawMadhubaniPeacock(380, 360, false);
-  drawMadhubaniPeacock(1668, 360, true);
+  drawMadhubaniSpandrelPeacock(400, 380, false);
+  drawMadhubaniSpandrelPeacock(1648, 380, true);
 
-  // Keystone Central Sacred Kalash & Lotus (Top Center)
-  ctx.save();
-  ctx.translate(1024, 280);
-  // Gold Kalash vessel
-  ctx.fillStyle = FOLK_PALETTE.antiqueGold;
-  ctx.beginPath();
-  ctx.arc(0, 0, 48, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-  ctx.lineWidth = 4;
-  ctx.stroke();
+  // 6. Running Auspicious Fish Pair (Matsya) at Arch Base
+  const drawMadhubaniFish = (fx: number, fy: number, rot: number) => {
+    ctx.save();
+    ctx.translate(fx, fy);
+    ctx.rotate(rot);
 
-  // Sprouting Mango Leaves on Kalash
-  ctx.fillStyle = FOLK_PALETTE.leafGreen;
-  for (let l = -30; l <= 30; l += 15) {
+    // Fish Body
+    ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
     ctx.beginPath();
-    ctx.ellipse(l, -55, 10, 24, (l * Math.PI) / 180, 0, Math.PI * 2);
+    ctx.moveTo(-50, 0);
+    ctx.quadraticCurveTo(0, -28, 45, 0);
+    ctx.quadraticCurveTo(0, 28, -50, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
+
+    // Fish Tail
+    ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
+    ctx.beginPath();
+    ctx.moveTo(40, 0);
+    ctx.lineTo(75, -24);
+    ctx.lineTo(60, 0);
+    ctx.lineTo(75, 24);
+    ctx.closePath();
     ctx.fill();
     ctx.stroke();
-  }
-  // Coconut Finial
-  ctx.fillStyle = FOLK_PALETTE.brightSaffron;
-  ctx.beginPath();
-  ctx.arc(0, -68, 16, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.stroke();
-  ctx.restore();
+
+    // Scale Hatching
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 2;
+    for (let s = -25; s <= 25; s += 10) {
+      ctx.beginPath();
+      ctx.arc(s, 0, 10, -Math.PI / 2, Math.PI / 2);
+      ctx.stroke();
+    }
+
+    // Fish Eye
+    ctx.fillStyle = MADHUBANI_PALETTE.ivoryParchment;
+    ctx.beginPath();
+    ctx.arc(-30, -5, 6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.beginPath();
+    ctx.arc(-30, -5, 2.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  };
+
+  drawMadhubaniFish(420, 1850, 0);
+  drawMadhubaniFish(560, 1850, 0.2);
+  drawMadhubaniFish(1628, 1850, Math.PI);
+  drawMadhubaniFish(1488, 1850, Math.PI - 0.2);
 
   ctx.restore();
   return canvas;
@@ -225,9 +421,9 @@ export function createHaveliGatePortalCanvas(): HTMLCanvasElement {
 
 /**
  * 2. HAVELI DOUBLE DOOR PANELS (1024x2048 each)
- * Rich Sheesham/Teakwood grain with hand-painted Madhubani & Pattachitra panels:
- * Left Door: Sacred Surya (Sun) + Mayura (Peacock)
- * Right Door: Sacred Gaja (Royal Elephant) + Sahasrara Kamal (Lotus)
+ * Hand-painted Sheesham wood doors with 2 massive traditional Madhubani panels each:
+ * Left Door: Sacred Surya (Sun God) with double-line fish eyes & Mayura (Peacock)
+ * Right Door: Sacred Gaja (Festive Elephant) with lotus & Sahasrara Kamal (Lotus Mandala)
  */
 export function createHaveliDoorPanelCanvas(side: 'left' | 'right'): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -239,214 +435,226 @@ export function createHaveliDoorPanelCanvas(side: 'left' | 'right'): HTMLCanvasE
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // 1. Dark Seasoned Sheesham Wood Base with Rich Warm Undertones
-  const woodGrad = ctx.createLinearGradient(0, 0, 1024, 2048);
-  woodGrad.addColorStop(0, '#260F07');
-  woodGrad.addColorStop(0.35, '#38160B');
-  woodGrad.addColorStop(0.7, '#2A1007');
-  woodGrad.addColorStop(1, '#1A0A04');
-  ctx.fillStyle = woodGrad;
-  ctx.fillRect(0, 0, 1024, 2048);
+  // 1. Natural Teakwood / Seasoned Terracotta Base with fine parchment grain
+  applyParchmentGround(ctx, 1024, 2048, '#EBD5AF');
 
-  // Organic Hand-Plained Wood Grain Streaks
+  // Sheesham Wood Grain & Plank Dividers
   ctx.save();
-  for (let y = 0; y < 2048; y += 10) {
-    const alpha = 0.07 + Math.sin(y * 0.015) * 0.04;
-    ctx.strokeStyle = y % 30 === 0 ? `rgba(229, 193, 88, ${alpha * 0.7})` : `rgba(10, 3, 1, ${alpha * 1.8})`;
-    ctx.lineWidth = 2.5;
+  ctx.strokeStyle = 'rgba(61, 36, 24, 0.12)';
+  ctx.lineWidth = 3;
+  for (let y = 0; y < 2048; y += 18) {
     ctx.beginPath();
     ctx.moveTo(0, y);
-    ctx.bezierCurveTo(300, y + 25, 700, y - 20, 1024, y + 15);
+    ctx.lineTo(1024, y + Math.sin(y * 0.02) * 12);
     ctx.stroke();
   }
   ctx.restore();
 
-  // 2. Heavy Carved Moldings with Gold Foil Edging
-  ctx.save();
-  ctx.strokeStyle = '#120502';
-  ctx.lineWidth = 32;
-  ctx.strokeRect(20, 20, 984, 2008);
+  // 2. Heavy Carved Outer Molding with Traditional Double-line Borders
+  drawMadhubaniBorder(ctx, 24, 24, 976, 2000, 36);
 
-  ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-  ctx.lineWidth = 14;
-  ctx.strokeRect(44, 44, 936, 1960);
-
-  ctx.strokeStyle = FOLK_PALETTE.vermilion;
-  ctx.lineWidth = 6;
-  ctx.strokeRect(62, 62, 900, 1924);
-  ctx.restore();
-
-  // 3. Two Large Hand-Painted Folk-Art Panels
+  // 3. Two Recessed Hand-Painted Mithila Folk Art Panels
   const panelW = 860;
   const panelH = 880;
-  const panel1Y = 90;
+  const panel1Y = 85;
   const panel2Y = 1050;
 
-  const drawPanelRecess = (y: number) => {
+  const drawPanelFrame = (py: number) => {
     ctx.save();
-    ctx.fillStyle = '#180703';
-    ctx.fillRect(82, y, panelW, panelH);
-
-    // Subtle vermilion-washed background
-    const pGrad = ctx.createRadialGradient(82 + panelW / 2, y + panelH / 2, 40, 82 + panelW / 2, y + panelH / 2, panelW / 2);
-    pGrad.addColorStop(0, '#381408');
-    pGrad.addColorStop(0.75, '#220B04');
-    pGrad.addColorStop(1, '#150602');
+    // Inner parchment ground with warm saffron tint
+    const pGrad = ctx.createLinearGradient(82, py, 82 + panelW, py + panelH);
+    pGrad.addColorStop(0, '#FFF6E5');
+    pGrad.addColorStop(0.5, '#F7E7CD');
+    pGrad.addColorStop(1, '#ECD3B0');
     ctx.fillStyle = pGrad;
-    ctx.fillRect(96, y + 14, panelW - 28, panelH - 28);
+    ctx.fillRect(82, py, panelW, panelH);
 
-    // Double frame
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-    ctx.lineWidth = 8;
-    ctx.strokeRect(104, y + 22, panelW - 44, panelH - 44);
+    // Madhubani Double-Line Frame
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 6;
+    ctx.strokeRect(82, py, panelW, panelH);
 
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-    ctx.lineWidth = 3;
-    ctx.strokeRect(116, y + 34, panelW - 68, panelH - 68);
+    ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.lineWidth = 4;
+    ctx.strokeRect(96, py + 14, panelW - 28, panelH - 28);
+
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(108, py + 26, panelW - 52, panelH - 52);
+
+    // Running leaf border inside panel rim
+    ctx.fillStyle = MADHUBANI_PALETTE.leafGreen;
+    for (let lx = 130; lx < 82 + panelW - 50; lx += 32) {
+      ctx.beginPath();
+      ctx.ellipse(lx, py + 20, 6, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.ellipse(lx, py + panelH - 20, 6, 3, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
     ctx.restore();
   };
 
-  drawPanelRecess(panel1Y);
-  drawPanelRecess(panel2Y);
+  drawPanelFrame(panel1Y);
+  drawPanelFrame(panel2Y);
 
-  // 4. Panel Illustrations based on Door Side
   if (side === 'left') {
-    // ----------------------------------------------------
-    // TOP PANEL (LEFT): SACRED SURYA MANDALA (MADHUBANI SUN)
-    // ----------------------------------------------------
+    // -------------------------------------------------------------------------
+    // LEFT TOP PANEL: SACRED MADHUBANI SURYA (THE SUN GOD)
+    // -------------------------------------------------------------------------
     ctx.save();
     ctx.translate(82 + panelW / 2, panel1Y + panelH / 2);
 
-    // Radiant Flame Sunburst Rays
-    const numRays = 24;
-    for (let r = 0; r < numRays; r++) {
-      const angle = (r * Math.PI * 2) / numRays;
+    // 24 Radiating Saffron & Vermilion Flame Rays
+    for (let r = 0; r < 24; r++) {
+      const angle = (r * Math.PI * 2) / 24;
       ctx.save();
       ctx.rotate(angle);
-      ctx.fillStyle = r % 2 === 0 ? FOLK_PALETTE.brightSaffron : FOLK_PALETTE.vermilion;
+
+      ctx.fillStyle = r % 2 === 0 ? MADHUBANI_PALETTE.vermilionRed : MADHUBANI_PALETTE.mustardYellow;
       ctx.beginPath();
       ctx.moveTo(0, 160);
-      ctx.lineTo(24, 280);
+      ctx.lineTo(26, 275);
       ctx.lineTo(0, 340);
-      ctx.lineTo(-24, 280);
+      ctx.lineTo(-26, 275);
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 3.5;
       ctx.stroke();
+
+      // Fine parallel Katchni lines inside every flame ray
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+      ctx.lineWidth = 1.5;
+      for (let f = 190; f <= 300; f += 20) {
+        ctx.beginPath();
+        ctx.moveTo(-12, f);
+        ctx.lineTo(12, f);
+        ctx.stroke();
+      }
       ctx.restore();
     }
 
-    // Sacred Solar Disk
-    ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
+    // Solar Face Disc
+    ctx.fillStyle = MADHUBANI_PALETTE.naturalTurmeric;
     ctx.beginPath();
     ctx.arc(0, 0, 160, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.charcoalInk;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 6;
     ctx.stroke();
 
-    // Sacred Madhubani Facial Features (Surya Face)
-    // Prominent Almond Eyes with Double Linework
-    ctx.fillStyle = FOLK_PALETTE.warmIvory;
-    ctx.strokeStyle = FOLK_PALETTE.charcoalInk;
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 148, 0, Math.PI * 2);
+    ctx.stroke();
 
+    // Characteristic Madhubani Double-Lined Fish Eyes
     [-60, 60].forEach((ex) => {
+      ctx.fillStyle = MADHUBANI_PALETTE.warmWhite;
       ctx.beginPath();
-      ctx.ellipse(ex, -25, 34, 18, 0, 0, Math.PI * 2);
+      ctx.ellipse(ex, -25, 36, 18, 0, 0, Math.PI * 2);
       ctx.fill();
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+      ctx.lineWidth = 4;
       ctx.stroke();
 
       // Pupil with sacred white dot
-      ctx.fillStyle = FOLK_PALETTE.charcoalInk;
+      ctx.fillStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.beginPath();
-      ctx.arc(ex, -25, 11, 0, Math.PI * 2);
+      ctx.arc(ex, -25, 12, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = FOLK_PALETTE.warmIvory;
+      ctx.fillStyle = MADHUBANI_PALETTE.warmWhite;
       ctx.beginPath();
-      ctx.arc(ex - 3, -27, 4, 0, Math.PI * 2);
+      ctx.arc(ex - 3, -28, 4, 0, Math.PI * 2);
       ctx.fill();
     });
 
-    // Traditional Tilak & Chandra-Bindu on Forehead
-    ctx.fillStyle = FOLK_PALETTE.vermilion;
+    // Auspicious Vermilion Tilak & Chandrabindu
+    ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
     ctx.beginPath();
     ctx.moveTo(0, -95);
-    ctx.lineTo(16, -45);
-    ctx.lineTo(-16, -45);
+    ctx.lineTo(18, -45);
+    ctx.lineTo(-18, -45);
     ctx.closePath();
     ctx.fill();
-
-    // Auspicious Smile & Radiant Cheeks
-    ctx.strokeStyle = FOLK_PALETTE.charcoalInk;
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(0, 25, 42, 0.2 * Math.PI, 0.8 * Math.PI);
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3;
     ctx.stroke();
 
-    ctx.fillStyle = FOLK_PALETTE.vermilion;
+    // Serene Divine Smiling Lips
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(-70, 25, 14, 0, Math.PI * 2);
+    ctx.arc(0, 26, 44, 0.2 * Math.PI, 0.8 * Math.PI);
+    ctx.stroke();
+
+    // Rosy Vermilion Cheeks
+    ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.beginPath();
+    ctx.arc(-70, 26, 15, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(70, 25, 14, 0, Math.PI * 2);
+    ctx.arc(70, 26, 15, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
-    // ----------------------------------------------------
-    // BOTTOM PANEL (LEFT): ROYAL MAYURA (PEACOCK AMIDST LOTUSES)
-    // ----------------------------------------------------
+    // -------------------------------------------------------------------------
+    // LEFT BOTTOM PANEL: ROYAL MADHUBANI MAYURA (PEACOCK)
+    // -------------------------------------------------------------------------
     ctx.save();
     ctx.translate(82 + panelW / 2, panel2Y + panelH / 2);
 
-    // Peacock Body
-    ctx.fillStyle = FOLK_PALETTE.peacockTeal;
+    // Peacock Body with dense Katchni striations
+    ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
     ctx.beginPath();
     ctx.moveTo(-50, 140);
-    ctx.bezierCurveTo(-110, 40, -90, -80, -20, -120);
+    ctx.bezierCurveTo(-115, 40, -95, -80, -20, -120);
     ctx.bezierCurveTo(20, -140, 60, -90, 40, 20);
     ctx.bezierCurveTo(20, 100, 10, 140, -50, 140);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 5;
     ctx.stroke();
 
-    // S-Neck & Crest
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
+    // S-Neck Crest with triple Kalgi plumes
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 4;
     for (let c = -25; c <= 15; c += 10) {
       ctx.beginPath();
       ctx.moveTo(-20, -135);
-      ctx.lineTo(-20 + c, -180);
+      ctx.lineTo(-20 + c, -185);
       ctx.stroke();
-      ctx.fillStyle = FOLK_PALETTE.turquoise;
+      ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
       ctx.beginPath();
-      ctx.arc(-20 + c, -185, 6, 0, Math.PI * 2);
+      ctx.arc(-20 + c, -190, 7, 0, Math.PI * 2);
       ctx.fill();
+      ctx.stroke();
     }
 
-    // Grand Fan-Tail Feathers Spreading Outwards
-    for (let f = 0; f < 12; f++) {
-      const fa = -0.4 + (f * Math.PI) / 10;
-      const dist = 240;
+    // Magnificent Outstretched Peacock Fan Tail
+    for (let f = 0; f < 13; f++) {
+      const fa = -0.45 + (f * Math.PI) / 10.5;
+      const dist = 250;
       const fx = Math.cos(fa) * dist - 30;
       const fy = Math.sin(fa) * dist - 40;
 
-      ctx.fillStyle = f % 2 === 0 ? FOLK_PALETTE.brightSaffron : FOLK_PALETTE.tealBright;
+      ctx.fillStyle = f % 2 === 0 ? MADHUBANI_PALETTE.naturalTurmeric : MADHUBANI_PALETTE.leafGreen;
       ctx.beginPath();
-      ctx.ellipse(fx, fy, 40, 22, fa, 0, Math.PI * 2);
+      ctx.ellipse(fx, fy, 42, 22, fa, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 3.5;
       ctx.stroke();
 
-      // Eye of peacock feather
-      ctx.fillStyle = FOLK_PALETTE.indigo;
+      // Eye Feather
+      ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
       ctx.beginPath();
-      ctx.arc(fx, fy, 14, 0, Math.PI * 2);
+      ctx.arc(fx, fy, 15, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = FOLK_PALETTE.turquoise;
+      ctx.stroke();
+      ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
       ctx.beginPath();
       ctx.arc(fx, fy, 7, 0, Math.PI * 2);
       ctx.fill();
@@ -454,23 +662,23 @@ export function createHaveliDoorPanelCanvas(side: 'left' | 'right'): HTMLCanvasE
     ctx.restore();
 
   } else {
-    // ----------------------------------------------------
-    // TOP PANEL (RIGHT): SACRED GAJA (ROYAL CEREMONIAL ELEPHANT)
-    // ----------------------------------------------------
+    // -------------------------------------------------------------------------
+    // RIGHT TOP PANEL: SACRED GAJA (FESTIVE ELEPHANT)
+    // -------------------------------------------------------------------------
     ctx.save();
     ctx.translate(82 + panelW / 2, panel1Y + panelH / 2);
 
-    // Elephant Massive Rounded Body
-    ctx.fillStyle = FOLK_PALETTE.indigo;
+    // Elephant Rounded Body
+    ctx.fillStyle = MADHUBANI_PALETTE.terracotta;
     ctx.beginPath();
-    ctx.arc(40, 30, 160, 0, Math.PI * 2);
+    ctx.arc(40, 30, 165, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 5;
     ctx.stroke();
 
-    // Head and Trunk curling gracefully upward with lotus
-    ctx.fillStyle = FOLK_PALETTE.indigo;
+    // Upraised Auspicious Trunk
+    ctx.fillStyle = MADHUBANI_PALETTE.terracotta;
     ctx.beginPath();
     ctx.moveTo(-60, -40);
     ctx.bezierCurveTo(-140, -100, -220, -30, -200, 70);
@@ -480,147 +688,119 @@ export function createHaveliDoorPanelCanvas(side: 'left' | 'right'): HTMLCanvasE
     ctx.fill();
     ctx.stroke();
 
-    // Royal Jhool (Embroidered Ceremonial Saddle Cloth)
-    ctx.fillStyle = FOLK_PALETTE.vermilion;
+    // Royal Jhool (Embroidered Saddle Cloth) with Lotus Motifs
+    ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
     ctx.beginPath();
-    ctx.rect(-20, -60, 150, 120);
+    ctx.rect(-25, -60, 155, 125);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
+    ctx.strokeStyle = MADHUBANI_PALETTE.mustardYellow;
     ctx.lineWidth = 6;
     ctx.stroke();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(-25, -60, 155, 125);
 
-    // Jhool Gold Fringe & Lotus Motif
-    ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
-    ctx.beginPath();
-    ctx.arc(55, 0, 30, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Tusk with Gold Cap
-    ctx.fillStyle = FOLK_PALETTE.warmIvory;
+    // Tusk with Vermilion Tip
+    ctx.fillStyle = MADHUBANI_PALETTE.ivoryParchment;
     ctx.beginPath();
     ctx.moveTo(-120, 20);
     ctx.quadraticCurveTo(-180, 40, -190, 0);
     ctx.quadraticCurveTo(-160, 0, -120, -10);
     ctx.closePath();
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3.5;
     ctx.stroke();
 
-    // Sacred Lotus Held in Trunk
-    ctx.fillStyle = FOLK_PALETTE.lotusPink;
+    // Sacred Lotus in Trunk
+    ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
     ctx.beginPath();
-    ctx.ellipse(-90, 130, 32, 20, -0.4, 0, Math.PI * 2);
+    ctx.ellipse(-90, 130, 34, 22, -0.4, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 3;
     ctx.stroke();
     ctx.restore();
 
-    // ----------------------------------------------------
-    // BOTTOM PANEL (RIGHT): SAHASRARA KAMAL (SACRED LOTUS MANDALA)
-    // ----------------------------------------------------
+    // -------------------------------------------------------------------------
+    // RIGHT BOTTOM PANEL: SAHASRARA KAMAL (SACRED LOTUS MANDALA)
+    // -------------------------------------------------------------------------
     ctx.save();
     ctx.translate(82 + panelW / 2, panel2Y + panelH / 2);
 
-    // Concentric Circular Pattachitra Rings
-    [290, 220, 150, 80].forEach((r, idx) => {
-      ctx.strokeStyle = idx % 2 === 0 ? FOLK_PALETTE.antiqueGold : FOLK_PALETTE.vermilion;
+    // Concentric Circular Borders with Katchni lines
+    [300, 230, 160, 85].forEach((r, idx) => {
+      ctx.strokeStyle = idx % 2 === 0 ? MADHUBANI_PALETTE.vermilionRed : MADHUBANI_PALETTE.peacockBlue;
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI * 2);
       ctx.stroke();
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
     });
 
-    // Outer 16 Lotus Petals (Rani Pink)
+    // 16 Lotus Petals (Vermilion & Mustard)
     for (let p = 0; p < 16; p++) {
       const pa = (p * Math.PI * 2) / 16;
       ctx.save();
       ctx.rotate(pa);
-      ctx.fillStyle = p % 2 === 0 ? FOLK_PALETTE.raniPink : FOLK_PALETTE.lotusPink;
+      ctx.fillStyle = p % 2 === 0 ? MADHUBANI_PALETTE.vermilionRed : MADHUBANI_PALETTE.naturalTurmeric;
       ctx.beginPath();
-      ctx.moveTo(0, 140);
-      ctx.quadraticCurveTo(45, 220, 0, 290);
-      ctx.quadraticCurveTo(-45, 220, 0, 140);
+      ctx.moveTo(0, 145);
+      ctx.quadraticCurveTo(48, 225, 0, 300);
+      ctx.quadraticCurveTo(-48, 225, 0, 145);
       ctx.closePath();
       ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 3.5;
       ctx.stroke();
       ctx.restore();
     }
 
-    // Inner 8 Saffron Petals
-    for (let p = 0; p < 8; p++) {
-      const pa = (p * Math.PI * 2) / 8 + Math.PI / 8;
-      ctx.save();
-      ctx.rotate(pa);
-      ctx.fillStyle = FOLK_PALETTE.brightSaffron;
-      ctx.beginPath();
-      ctx.moveTo(0, 70);
-      ctx.quadraticCurveTo(30, 110, 0, 150);
-      ctx.quadraticCurveTo(-30, 110, 0, 70);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.marigoldYellow;
-      ctx.lineWidth = 3;
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // Central Golden Seed Head (Karnika)
-    ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
+    // Central Seed Head (Karnika)
+    ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
     ctx.beginPath();
-    ctx.arc(0, 0, 50, 0, Math.PI * 2);
+    ctx.arc(0, 0, 55, 0, Math.PI * 2);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 4;
     ctx.stroke();
-
-    // Alpana Dots
-    ctx.fillStyle = FOLK_PALETTE.charcoalInk;
-    for (let d = 0; d < 8; d++) {
-      const da = (d * Math.PI * 2) / 8;
-      ctx.beginPath();
-      ctx.arc(Math.cos(da) * 28, Math.sin(da) * 28, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
     ctx.restore();
   }
 
-  // 5. Brass Gul-Meekh Pyramid Studs (Hand-Plated Metalwork)
-  ctx.save();
+  // 4. Brass Door Hardware: Spiked Gul-Meekh Studs & Medallions
   const studRows = [70, 520, 1030, 1500, 1980];
   const studCols = [60, 290, 512, 734, 964];
 
   studRows.forEach((sy) => {
     studCols.forEach((sx) => {
-      // Brass base rosette
-      ctx.fillStyle = FOLK_PALETTE.antiqueGold;
+      ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
       ctx.beginPath();
       ctx.arc(sx, sy, 18, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#260F07';
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Shiny center stud highlight
-      ctx.fillStyle = FOLK_PALETTE.warmIvory;
+      ctx.fillStyle = MADHUBANI_PALETTE.terracotta;
       ctx.beginPath();
       ctx.arc(sx - 3, sy - 3, 6, 0, Math.PI * 2);
       ctx.fill();
     });
   });
-  ctx.restore();
 
   return canvas;
 }
 
 /**
  * 3. COURTYARD MURAL WALLS (2048x1024)
- * Traditional Indian Miniature & Madhubani Mural:
- * Sprawling Tree of Life (Kalpavriksha), perched songbirds, flowering lotuses,
- * running deer, and carved jharokha niches holding lit oil lamps.
+ * Authentic Mithila Village Mural:
+ * - Handcrafted village houses with decorated Madhubani painted walls
+ * - Sprawling Tree of Life (Kalpavriksha) with dense patterned leaves
+ * - Perched singing birds, peacocks, running deer (Mriga)
+ * - Lotus ponds with detailed auspicious fish pair (Matsya)
+ * - Carved jharokhas holding softly glowing earthen oil lamps
  */
 export function createCourtyardMuralWallCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -632,41 +812,43 @@ export function createCourtyardMuralWallCanvas(): HTMLCanvasElement {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Deep Indigo & Twilight Palace Backdrop
-  const bgGrad = ctx.createLinearGradient(0, 0, 0, 1024);
-  bgGrad.addColorStop(0, '#141C38');
-  bgGrad.addColorStop(0.6, '#0B1021');
-  bgGrad.addColorStop(1, '#070A14');
-  ctx.fillStyle = bgGrad;
-  ctx.fillRect(0, 0, 2048, 1024);
+  // 1. Warm parchment ground (authentic handmade paper tone)
+  applyParchmentGround(ctx, 2048, 1024, '#F4E6C8');
 
-  // Traditional Ornamental Top & Bottom Pattachitra Cornice
-  ctx.fillStyle = FOLK_PALETTE.antiqueGold;
-  ctx.fillRect(0, 0, 2048, 40);
-  ctx.fillRect(0, 984, 2048, 40);
+  // 2. Traditional top & bottom Madhubani border bands
+  ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
+  ctx.fillRect(0, 0, 2048, 38);
+  ctx.fillRect(0, 1024 - 38, 2048, 38);
 
-  ctx.fillStyle = FOLK_PALETTE.vermilion;
-  ctx.fillRect(0, 40, 2048, 14);
-  ctx.fillRect(0, 970, 2048, 14);
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 4;
+  ctx.strokeRect(0, 0, 2048, 38);
+  ctx.strokeRect(0, 1024 - 38, 2048, 38);
 
-  // Chevron Band on Cornice
-  ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+  // Chevron running vine on borders
+  ctx.strokeStyle = MADHUBANI_PALETTE.mustardYellow;
   ctx.lineWidth = 3;
-  for (let x = 0; x < 2048; x += 30) {
+  for (let x = 0; x < 2048; x += 32) {
     ctx.beginPath();
     ctx.moveTo(x, 0);
-    ctx.lineTo(x + 15, 40);
-    ctx.lineTo(x + 30, 0);
+    ctx.lineTo(x + 16, 38);
+    ctx.lineTo(x + 32, 0);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x, 1024 - 38);
+    ctx.lineTo(x + 16, 1024);
+    ctx.lineTo(x + 32, 1024 - 38);
     ctx.stroke();
   }
 
-  // Two Majestic Trees of Life (Kalpavriksha) in Madhubani Style
+  // 3. Two Majestic Kalpavriksha (Trees of Life)
   const drawTreeOfLife = (rootX: number) => {
     ctx.save();
-    ctx.translate(rootX, 960);
+    ctx.translate(rootX, 980);
 
-    // Tree Trunk
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
+    // Thick Double-Lined Trunk with fine bark hatching
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 26;
     ctx.lineCap = 'round';
     ctx.beginPath();
@@ -674,61 +856,54 @@ export function createCourtyardMuralWallCanvas(): HTMLCanvasElement {
     ctx.quadraticCurveTo(-20, -180, 0, -380);
     ctx.stroke();
 
+    ctx.strokeStyle = MADHUBANI_PALETTE.terracotta;
+    ctx.lineWidth = 18;
+    ctx.stroke();
+
     // Sprawling Symmetrical Branches
     const branches = [
-      { sx: 0, sy: -180, c1x: -120, c1y: -240, ex: -240, ey: -320 },
-      { sx: 0, sy: -180, c1x: 120, c1y: -240, ex: 240, ey: -320 },
-      { sx: 0, sy: -280, c1x: -160, c1y: -380, ex: -320, ey: -460 },
-      { sx: 0, sy: -280, c1x: 160, c1y: -380, ex: 320, ey: -460 },
-      { sx: 0, sy: -380, c1x: -90, c1y: -500, ex: -180, ey: -620 },
-      { sx: 0, sy: -380, c1x: 90, c1y: -500, ex: 180, ey: -620 },
+      { sx: 0, sy: -180, c1x: -120, c1y: -240, ex: -250, ey: -320 },
+      { sx: 0, sy: -180, c1x: 120, c1y: -240, ex: 250, ey: -320 },
+      { sx: 0, sy: -280, c1x: -160, c1y: -380, ex: -330, ey: -460 },
+      { sx: 0, sy: -280, c1x: 160, c1y: -380, ex: 330, ey: -460 },
+      { sx: 0, sy: -380, c1x: -90, c1y: -500, ex: -190, ey: -620 },
+      { sx: 0, sy: -380, c1x: 90, c1y: -500, ex: 190, ey: -620 },
     ];
 
     branches.forEach((b) => {
-      ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 14;
       ctx.beginPath();
       ctx.moveTo(b.sx, b.sy);
       ctx.quadraticCurveTo(b.c1x, b.c1y, b.ex, b.ey);
       ctx.stroke();
 
-      // Blooming Lotus & Mango Leaf Clusters at branch tips
-      ctx.fillStyle = FOLK_PALETTE.raniPink;
+      ctx.strokeStyle = MADHUBANI_PALETTE.terracotta;
+      ctx.lineWidth = 8;
+      ctx.stroke();
+
+      // Clusters of patterned Madhubani leaves & blooming lotus buds
+      ctx.fillStyle = MADHUBANI_PALETTE.leafGreen;
       ctx.beginPath();
-      ctx.ellipse(b.ex, b.ey, 26, 16, 0.4, 0, Math.PI * 2);
+      ctx.ellipse(b.ex, b.ey, 28, 16, 0.4, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Perched Songbirds
-      ctx.fillStyle = FOLK_PALETTE.turquoise;
+      // Perched Songbirds (Suga / Parrots)
+      ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
       ctx.beginPath();
-      ctx.ellipse(b.c1x, b.c1y - 12, 16, 9, 0, 0, Math.PI * 2);
+      ctx.ellipse(b.c1x, b.c1y - 14, 18, 10, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
-      ctx.beginPath();
-      ctx.arc(b.c1x + 14, b.c1y - 14, 5, 0, Math.PI * 2);
-      ctx.fill();
-    });
-
-    // Flanking Auspicious Deer (Mriga) at the base
-    [-110, 110].forEach((dx) => {
-      ctx.fillStyle = FOLK_PALETTE.terracottaLight;
-      ctx.beginPath();
-      ctx.ellipse(dx, -40, 32, 20, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+      ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
       ctx.lineWidth = 2.5;
       ctx.stroke();
 
-      // Antlers
-      ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-      ctx.lineWidth = 3;
+      ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
       ctx.beginPath();
-      ctx.moveTo(dx + (dx < 0 ? 15 : -15), -60);
-      ctx.lineTo(dx + (dx < 0 ? 25 : -25), -85);
-      ctx.stroke();
+      ctx.arc(b.c1x + 16, b.c1y - 15, 6, 0, Math.PI * 2);
+      ctx.fill();
     });
 
     ctx.restore();
@@ -737,49 +912,48 @@ export function createCourtyardMuralWallCanvas(): HTMLCanvasElement {
   drawTreeOfLife(512);
   drawTreeOfLife(1536);
 
-  // Alternating Carved Jharokha Niches with Glowing Oil Lamps
+  // 4. Mithila Village Courtyard Wall Niches (Jharokha) with Glowing Terracotta Diyas
   const niches = [180, 850, 1198, 1868];
   niches.forEach((nx) => {
     ctx.save();
     ctx.translate(nx, 480);
 
-    // Sandstone Scalloped Niche Frame
-    ctx.fillStyle = '#220803';
+    // Decorated Arch Niche
+    ctx.fillStyle = '#EBD3AD';
     ctx.beginPath();
-    ctx.arc(0, -60, 75, Math.PI, 0);
-    ctx.lineTo(75, 120);
-    ctx.lineTo(-75, 120);
+    ctx.arc(0, -60, 78, Math.PI, 0);
+    ctx.lineTo(78, 120);
+    ctx.lineTo(-78, 120);
     ctx.closePath();
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-    ctx.lineWidth = 7;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 6;
     ctx.stroke();
 
-    // Terracotta Diya inside Niche
-    ctx.fillStyle = FOLK_PALETTE.terracottaWarm;
-    ctx.beginPath();
-    ctx.arc(0, 95, 28, 0, Math.PI);
-    ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Golden Flame
-    ctx.fillStyle = FOLK_PALETTE.brightSaffron;
+    // Terracotta Diya inside Niche
+    ctx.fillStyle = MADHUBANI_PALETTE.terracotta;
+    ctx.beginPath();
+    ctx.arc(0, 95, 30, 0, Math.PI);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3.5;
+    ctx.stroke();
+
+    // Auspicious Flame with Warm Glow
+    ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
     ctx.beginPath();
     ctx.moveTo(0, 95);
-    ctx.quadraticCurveTo(12, 60, 0, 45);
-    ctx.quadraticCurveTo(-12, 60, 0, 95);
+    ctx.quadraticCurveTo(14, 60, 0, 42);
+    ctx.quadraticCurveTo(-14, 60, 0, 95);
     ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
 
-    // Flame Radiance Halo
-    const nHalo = ctx.createRadialGradient(0, 65, 5, 0, 65, 80);
-    nHalo.addColorStop(0, 'rgba(255, 176, 0, 0.45)');
-    nHalo.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = nHalo;
-    ctx.beginPath();
-    ctx.arc(0, 65, 80, 0, Math.PI * 2);
-    ctx.fill();
     ctx.restore();
   });
 
@@ -787,10 +961,12 @@ export function createCourtyardMuralWallCanvas(): HTMLCanvasElement {
 }
 
 /**
- * 4. COURTYARD FLOOR MANDALA (2048x2048)
- * Massive concentric Rangoli (Alpana) in vibrant folk pigments:
- * 16 giant lotus petals in rani pink, turquoise, vermilion & saffron,
- * concentric geometric bands, and sacred rice-flour filigree dots.
+ * 4. COURTYARD FLOOR MANDALA (ARIPANA / ALAPANA) (2048x2048)
+ * Authentic Mithila Aripana:
+ * - Concentric geometric circles with double ink lines
+ * - 16-Petal Lotus in vermilion red, mustard yellow, leaf green & peacock blue
+ * - Auspicious Matsya (fish pair) swimming in sacred circle
+ * - Natural white rice-flour dots and fine katchni hatching
  */
 export function createCourtyardFloorCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -802,30 +978,25 @@ export function createCourtyardFloorCanvas(): HTMLCanvasElement {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Deep Terracotta & Indigo Polished Stone Terrace Ground
-  const floorGrad = ctx.createRadialGradient(1024, 1024, 200, 1024, 1024, 1100);
-  floorGrad.addColorStop(0, '#2A0D08');
-  floorGrad.addColorStop(0.5, '#1B0805');
-  floorGrad.addColorStop(1, '#0B0402');
-  ctx.fillStyle = floorGrad;
-  ctx.fillRect(0, 0, 2048, 2048);
+  // Warm terracotta clay & ivory ground
+  applyParchmentGround(ctx, 2048, 2048, '#F0DEC0');
 
-  // Concentric Pattachitra Circular Rings
   ctx.save();
   ctx.translate(1024, 1024);
 
-  const ringStyles = [
-    { r: 960, col: FOLK_PALETTE.antiqueGold, w: 14 },
-    { r: 920, col: FOLK_PALETTE.warmIvory, w: 6 },
-    { r: 850, col: FOLK_PALETTE.vermilion, w: 12 },
-    { r: 760, col: FOLK_PALETTE.turquoise, w: 8 },
-    { r: 640, col: FOLK_PALETTE.brightSaffron, w: 10 },
-    { r: 500, col: FOLK_PALETTE.peacockTeal, w: 8 },
-    { r: 360, col: FOLK_PALETTE.raniPink, w: 8 },
-    { r: 220, col: FOLK_PALETTE.marigoldYellow, w: 6 },
+  // Concentric Rings with Double Ink Strokes
+  const rings = [
+    { r: 960, col: MADHUBANI_PALETTE.vermilionRed, w: 12 },
+    { r: 920, col: MADHUBANI_PALETTE.inkBlack, w: 5 },
+    { r: 850, col: MADHUBANI_PALETTE.mustardYellow, w: 10 },
+    { r: 760, col: MADHUBANI_PALETTE.peacockBlue, w: 8 },
+    { r: 640, col: MADHUBANI_PALETTE.leafGreen, w: 9 },
+    { r: 500, col: MADHUBANI_PALETTE.terracotta, w: 8 },
+    { r: 360, col: MADHUBANI_PALETTE.vermilionRed, w: 8 },
+    { r: 220, col: MADHUBANI_PALETTE.mustardYellow, w: 6 },
   ];
 
-  ringStyles.forEach((ring) => {
+  rings.forEach((ring) => {
     ctx.strokeStyle = ring.col;
     ctx.lineWidth = ring.w;
     ctx.beginPath();
@@ -833,13 +1004,13 @@ export function createCourtyardFloorCanvas(): HTMLCanvasElement {
     ctx.stroke();
   });
 
-  // Layer 1: 16 Giant Outer Lotus Petals (Rani Pink & Bright Saffron)
+  // Layer 1: 16 Giant Outer Lotus Petals (Vermilion & Mustard)
   for (let i = 0; i < 16; i++) {
     const a = (i * Math.PI * 2) / 16;
     ctx.save();
     ctx.rotate(a);
 
-    ctx.fillStyle = i % 2 === 0 ? FOLK_PALETTE.raniPink : FOLK_PALETTE.brightSaffron;
+    ctx.fillStyle = i % 2 === 0 ? MADHUBANI_PALETTE.vermilionRed : MADHUBANI_PALETTE.mustardYellow;
     ctx.beginPath();
     ctx.moveTo(0, 360);
     ctx.quadraticCurveTo(120, 640, 0, 920);
@@ -847,13 +1018,13 @@ export function createCourtyardFloorCanvas(): HTMLCanvasElement {
     ctx.closePath();
     ctx.fill();
 
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 4.5;
     ctx.stroke();
 
-    // Inner petal filigree spine
-    ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-    ctx.lineWidth = 3;
+    // Internal Katchni spine
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.moveTo(0, 380);
     ctx.lineTo(0, 890);
@@ -861,13 +1032,13 @@ export function createCourtyardFloorCanvas(): HTMLCanvasElement {
     ctx.restore();
   }
 
-  // Layer 2: 16 Peacock Teal & Turquoise Secondary Petals
+  // Layer 2: 16 Secondary Petals (Peacock Blue & Leaf Green)
   for (let i = 0; i < 16; i++) {
     const a = (i * Math.PI * 2) / 16 + Math.PI / 16;
     ctx.save();
     ctx.rotate(a);
 
-    ctx.fillStyle = i % 2 === 0 ? FOLK_PALETTE.tealBright : FOLK_PALETTE.turquoise;
+    ctx.fillStyle = i % 2 === 0 ? MADHUBANI_PALETTE.peacockBlue : MADHUBANI_PALETTE.leafGreen;
     ctx.beginPath();
     ctx.moveTo(0, 220);
     ctx.quadraticCurveTo(80, 440, 0, 720);
@@ -875,39 +1046,44 @@ export function createCourtyardFloorCanvas(): HTMLCanvasElement {
     ctx.closePath();
     ctx.fill();
 
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 4;
     ctx.stroke();
     ctx.restore();
   }
 
-  // Layer 3: Central Golden Star Mandir Platform
-  ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
+  // Central Auspicious Sacred Fish Circle (Matsya - Quintessential Mithila Motif)
+  ctx.fillStyle = MADHUBANI_PALETTE.naturalTurmeric;
   ctx.beginPath();
   ctx.arc(0, 0, 220, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-  ctx.lineWidth = 7;
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 6;
   ctx.stroke();
 
-  // Fine Sacred Alpana Dots
-  ctx.fillStyle = FOLK_PALETTE.warmIvory;
+  // Fine Sacred Rice-Flour Alpana Dots
+  ctx.fillStyle = MADHUBANI_PALETTE.warmWhite;
   for (let p = 0; p < 32; p++) {
     const pa = (p * Math.PI * 2) / 32;
     ctx.beginPath();
     ctx.arc(Math.cos(pa) * 195, Math.sin(pa) * 195, 7, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
   }
-  ctx.restore();
 
+  ctx.restore();
   return canvas;
 }
 
 /**
- * 5. PALACE PAVILION HORIZON BACKDROP (2048x1024)
- * Indian Miniature Palace Horizon:
- * Layered chhatris, illuminated jharokhas with warm candle glow,
- * cypress trees (Sarv), kadamba trees, and celestial twilight sky.
+ * 5. PALACE & VILLAGE HORIZON BACKDROP (2048x1024)
+ * Authentic Mithila Panorama:
+ * - Traditional Indian houses with Madhubani decorated walls
+ * - Flying birds (Suga) across warm parchment sky
+ * - Sacred Surya (Sun) & Chandra (Moon) motifs
+ * - Blooming lotus ponds and village trees
  */
 export function createPalaceBackdropCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -919,127 +1095,111 @@ export function createPalaceBackdropCanvas(): HTMLCanvasElement {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Celestial Twilight Sky Gradient (Deep Indigo to Peacock Teal)
-  const skyGrad = ctx.createLinearGradient(0, 0, 0, 1024);
-  skyGrad.addColorStop(0, '#0B0F24');
-  skyGrad.addColorStop(0.4, '#141C38');
-  skyGrad.addColorStop(0.8, '#08252C');
-  skyGrad.addColorStop(1, '#03171B');
-  ctx.fillStyle = skyGrad;
-  ctx.fillRect(0, 0, 2048, 1024);
+  // Warm ivory parchment sky
+  applyParchmentGround(ctx, 2048, 1024, '#FBF0DC');
 
-  // Twinkling Golden Stars & Radiant Crescent Moon
+  // Radiant Madhubani Sun in Upper Sky
   ctx.save();
-  ctx.fillStyle = FOLK_PALETTE.warmIvory;
-  for (let s = 0; s < 120; s++) {
-    const sx = Math.random() * 2048;
-    const sy = Math.random() * 500;
-    const size = Math.random() * 3 + 1.5;
-    ctx.beginPath();
-    ctx.arc(sx, sy, size, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  ctx.translate(1720, 200);
+  ctx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
+  ctx.beginPath();
+  ctx.arc(0, 0, 60, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 4;
+  ctx.stroke();
 
-  // Golden Crescent Moon (Dvitiya Chandra)
-  ctx.fillStyle = FOLK_PALETTE.marigoldYellow;
-  ctx.beginPath();
-  ctx.arc(1720, 180, 50, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = '#0F1530';
-  ctx.beginPath();
-  ctx.arc(1735, 170, 48, 0, Math.PI * 2);
-  ctx.fill();
+  // Sun Rays
+  for (let r = 0; r < 16; r++) {
+    const ra = (r * Math.PI * 2) / 16;
+    ctx.save();
+    ctx.rotate(ra);
+    ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.beginPath();
+    ctx.moveTo(-10, 65);
+    ctx.lineTo(0, 105);
+    ctx.lineTo(10, 65);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  }
   ctx.restore();
 
-  // Layered Indian Miniature Palace Pavilions & Chhatris
-  const drawChhatri = (cx: number, cy: number, scale: number) => {
+  // Flying Birds (Suga / Parrots) with outstretched patterned wings
+  const drawFlyingBird = (bx: number, by: number, scale: number) => {
     ctx.save();
-    ctx.translate(cx, cy);
+    ctx.translate(bx, by);
     ctx.scale(scale, scale);
 
-    // Onion Dome / Lotus Cupola
-    ctx.fillStyle = FOLK_PALETTE.antiqueGold;
+    ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
     ctx.beginPath();
-    ctx.moveTo(-70, 0);
-    ctx.quadraticCurveTo(-90, -80, 0, -140);
-    ctx.quadraticCurveTo(90, -80, 70, 0);
-    ctx.closePath();
+    ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(20, -35, 45, -30);
+    ctx.quadraticCurveTo(25, -15, 10, -5);
+    ctx.quadraticCurveTo(20, 35, 45, 30);
+    ctx.quadraticCurveTo(20, 15, 0, 0);
     ctx.fill();
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-    ctx.lineWidth = 4;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3;
     ctx.stroke();
-
-    // Kalash Spire
-    ctx.fillStyle = FOLK_PALETTE.brightSaffron;
-    ctx.beginPath();
-    ctx.moveTo(0, -140);
-    ctx.lineTo(8, -170);
-    ctx.lineTo(0, -195);
-    ctx.lineTo(-8, -170);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Slender Pillars supporting dome
-    ctx.fillStyle = FOLK_PALETTE.terracottaWarm;
-    [-55, -20, 20, 55].forEach((px) => {
-      ctx.fillRect(px - 4, 0, 8, 110);
-      ctx.strokeRect(px - 4, 0, 8, 110);
-    });
-
-    // Balcony Plinth
-    ctx.fillStyle = FOLK_PALETTE.vermilion;
-    ctx.fillRect(-75, 110, 150, 20);
-    ctx.strokeRect(-75, 110, 150, 20);
     ctx.restore();
   };
 
-  // Center Grand Chhatri and flanking pavilions
-  drawChhatri(1024, 480, 1.4);
-  drawChhatri(640, 540, 1.0);
-  drawChhatri(1408, 540, 1.0);
-  drawChhatri(300, 600, 0.8);
-  drawChhatri(1748, 600, 0.8);
+  drawFlyingBird(340, 140, 0.9);
+  drawFlyingBird(440, 180, 0.7);
+  drawFlyingBird(680, 110, 0.85);
+  drawFlyingBird(1280, 160, 0.95);
 
-  // Stippled Miniature Cypress Trees (Sarv) between pavilions
-  const drawCypressTree = (tx: number, ty: number, height: number) => {
+  // Village Houses & Haveli Pavilions along Horizon
+  const drawMadhubaniHouse = (hx: number, hy: number, width: number, height: number) => {
     ctx.save();
-    ctx.translate(tx, ty);
+    ctx.translate(hx, hy);
 
-    // Slender flame-shaped cypress foliage
-    ctx.fillStyle = FOLK_PALETTE.forestGreen;
+    // Sloped Thatched / Terracotta Roof with patterned tiles
+    ctx.fillStyle = MADHUBANI_PALETTE.terracotta;
     ctx.beginPath();
-    ctx.moveTo(0, -height);
-    ctx.quadraticCurveTo(35, -height * 0.4, 18, 0);
-    ctx.lineTo(-18, 0);
-    ctx.quadraticCurveTo(-35, -height * 0.4, 0, -height);
+    ctx.moveTo(-width * 0.1, 0);
+    ctx.lineTo(width * 0.5, -height * 0.65);
+    ctx.lineTo(width * 1.1, 0);
     ctx.closePath();
     ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 5;
+    ctx.stroke();
 
-    // Leaf cluster stippling in gold and lime
-    ctx.fillStyle = FOLK_PALETTE.leafGreen;
-    for (let l = 0; l < 45; l++) {
-      const lx = (Math.random() - 0.5) * 36;
-      const ly = -Math.random() * height * 0.9;
-      ctx.beginPath();
-      ctx.arc(lx, ly, 4, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // Wall Base (Ivory with Vermilion Border)
+    ctx.fillStyle = '#F5E6CC';
+    ctx.fillRect(0, 0, width, height);
+    ctx.strokeRect(0, 0, width, height);
+
+    // Decorated Mural on House Wall (Sacred Lotus & Fish)
+    ctx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
+    ctx.beginPath();
+    ctx.arc(width * 0.5, height * 0.45, 24, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
     ctx.restore();
   };
 
-  drawCypressTree(480, 780, 240);
-  drawCypressTree(820, 760, 260);
-  drawCypressTree(1228, 760, 260);
-  drawCypressTree(1580, 780, 240);
+  drawMadhubaniHouse(180, 620, 220, 260);
+  drawMadhubaniHouse(640, 580, 260, 300);
+  drawMadhubaniHouse(1140, 590, 240, 290);
+  drawMadhubaniHouse(1620, 630, 220, 250);
 
   return canvas;
 }
 
 /**
  * 6. HANDCRAFTED TERRACOTTA DIYA TEXTURE (2048x2048)
- * Burnished earthen clay with hand-painted Madhubani floral motifs,
- * white rice-flour alpana dot rims, and subtle natural clay variation.
+ * Authentic Mithila Hand-Burnished Earthen Clay Diya:
+ * - Baked terracotta clay with natural mineral variations
+ * - Double-line black ink motifs with fine katchni hatching
+ * - Hand-painted white rice-flour alpana dots along rim
+ * - Concentric sacred lotus petals in vermilion & mustard yellow
  */
 export function createTerracottaDiyaCanvas(): HTMLCanvasElement {
   const canvas = document.createElement('canvas');
@@ -1051,20 +1211,20 @@ export function createTerracottaDiyaCanvas(): HTMLCanvasElement {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  // Rich Baked Clay Gradation (Deep burnt umber to warm terracotta-saffron)
-  const clayGrad = ctx.createRadialGradient(1024, 1024, 180, 1024, 1024, 1024);
-  clayGrad.addColorStop(0, '#E66838');
-  clayGrad.addColorStop(0.35, '#C64E22');
-  clayGrad.addColorStop(0.75, '#9E3816');
-  clayGrad.addColorStop(1, '#631B06');
+  // 1. Natural baked terracotta clay ground
+  const clayGrad = ctx.createRadialGradient(1024, 1024, 150, 1024, 1024, 1024);
+  clayGrad.addColorStop(0, '#D9734E');
+  clayGrad.addColorStop(0.35, MADHUBANI_PALETTE.terracotta);
+  clayGrad.addColorStop(0.7, '#A33C1A');
+  clayGrad.addColorStop(1, '#66220E');
   ctx.fillStyle = clayGrad;
   ctx.fillRect(0, 0, 2048, 2048);
 
-  // Ceramic hand-burnished clay rings
+  // 2. Hand-burnished ceramic potter's wheel rings
   ctx.save();
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 48; i++) {
     const radius = 220 + i * 36;
-    ctx.strokeStyle = i % 2 === 0 ? 'rgba(255, 176, 0, 0.14)' : 'rgba(70, 20, 6, 0.22)';
+    ctx.strokeStyle = i % 2 === 0 ? 'rgba(232, 185, 71, 0.16)' : 'rgba(33, 26, 23, 0.22)';
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.arc(1024, 1024, radius, 0, Math.PI * 2);
@@ -1072,61 +1232,78 @@ export function createTerracottaDiyaCanvas(): HTMLCanvasElement {
   }
   ctx.restore();
 
-  // Hand-Engraved Madhubani Border along Diya Rim
+  // 3. Hand-Engraved Madhubani Border along Diya Rim
   ctx.save();
   ctx.translate(1024, 1024);
 
-  // Outer gold inlay band
-  ctx.strokeStyle = FOLK_PALETTE.antiqueGold;
-  ctx.lineWidth = 18;
+  // Outer Mustard band
+  ctx.strokeStyle = MADHUBANI_PALETTE.mustardYellow;
+  ctx.lineWidth = 20;
   ctx.beginPath();
   ctx.arc(0, 0, 880, 0, Math.PI * 2);
   ctx.stroke();
 
-  // White rice-flour engraved rim trim
-  ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-  ctx.lineWidth = 6;
+  // Double-line Ink border
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 5;
   ctx.beginPath();
-  ctx.arc(0, 0, 855, 0, Math.PI * 2);
+  ctx.arc(0, 0, 892, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(0, 0, 868, 0, Math.PI * 2);
   ctx.stroke();
 
-  // 32 Sacred Rice-Flour Alpana Dots along Rim
-  ctx.fillStyle = FOLK_PALETTE.warmIvory;
-  for (let i = 0; i < 32; i++) {
-    const angle = (i * Math.PI * 2) / 32;
+  // White rice-flour alpana dots along rim
+  ctx.fillStyle = MADHUBANI_PALETTE.warmWhite;
+  for (let i = 0; i < 36; i++) {
+    const angle = (i * Math.PI * 2) / 36;
     ctx.beginPath();
-    ctx.arc(Math.cos(angle) * 855, Math.sin(angle) * 855, 9, 0, Math.PI * 2);
+    ctx.arc(Math.cos(angle) * 880, Math.sin(angle) * 880, 9, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
   }
 
-  // Radiating Madhubani Kamal (Lotus) Petals on Clay Surface
+  // 16 Radiating Madhubani Lotus Petals (Vermilion & Mustard with Katchni lines)
   for (let p = 0; p < 16; p++) {
     const pa = (p * Math.PI * 2) / 16;
     ctx.save();
     ctx.rotate(pa);
 
-    ctx.fillStyle = p % 2 === 0 ? FOLK_PALETTE.vermilion : FOLK_PALETTE.brightSaffron;
+    ctx.fillStyle = p % 2 === 0 ? MADHUBANI_PALETTE.vermilionRed : MADHUBANI_PALETTE.mustardYellow;
     ctx.beginPath();
     ctx.moveTo(0, 360);
-    ctx.quadraticCurveTo(60, 560, 0, 800);
-    ctx.quadraticCurveTo(-60, 560, 0, 360);
+    ctx.quadraticCurveTo(65, 560, 0, 820);
+    ctx.quadraticCurveTo(-65, 560, 0, 360);
     ctx.closePath();
     ctx.fill();
 
-    ctx.strokeStyle = FOLK_PALETTE.warmIvory;
+    ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
     ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // Inner petal spine
+    ctx.beginPath();
+    ctx.moveTo(0, 380);
+    ctx.lineTo(0, 790);
     ctx.stroke();
     ctx.restore();
   }
 
-  // Inner Golden Oil Reservoir Ring
-  ctx.fillStyle = FOLK_PALETTE.brightSaffron;
+  // Inner Golden Ghee Basin with Peacock Blue Ring
+  ctx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
   ctx.beginPath();
-  ctx.arc(0, 0, 320, 0, Math.PI * 2);
+  ctx.arc(0, 0, 330, 0, Math.PI * 2);
   ctx.fill();
-  ctx.strokeStyle = FOLK_PALETTE.warmIvory;
-  ctx.lineWidth = 8;
+  ctx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+  ctx.lineWidth = 6;
   ctx.stroke();
+
+  ctx.fillStyle = MADHUBANI_PALETTE.naturalTurmeric;
+  ctx.beginPath();
+  ctx.arc(0, 0, 310, 0, Math.PI * 2);
+  ctx.fill();
 
   ctx.restore();
   return canvas;

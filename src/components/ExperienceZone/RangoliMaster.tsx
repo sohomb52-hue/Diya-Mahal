@@ -3,6 +3,7 @@ import { RotateCcw, Download, Sparkles, Paintbrush, Undo } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { soundManager } from '../../utils/audio';
 import { calculateSymmetryPoints } from '../../utils/gameLogic';
+import { MadhubaniBox, MadhubaniCorner, MadhubaniDivider } from '../MadhubaniCard';
 
 const RANGOLI_COLORS = [
   { name: 'Rani Pink', hex: '#E91E63' },
@@ -183,10 +184,11 @@ export const RangoliMaster: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 bg-[#1A0A0E]/95 p-6 md:p-8 rounded-3xl border-2 border-[#D4AF37]/50 shadow-folk-3d backdrop-blur-xl relative overflow-hidden">
-      {/* Background Madhubani Hatching Pattern */}
-      <div className="absolute inset-0 bg-madhubani-katchni opacity-15 pointer-events-none" />
-
+    <MadhubaniBox
+      variant="maroon"
+      className="flex flex-col lg:flex-row items-center justify-center gap-8 relative overflow-hidden"
+      cornerSize={42}
+    >
       {/* Canvas Viewport with Antique Brass & Carved Teak Frame */}
       <div className="relative flex flex-col items-center z-10">
         <div className="relative rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.35)] touch-none cursor-crosshair">
@@ -329,6 +331,6 @@ export const RangoliMaster: React.FC = () => {
           <span>Complete Rangoli ✨</span>
         </button>
       </div>
-    </div>
+    </MadhubaniBox>
   );
 };

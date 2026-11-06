@@ -8,6 +8,7 @@ import { DiwaliMemoryMatch } from './ExperienceZone/DiwaliMemoryMatch';
 import { FirecrackerSimulator } from './FirecrackerSimulator';
 import { FestivalPassport } from './FestivalPassport';
 import { FinalSection } from './FinalSection';
+import { MadhubaniBox, MadhubaniCorner, MadhubaniDivider } from './MadhubaniCard';
 
 export interface PalaceDoor2DItem {
   id: number;
@@ -317,22 +318,28 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
             <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-[#D4AF37] via-[#8C3214] to-[#D4AF37] z-20 shadow-md" />
           </div>
 
-          {/* Active Door Information & Action Box with Handcrafted 3D Depth */}
-          <div className="w-full max-w-lg p-6 rounded-3xl bg-[#1A0A0E]/94 border-2 border-[#D4AF37]/50 backdrop-blur-md shadow-folk-3d text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-madhubani-katchni opacity-10 pointer-events-none" />
-
-            {/* Clean Unboxed Metadata Badge */}
-            <div className="flex items-center justify-center gap-2 text-xs font-semibold text-[#E5C158] tracking-widest uppercase mb-2">
+          {/* Active Door Information & Action Box with Authentic Madhubani Double-Line Framing */}
+          <MadhubaniBox
+            variant="maroon"
+            className="w-full max-w-lg text-center"
+            cornerSize={42}
+          >
+            {/* Clean Madhubani Metadata Ribbon Badge */}
+            <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#E8B947] tracking-widest uppercase mb-2">
+              <span className="text-[#A82420]">🪔</span>
               <span>{currentDoor.badge}</span>
+              <span className="text-[#A82420]">🪔</span>
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-royal-gold-gradient mb-2 drop-shadow-md">
               {currentDoor.title}
             </h2>
 
-            <p className="text-xs sm:text-sm text-[#FFF8E7]/80 font-light mb-6">
+            <p className="text-xs sm:text-sm text-[#FFF8E7]/85 font-light mb-4">
               {currentDoor.subtitle}
             </p>
+
+            <MadhubaniDivider className="my-3 max-w-xs mx-auto" />
 
             <button
               onClick={() => handleOpenDoor(activeDoorIndex)}
@@ -344,30 +351,30 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
             </button>
 
             {/* Prev / Next Door Navigation Buttons */}
-            <div className="flex items-center justify-between mt-5 pt-3 border-t border-[#D4AF37]/25 text-xs font-semibold text-[#FFF8E7]/75">
+            <div className="flex items-center justify-between mt-5 pt-3 border-t border-[#E8B947]/30 text-xs font-semibold text-[#FFF8E7]/80">
               <button
                 onClick={() => handleSelectDoorFromNav(Math.max(0, activeDoorIndex - 1))}
                 disabled={activeDoorIndex === 0}
-                className="flex items-center gap-1 hover:text-[#E5C158] disabled:opacity-30 disabled:hover:text-inherit cursor-pointer transition-colors"
+                className="flex items-center gap-1 hover:text-[#E8B947] disabled:opacity-30 disabled:hover:text-inherit cursor-pointer transition-colors"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-4 h-4 text-[#E8B947]" />
                 <span>Prev Door</span>
               </button>
 
-              <span className="text-xs font-mono text-[#E5C158]">
+              <span className="text-xs font-mono font-bold text-[#E8B947] px-2 py-0.5 rounded-md bg-[#120508] border border-[#E8B947]/40">
                 {activeDoorIndex + 1} of {PALACE_DOORS_2D.length}
               </span>
 
               <button
                 onClick={() => handleSelectDoorFromNav(Math.min(PALACE_DOORS_2D.length - 1, activeDoorIndex + 1))}
                 disabled={activeDoorIndex === PALACE_DOORS_2D.length - 1}
-                className="flex items-center gap-1 hover:text-[#E5C158] disabled:opacity-30 disabled:hover:text-inherit cursor-pointer transition-colors"
+                className="flex items-center gap-1 hover:text-[#E8B947] disabled:opacity-30 disabled:hover:text-inherit cursor-pointer transition-colors"
               >
                 <span>Next Door</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-4 h-4 text-[#E8B947]" />
               </button>
             </div>
-          </div>
+          </MadhubaniBox>
 
         </div>
       )}
@@ -376,34 +383,41 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
       {doorState === 'inside' && (
         <div className="relative z-30 min-h-screen bg-[#120508]/96 py-8 px-3 sm:px-6 animate-fade-in flex flex-col justify-between">
           
-          {/* Chamber Header Control Bar with Folk Art Styling */}
-          <div className="max-w-6xl mx-auto w-full mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#200A10]/90 border-2 border-[#D4AF37]/45 backdrop-blur-md shadow-folk-3d">
-            <div className="flex items-center gap-3">
-              <span className="px-3 py-1 rounded-lg bg-gradient-to-r from-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold uppercase shadow-sm">
+          {/* Chamber Header Control Bar with Authentic Madhubani Double Border */}
+          <div className="max-w-6xl mx-auto w-full mb-6 relative flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#240A10]/95 via-[#1B070B]/95 to-[#120508]/95 border-[3px] border-[#211A17] shadow-folk-3d overflow-hidden">
+            {/* Inner Double Gold Hairline */}
+            <div className="absolute inset-1.5 rounded-[12px] border border-[#E8B947]/60 pointer-events-none" />
+            <MadhubaniCorner position="top-left" size={28} />
+            <MadhubaniCorner position="top-right" size={28} />
+            <MadhubaniCorner position="bottom-left" size={28} />
+            <MadhubaniCorner position="bottom-right" size={28} />
+
+            <div className="relative z-10 flex items-center gap-3">
+              <span className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#A82420] to-[#C59B27] text-[#FFF8E7] text-xs font-extrabold uppercase border border-[#E8B947]/60 shadow-md">
                 Chamber {currentDoor.id} of 6
               </span>
               <div>
-                <h3 className="text-xl font-bold font-serif text-[#FFF8E7]">
+                <h3 className="text-xl sm:text-2xl font-bold font-serif text-royal-gold-gradient">
                   {currentDoor.title}
                 </h3>
-                <p className="text-xs text-[#FFF8E7]/70 font-light hidden sm:block">
+                <p className="text-xs text-[#FFF8E7]/75 font-light hidden sm:block">
                   {currentDoor.subtitle}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="relative z-10 flex items-center gap-3">
               <button
                 onClick={handleStepBackToCorridor}
-                className="px-4 py-2 rounded-xl bg-[#140609] border border-[#D4AF37]/50 text-xs font-bold text-[#FFF8E7] hover:border-[#E5C158] flex items-center gap-2 transition-all cursor-pointer shadow-sm"
+                className="px-4 py-2 rounded-xl bg-[#140609] border-2 border-[#E8B947]/50 text-xs font-bold text-[#FFF8E7] hover:border-[#E8B947] flex items-center gap-2 transition-all cursor-pointer shadow-sm hover:scale-105"
               >
-                <X className="w-4 h-4 text-[#A8422B]" />
+                <X className="w-4 h-4 text-[#A82420]" />
                 <span>Exit Chamber</span>
               </button>
 
               <button
                 onClick={handleNextDoor}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold shadow-md hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold shadow-md hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer hover:scale-105"
               >
                 <span>Next Door</span>
                 <ChevronRight className="w-4 h-4" />

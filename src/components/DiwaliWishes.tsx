@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Copy, Download, Share2, Sparkles, Check, Heart } from 'lucide-react';
 import { soundManager } from '../utils/audio';
+import { MadhubaniBox, MadhubaniCorner, MadhubaniDivider } from './MadhubaniCard';
 
 const WISH_TEMPLATES = [
   {
@@ -139,43 +140,58 @@ export const DiwaliWishes: React.FC = () => {
         {/* Editor Split Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* Left Form Controls (5 cols) */}
-          <div className="lg:col-span-5 bg-[#0B1021]/90 p-6 rounded-3xl border border-[#D4AF37]/35 backdrop-blur-md flex flex-col gap-5 text-[#FFF8E7] shadow-xl">
-            
+          {/* Left Form Controls (5 cols) wrapped in authentic MadhubaniBox */}
+          <MadhubaniBox
+            variant="maroon"
+            className="lg:col-span-5 flex flex-col gap-5 text-[#FFF8E7]"
+            cornerSize={36}
+          >
+            {/* Box Header */}
+            <div className="border-b-2 border-[#E8B947]/30 pb-3 flex items-center justify-between">
+              <span className="text-sm font-bold font-serif text-[#E8B947] uppercase tracking-wider flex items-center gap-2">
+                <span>🪔</span> Greeting Details
+              </span>
+              <span className="text-[11px] font-mono text-[#E8B947]/75">Mithila Studio</span>
+            </div>
+
             {/* Recipient Input */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-1.5">
+              <label className="text-xs font-bold font-serif uppercase tracking-wider text-[#E8B947] block mb-1.5">
                 Recipient Name (To)
               </label>
-              <input
-                type="text"
-                value={recipient}
-                onChange={(e) => setRecipient(e.target.value)}
-                placeholder="e.g., Dear Sharma Family"
-                className="w-full px-4 py-2.5 rounded-xl bg-[#002B30]/70 border border-[#008C95]/40 text-[#FFF1D6] focus:border-[#FFB000] focus:outline-none text-sm transition-colors"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={recipient}
+                  onChange={(e) => setRecipient(e.target.value)}
+                  placeholder="e.g., Dear Sharma Family"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#140609] border-2 border-[#E8B947]/40 text-[#FFF8E7] focus:border-[#E8B947] focus:ring-1 focus:ring-[#E8B947] focus:outline-none text-sm transition-colors shadow-inner"
+                />
+              </div>
             </div>
 
             {/* Sender Input */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-1.5">
+              <label className="text-xs font-bold font-serif uppercase tracking-wider text-[#E8B947] block mb-1.5">
                 Your Name (From)
               </label>
-              <input
-                type="text"
-                value={sender}
-                onChange={(e) => setSender(e.target.value)}
-                placeholder="e.g., Rohan & Family"
-                className="w-full px-4 py-2.5 rounded-xl bg-[#002B30]/70 border border-[#008C95]/40 text-[#FFF1D6] focus:border-[#FFB000] focus:outline-none text-sm transition-colors"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={sender}
+                  onChange={(e) => setSender(e.target.value)}
+                  placeholder="e.g., Rohan & Family"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#140609] border-2 border-[#E8B947]/40 text-[#FFF8E7] focus:border-[#E8B947] focus:ring-1 focus:ring-[#E8B947] focus:outline-none text-sm transition-colors shadow-inner"
+                />
+              </div>
             </div>
 
             {/* Wish Template Selection */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-2">
+              <label className="text-xs font-bold font-serif uppercase tracking-wider text-[#E8B947] block mb-2">
                 Select Festive Wish
               </label>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2.5">
                 {WISH_TEMPLATES.map((tmpl) => (
                   <button
                     key={tmpl.id}
@@ -183,14 +199,14 @@ export const DiwaliWishes: React.FC = () => {
                       soundManager.playClick();
                       setSelectedWish(tmpl.text);
                     }}
-                    className={`p-3 text-left rounded-xl border text-xs transition-all cursor-pointer ${
+                    className={`p-3 text-left rounded-xl border-2 text-xs transition-all cursor-pointer relative overflow-hidden ${
                       selectedWish === tmpl.text
-                        ? 'bg-[#008C95]/40 border-[#FFB000] text-white shadow-[0_0_12px_rgba(32,201,195,0.3)]'
-                        : 'bg-[#002B30]/50 border-[#008C95]/30 text-[#FFF1D6]/70 hover:border-[#20C9C3]'
+                        ? 'bg-gradient-to-r from-[#8C3214] via-[#A82420] to-[#C59B27] border-[#E8B947] text-[#FFF8E7] shadow-[0_0_15px_rgba(232,185,71,0.35)] scale-[1.01]'
+                        : 'bg-[#140609] border-[#E8B947]/25 text-[#FFF8E7]/75 hover:border-[#E8B947]/60'
                     }`}
                   >
-                    <span className="font-semibold text-[#FFB000] block mb-0.5">{tmpl.title}</span>
-                    <span className="line-clamp-2 text-[11px] font-light">{tmpl.text}</span>
+                    <span className="font-bold font-serif text-[#E8B947] block mb-0.5">{tmpl.title}</span>
+                    <span className="line-clamp-2 text-[11px] font-light leading-relaxed">{tmpl.text}</span>
                   </button>
                 ))}
               </div>
@@ -198,73 +214,82 @@ export const DiwaliWishes: React.FC = () => {
 
             {/* Custom Message Override */}
             <div>
-              <label className="text-xs font-bold uppercase tracking-wider text-[#FFB000] block mb-1.5">
+              <label className="text-xs font-bold font-serif uppercase tracking-wider text-[#E8B947] block mb-1.5">
                 Custom Message
               </label>
               <textarea
                 value={selectedWish}
                 onChange={(e) => setSelectedWish(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-2.5 rounded-xl bg-[#002B30]/70 border border-[#008C95]/40 text-[#FFF1D6] focus:border-[#FFB000] focus:outline-none text-xs leading-relaxed transition-colors resize-none"
+                className="w-full px-4 py-2.5 rounded-xl bg-[#140609] border-2 border-[#E8B947]/40 text-[#FFF8E7] focus:border-[#E8B947] focus:ring-1 focus:ring-[#E8B947] focus:outline-none text-xs leading-relaxed transition-colors resize-none shadow-inner"
               />
             </div>
 
-          </div>
+          </MadhubaniBox>
 
           {/* Right Preview Card & Actions (7 cols) */}
           <div className="lg:col-span-7 flex flex-col items-center gap-6">
             
-            {/* Card Graphic Viewport */}
+            {/* Card Graphic Viewport with Madhubani Framing */}
             <div
               ref={cardRef}
-              className="relative w-full aspect-[16/10] max-w-lg rounded-3xl bg-gradient-to-br from-[#E63946] via-[#A51C69] to-[#0F1126] p-8 border-4 border-[#FFB000] shadow-[0_0_40px_rgba(230,57,70,0.35)] flex flex-col justify-between text-center overflow-hidden"
+              className="relative w-full aspect-[16/10] max-w-lg rounded-3xl bg-gradient-to-br from-[#2D0A12] via-[#521510] to-[#1F070A] p-7 sm:p-9 border-[3.5px] border-[#211A17] shadow-[0_16px_50px_rgba(0,0,0,0.85),0_0_30px_rgba(212,175,55,0.3)] flex flex-col justify-between text-center overflow-hidden"
             >
-              {/* Inner Decorative Hairline Border */}
-              <div className="absolute inset-3 border border-[#20C9C3]/50 rounded-2xl pointer-events-none" />
+              {/* Inner Double Gold Hairline Border */}
+              <div className="absolute inset-2.5 sm:inset-3 border-2 border-[#E8B947]/70 rounded-[20px] pointer-events-none z-10" />
+              
+              {/* Madhubani Corner Spandrels on Greeting Card */}
+              <MadhubaniCorner position="top-left" size={34} />
+              <MadhubaniCorner position="top-right" size={34} />
+              <MadhubaniCorner position="bottom-left" size={34} />
+              <MadhubaniCorner position="bottom-right" size={34} />
+
+              {/* Katchni Texture Overlay */}
+              <div className="absolute inset-0 bg-madhubani-katchni opacity-15 pointer-events-none" />
 
               {/* Top Diya Icon Header */}
-              <div className="flex items-center justify-between text-[#FFB000]">
-                <Sparkles className="w-5 h-5 text-[#20C9C3]" />
-                <span className="text-xs font-bold tracking-widest font-serif uppercase">
+              <div className="relative z-10 flex items-center justify-between text-[#E8B947] px-4 pt-1">
+                <Sparkles className="w-4 h-4 text-[#E8B947]" />
+                <span className="text-xs sm:text-sm font-bold tracking-widest font-serif uppercase text-royal-gold-gradient">
                   🪔 Happy Diwali 🪔
                 </span>
-                <Sparkles className="w-5 h-5 text-[#20C9C3]" />
+                <Sparkles className="w-4 h-4 text-[#E8B947]" />
               </div>
 
               {/* Card Body Copy */}
-              <div className="my-auto py-2">
-                <p className="text-sm sm:text-base font-bold text-[#FFB000] mb-3">
-                  To: {recipient || 'Dear Friend'}
+              <div className="relative z-10 my-auto py-2 px-3">
+                <p className="text-sm sm:text-base font-bold font-serif text-[#E8B947] mb-2 drop-shadow">
+                  To: {recipient || 'Dear Loved One'}
                 </p>
 
-                <p className="text-sm sm:text-lg font-serif italic text-[#FFF1D6] leading-relaxed max-w-md mx-auto drop-shadow-sm">
+                <p className="text-sm sm:text-base font-serif italic text-[#FFF8E7] leading-relaxed max-w-md mx-auto drop-shadow-md">
                   "{selectedWish}"
                 </p>
 
-                <p className="text-sm font-semibold text-[#FFB000] mt-4">
+                <p className="text-xs sm:text-sm font-semibold font-serif text-[#E8B947] mt-3 drop-shadow">
                   From: {sender || 'With Warmth'}
                 </p>
               </div>
 
               {/* Bottom Card Footer */}
-              <div className="text-[10px] text-[#FFF1D6]/70 font-medium tracking-wider">
-                THE LIGHT WITHIN · A DIWALI EXPERIENCE
+              <div className="relative z-10 text-[10px] text-[#FFF8E7]/70 font-medium tracking-widest uppercase pb-1 font-serif">
+                THE LIGHT WITHIN · A DIWALI CELEBRATION
               </div>
             </div>
 
             {/* Action Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-3 w-full">
+            <div className="flex flex-wrap items-center justify-center gap-3 w-full max-w-lg">
               <button
                 onClick={handleCopy}
-                className="flex-1 min-w-[140px] py-3 rounded-2xl bg-[#0F1126] border border-[#008C95]/50 text-xs font-bold text-[#FFF1D6] hover:border-[#FFB000] flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
+                className="flex-1 min-w-[140px] py-3 rounded-2xl bg-[#140609] border-2 border-[#E8B947]/50 text-xs font-bold text-[#FFF8E7] hover:border-[#E8B947] hover:scale-105 flex items-center justify-center gap-2 transition-all cursor-pointer shadow-md"
               >
-                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-[#FFB000]" />}
+                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-[#E8B947]" />}
                 <span>{copied ? 'Copied Text!' : 'Copy Text'}</span>
               </button>
 
               <button
                 onClick={handleDownloadCard}
-                className="flex-1 min-w-[160px] py-3 rounded-2xl bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] text-white font-extrabold text-xs shadow-md hover:shadow-[0_0_20px_rgba(233,30,99,0.5)] flex items-center justify-center gap-2 transition-all cursor-pointer"
+                className="flex-1 min-w-[160px] py-3 rounded-2xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] font-extrabold text-xs shadow-md hover:shadow-[0_0_25px_rgba(232,185,71,0.5)] hover:scale-105 flex items-center justify-center gap-2 transition-all cursor-pointer"
               >
                 <Download className="w-4 h-4" />
                 <span>Save Image Card</span>

@@ -9,7 +9,9 @@ import {
   createPalaceBackdropCanvas,
   createCourtyardFloorCanvas,
   createTerracottaDiyaCanvas,
+  MADHUBANI_PALETTE,
 } from './3d/folkArtTextures';
+import madhubaniCastleImg from '../assets/images/madhubani_palace_castle_1793991171920.jpg';
 
 interface OpeningDiyaScreenProps {
   onUnlocked: () => void;
@@ -40,20 +42,19 @@ interface FloatingEmber {
   life: number;
 }
 
-const FESTIVE_PALETTE_HEX = [
-  0xffb000, // Marigold Yellow
-  0xff5722, // Vermilion Red
-  0xe91e63, // Rani Pink
-  0x20c9c3, // Turquoise
-  0x008c95, // Peacock Teal
-  0xff8f00, // Bright Saffron
-  0xfff1d6, // Warm Ivory
+/* User-Specified Authentic Madhubani Palette Hex for 3D Particles */
+const MADHUBANI_PALETTE_HEX = [
+  0xA82420, // Deep Vermilion Red
+  0xC65D38, // Terracotta
+  0xE8B947, // Mustard Yellow
+  0xD99A32, // Natural Turmeric
+  0x47764B, // Leaf Green
+  0x236C79, // Peacock Blue
+  0xF4E6C8, // Ivory Parchment
 ];
 
-/* Procedural 2048x2048 Indian folk-art canvas textures are imported from ./3d/folkArtTextures */
-
 /* =========================================================================
-   MAIN OPENING DIYA SCREEN COMPONENT
+   MAIN OPENING DIYA SCREEN COMPONENT (MADHUBANI FOLK-ART ART DIRECTION)
    ========================================================================= */
 
 export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked }) => {
@@ -108,9 +109,9 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       }
     })();
 
-    // 1. Three.js Scene Setup (Atmospheric Midnight Indigo & Peacock Glow)
+    // 1. Three.js Scene Setup (Atmospheric Warm Ivory Parchment Mist)
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x130a24, 0.014);
+    scene.fog = new THREE.FogExp2(0xF4E6C8, 0.012);
 
     const aspect = container.clientWidth / container.clientHeight;
     const baseFov = aspect < 1 ? 46 + (1 - aspect) * 24 : 45;
@@ -129,7 +130,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.7;
+    renderer.toneMappingExposure = 1.6;
     renderer.shadowMap.enabled = !isSoftwareGl;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -151,40 +152,40 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     };
     resizeOverlay();
 
-    // 2. Artistic Lighting Rig (Warm Festive Illumination with Soft Bounce Light)
-    const ambientLight = new THREE.AmbientLight(0x4a235a, 2.4);
+    // 2. Artistic Lighting Rig in Warm Madhubani Earth & Sun Tones
+    const ambientLight = new THREE.AmbientLight(0xE8B947, 2.3);
     scene.add(ambientLight);
 
-    const moonKeyLight = new THREE.DirectionalLight(0xfff1d6, 2.6);
-    moonKeyLight.position.set(5, 12, 7);
+    const sunKeyLight = new THREE.DirectionalLight(0xF4E6C8, 2.5);
+    sunKeyLight.position.set(5, 12, 7);
     if (!isSoftwareGl) {
-      moonKeyLight.castShadow = true;
-      moonKeyLight.shadow.mapSize.width = 1024;
-      moonKeyLight.shadow.mapSize.height = 1024;
-      moonKeyLight.shadow.bias = -0.0004;
-      moonKeyLight.shadow.normalBias = 0.02;
+      sunKeyLight.castShadow = true;
+      sunKeyLight.shadow.mapSize.width = 1024;
+      sunKeyLight.shadow.mapSize.height = 1024;
+      sunKeyLight.shadow.bias = -0.0004;
+      sunKeyLight.shadow.normalBias = 0.02;
     }
-    scene.add(moonKeyLight);
+    scene.add(sunKeyLight);
 
-    const festiveRimLight = new THREE.DirectionalLight(0xe91e63, 1.8);
-    festiveRimLight.position.set(-6, 6, -4);
-    scene.add(festiveRimLight);
+    const vermilionRimLight = new THREE.DirectionalLight(0xA82420, 1.8);
+    vermilionRimLight.position.set(-6, 6, -4);
+    scene.add(vermilionRimLight);
 
-    const courtyardFillLight = new THREE.DirectionalLight(0x20c9c3, 1.2);
-    courtyardFillLight.position.set(0, 3, 14);
-    scene.add(courtyardFillLight);
+    const peacockFillLight = new THREE.DirectionalLight(0x236C79, 1.3);
+    peacockFillLight.position.set(0, 3, 14);
+    scene.add(peacockFillLight);
 
-    // Sacred Flame Point Lights (Warm Diya Illumination)
-    const flamePointLight = new THREE.PointLight(0xff5722, 0, 18, 1.8);
+    // Sacred Flame Point Lights (Warm Diya Illumination in Natural Turmeric & Mustard)
+    const flamePointLight = new THREE.PointLight(0xD99A32, 0, 18, 1.8);
     flamePointLight.position.set(0, 1.15, -2.1);
     scene.add(flamePointLight);
 
-    const flameGlowLight = new THREE.PointLight(0xffb000, 0, 14, 1.6);
+    const flameGlowLight = new THREE.PointLight(0xE8B947, 0, 14, 1.6);
     flameGlowLight.position.set(0, 1.5, -2.1);
     scene.add(flameGlowLight);
 
-    // 3. CELESTIAL STARRY NIGHT SKY PARTICLES
-    const starCount = isSoftwareGl ? 150 : 350;
+    // 3. CELESTIAL STARRY PARCHMENT PARTICLES
+    const starCount = isSoftwareGl ? 120 : 280;
     const starGeo = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount; i++) {
@@ -194,24 +195,24 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     }
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
     const starMat = new THREE.PointsMaterial({
-      color: 0xfff1d6,
-      size: 0.09,
+      color: 0xE8B947,
+      size: 0.1,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.85,
     });
     const starSystem = new THREE.Points(starGeo, starMat);
     scene.add(starSystem);
 
-    // 4. DISTANT CELEBRATORY FIREWORKS
+    // 4. DISTANT CELEBRATORY FIREWORKS IN FOLK PIGMENT TONES
     const bgFireworksParticles: BgFireworkParticle[] = [];
     const spawnBgFirework = (x: number, y: number, z: number) => {
-      const colorHex = FESTIVE_PALETTE_HEX[Math.floor(Math.random() * FESTIVE_PALETTE_HEX.length)];
-      const count = isSoftwareGl ? 22 : 42;
+      const colorHex = MADHUBANI_PALETTE_HEX[Math.floor(Math.random() * MADHUBANI_PALETTE_HEX.length)];
+      const count = isSoftwareGl ? 22 : 40;
 
       for (let i = 0; i < count; i++) {
         const angle = Math.random() * Math.PI * 2;
         const phi = (Math.random() - 0.5) * Math.PI;
-        const speed = Math.random() * 3.2 + 1.2;
+        const speed = Math.random() * 3.0 + 1.2;
 
         bgFireworksParticles.push({
           x,
@@ -240,15 +241,15 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
 
     // Materials
     const brassMat = new THREE.MeshStandardMaterial({
-      color: 0xffb000,
-      roughness: 0.18,
-      metalness: 0.88,
+      color: 0xE8B947, // Mustard / Antique Brass
+      roughness: 0.25,
+      metalness: 0.85,
     });
 
-    // 5. HIGH RESOLUTION PROCEDURAL TEXTURES (INDIAN FOLK ART)
+    // 5. HIGH RESOLUTION PROCEDURAL TEXTURES (AUTHENTIC MADHUBANI)
     const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
 
-    // Sandstone Portal Archway with Kalash, Peacocks & Floral Creepers
+    // Portal Archway with Kalash, Peacocks & Floral Creepers
     const portalCanvas = createHaveliGatePortalCanvas();
     const portalTex = new THREE.CanvasTexture(portalCanvas);
     portalTex.colorSpace = THREE.SRGBColorSpace;
@@ -266,7 +267,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     rightDoorTex.colorSpace = THREE.SRGBColorSpace;
     rightDoorTex.anisotropy = maxAnisotropy;
 
-    // Flanking 2.5D Courtyard Mural Walls (Tree of Life, Peacocks, Deer, Lit Jharokhas)
+    // Flanking 2.5D Courtyard Mural Walls (Village Houses, Tree of Life, Peacocks, Lit Jharokhas)
     const wallCanvas = createCourtyardMuralWallCanvas();
     const wallTex = new THREE.CanvasTexture(wallCanvas);
     wallTex.colorSpace = THREE.SRGBColorSpace;
@@ -274,13 +275,13 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     wallTex.wrapS = THREE.RepeatWrapping;
     wallTex.wrapT = THREE.RepeatWrapping;
 
-    // Deep Horizon Indian Miniature Palace Twilight Skyline
-    const backdropCanvas = createPalaceBackdropCanvas();
-    const backdropTex = new THREE.CanvasTexture(backdropCanvas);
+    // Deep Horizon Indian Madhubani Royal Palace Castle Panorama
+    const texLoader = new THREE.TextureLoader();
+    const backdropTex = texLoader.load(madhubaniCastleImg);
     backdropTex.colorSpace = THREE.SRGBColorSpace;
     backdropTex.anisotropy = maxAnisotropy;
 
-    // Courtyard Terrace Floor with 16-Petal Lotus Rangoli Mandala
+    // Courtyard Floor with 16-Petal Lotus Aripana / Mandala
     const floorCanvas = createCourtyardFloorCanvas();
     const floorTex = new THREE.CanvasTexture(floorCanvas);
     floorTex.colorSpace = THREE.SRGBColorSpace;
@@ -288,36 +289,36 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     floorTex.wrapS = THREE.RepeatWrapping;
     floorTex.wrapT = THREE.RepeatWrapping;
 
-    // Handcrafted Terracotta Diya with Hand-painted Alpana Trim
+    // Handcrafted Terracotta Diya with Double-Line Ink & Alpana Trim
     const clayCanvas = createTerracottaDiyaCanvas();
     const clayTex = new THREE.CanvasTexture(clayCanvas);
     clayTex.colorSpace = THREE.SRGBColorSpace;
     clayTex.anisotropy = maxAnisotropy;
 
-    // 6. TRADITIONAL INDIAN HAVELI GATE ARCHITECTURE
+    // 6. TRADITIONAL INDIAN HAVELI GATE ARCHITECTURE (MADHUBANI PAINTED)
     const gateGroup = new THREE.Group();
     gateGroup.position.set(0, 0, 3.4);
     scene.add(gateGroup);
 
     const leftDoorMat = new THREE.MeshStandardMaterial({
       map: leftDoorTex,
-      roughness: 0.38,
-      metalness: 0.15,
+      roughness: 0.42,
+      metalness: 0.1,
     });
 
     const rightDoorMat = new THREE.MeshStandardMaterial({
       map: rightDoorTex,
-      roughness: 0.38,
-      metalness: 0.15,
+      roughness: 0.42,
+      metalness: 0.1,
     });
 
     const sandstoneArchMat = new THREE.MeshStandardMaterial({
       map: portalTex,
-      roughness: 0.55,
-      metalness: 0.1,
+      roughness: 0.58,
+      metalness: 0.05,
     });
 
-    // Carved Sandstone Flanking Pillars with Decorative Capitals & Bases
+    // Flanking Pillars
     const pillarGeo = new THREE.BoxGeometry(0.85, 5.4, 0.85);
     const leftFramePillar = new THREE.Mesh(pillarGeo, sandstoneArchMat);
     leftFramePillar.position.set(-2.65, 2.7, 0);
@@ -327,7 +328,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     rightFramePillar.position.set(2.65, 2.7, 0);
     gateGroup.add(rightFramePillar);
 
-    // Carved Pillar Base Plinths
+    // Pillar Base Plinths
     const plinthGeo = new THREE.BoxGeometry(1.15, 0.5, 1.15);
     const leftPlinth = new THREE.Mesh(plinthGeo, sandstoneArchMat);
     leftPlinth.position.set(-2.65, 0.25, 0);
@@ -337,32 +338,30 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     rightPlinth.position.set(2.65, 0.25, 0);
     gateGroup.add(rightPlinth);
 
-    // Overhanging Haveli Lintel Beam (Chhajja Eaves)
+    // Lintel Beam
     const archTopBeamGeo = new THREE.BoxGeometry(6.4, 0.85, 1.1);
     const archTopBeam = new THREE.Mesh(archTopBeamGeo, sandstoneArchMat);
     archTopBeam.position.set(0, 5.3, 0.05);
     gateGroup.add(archTopBeam);
 
-    // Sculpted Multi-Foil Scalloped Brass Arch Medallion
+    // Brass Arch Medallion
     const archOrnamentGeo = new THREE.TorusGeometry(2.25, 0.24, 16, 48, Math.PI);
     const archOrnament = new THREE.Mesh(archOrnamentGeo, brassMat);
     archOrnament.position.set(0, 4.3, 0.12);
     gateGroup.add(archOrnament);
 
-    // Swaying Brass Temple Bells (Ghantis) with Dynamic Physics
+    // Swaying Brass Temple Bells (Ghantis)
     const bellObjects: Array<{ mesh: THREE.Group; phase: number; baseRotZ: number }> = [];
     const bellPositions = [-1.9, -1.0, 0, 1.0, 1.9];
     bellPositions.forEach((bx, idx) => {
       const singleBellGroup = new THREE.Group();
       singleBellGroup.position.set(bx, 4.75, 0.45);
 
-      // Delicate brass suspension chain
       const chainGeo = new THREE.CylinderGeometry(0.015, 0.015, 0.45, 8);
       const chainMesh = new THREE.Mesh(chainGeo, brassMat);
       chainMesh.position.y = -0.22;
       singleBellGroup.add(chainMesh);
 
-      // Flared temple bell body
       const bellGeo = new THREE.LatheGeometry(
         [
           new THREE.Vector2(0, 0),
@@ -377,7 +376,6 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       bellMesh.position.y = -0.55;
       singleBellGroup.add(bellMesh);
 
-      // Bell clapper
       const clapperGeo = new THREE.SphereGeometry(0.05, 10, 10);
       const clapperMesh = new THREE.Mesh(clapperGeo, brassMat);
       clapperMesh.position.y = -0.58;
@@ -403,11 +401,10 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     const toranPoints = toranCurve.getPoints(36);
 
     toranPoints.forEach((pt, i) => {
-      // Mango leaf pendant
       const leafGeo = new THREE.ConeGeometry(0.07, 0.28, 6);
       leafGeo.rotateX(Math.PI);
       const leafMat = new THREE.MeshStandardMaterial({
-        color: 0x2e9d50,
+        color: 0x47764B, // Madhubani Leaf Green
         roughness: 0.6,
       });
       const leafMesh = new THREE.Mesh(leafGeo, leafMat);
@@ -415,10 +412,9 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       leafMesh.position.y -= 0.12;
       toranGroup.add(leafMesh);
 
-      // Fluffy marigold flower (Genda Phool)
       const isOrange = i % 2 === 0;
       const flowerMat = new THREE.MeshStandardMaterial({
-        color: isOrange ? 0xff5722 : 0xffb000,
+        color: isOrange ? 0xA82420 : 0xE8B947, // Vermilion & Mustard
         roughness: 0.7,
       });
       const fGeo = new THREE.DodecahedronGeometry(0.13, 1);
@@ -428,9 +424,9 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     });
     gateGroup.add(toranGroup);
 
-    // Flanking Carved Stone Niches with Hanging Brass Lanterns (Farshi Kandils)
+    // Flanking Carved Stone Niches with Hanging Brass Lanterns
     const lanternGeo = new THREE.CylinderGeometry(0.24, 0.24, 0.65, 12);
-    const lanternGlassMat = new THREE.MeshBasicMaterial({ color: 0xffb000 });
+    const lanternGlassMat = new THREE.MeshBasicMaterial({ color: 0xE8B947 });
     const leftLantern = new THREE.Mesh(lanternGeo, lanternGlassMat);
     leftLantern.position.set(-2.65, 3.2, 0.58);
     gateGroup.add(leftLantern);
@@ -439,15 +435,15 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     rightLantern.position.set(2.65, 3.2, 0.58);
     gateGroup.add(rightLantern);
 
-    const leftLanternLight = new THREE.PointLight(0xffb000, 2.6, 6);
+    const leftLanternLight = new THREE.PointLight(0xE8B947, 2.5, 6);
     leftLanternLight.position.set(-2.65, 3.2, 0.65);
     gateGroup.add(leftLanternLight);
 
-    const rightLanternLight = new THREE.PointLight(0xffb000, 2.6, 6);
+    const rightLanternLight = new THREE.PointLight(0xE8B947, 2.5, 6);
     rightLanternLight.position.set(2.65, 3.2, 0.65);
     gateGroup.add(rightLanternLight);
 
-    // 3D DOUBLE DOORS WITH CARVED PANELS & BRASS HARDWARE
+    // 3D DOUBLE DOORS WITH AUTHENTIC MADHUBANI ARTWORK
     const doorWidth = 2.18;
     const doorHeight = 4.85;
 
@@ -519,16 +515,16 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     rightHandleRing.position.set(-doorWidth + 0.38, 0, 0.14);
     rightDoorMesh.add(rightHandleRing);
 
-    // 7. THE COURTYARD ENVIRONMENT (A LIVING FOLK-ART PAINTING)
+    // 7. THE COURTYARD ENVIRONMENT (A LIVING MADHUBANI PAINTING)
     const courtyardGroup = new THREE.Group();
     scene.add(courtyardGroup);
 
-    // Polished Courtyard Terrace Floor with Central Rangoli
+    // Polished Courtyard Terrace Floor with 16-Petal Lotus Aripana
     const floorGeo = new THREE.PlaneGeometry(18, 48);
     const floorMat = new THREE.MeshStandardMaterial({
       map: floorTex,
-      roughness: 0.35,
-      metalness: 0.15,
+      roughness: 0.42,
+      metalness: 0.08,
     });
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.rotation.x = -Math.PI / 2;
@@ -536,11 +532,11 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     if (!isSoftwareGl) floorMesh.receiveShadow = true;
     courtyardGroup.add(floorMesh);
 
-    // Flanking 2.5D Courtyard Mural Walls (Tree of Life, Peacocks, Deer, Lit Jharokhas)
+    // Flanking 2.5D Courtyard Mural Walls
     const wallMat = new THREE.MeshStandardMaterial({
       map: wallTex,
       roughness: 0.65,
-      metalness: 0.08,
+      metalness: 0.05,
       side: THREE.DoubleSide,
     });
 
@@ -555,7 +551,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     rightWallMesh.rotation.y = -Math.PI / 2;
     courtyardGroup.add(rightWallMesh);
 
-    // Deep Horizon Indian Miniature Palace Twilight Skyline
+    // Deep Horizon Indian Village & Miniature Panorama
     const backdropMat = new THREE.MeshBasicMaterial({
       map: backdropTex,
       transparent: true,
@@ -566,17 +562,16 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     backdropMesh.position.set(0, 7.5, -19.5);
     courtyardGroup.add(backdropMesh);
 
-    // Rajasthani Sandstone Colonnade Pillars with Scalloped Arches
+    // Terracotta Colonnade Pillars with Scalloped Arches
     const pillarMat = new THREE.MeshStandardMaterial({
-      color: 0x3d1a33,
-      roughness: 0.55,
-      metalness: 0.1,
+      color: 0xC65D38, // Terracotta
+      roughness: 0.6,
+      metalness: 0.05,
     });
     const courtyardPillarGeo = new THREE.CylinderGeometry(0.38, 0.48, 4.6, 16);
     const pathwayDiyasLights: THREE.PointLight[] = [];
 
     for (let z = 18; z >= -6; z -= 5) {
-      // Left and right walkway pillars
       const pLeft = new THREE.Mesh(courtyardPillarGeo, pillarMat);
       pLeft.position.set(-4.2, 2.3, z);
       courtyardGroup.add(pLeft);
@@ -585,58 +580,58 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       pRight.position.set(4.2, 2.3, z);
       courtyardGroup.add(pRight);
 
-      // Pathway Terracotta Diyas along the royal walk
+      // Pathway Terracotta Diyas
       for (const side of [-1, 1]) {
         const pDiyaGeo = new THREE.CylinderGeometry(0.18, 0.26, 0.12, 16);
         const pDiyaMat = new THREE.MeshStandardMaterial({
-          color: 0xbd4b24,
+          color: 0xC65D38,
           roughness: 0.6,
         });
         const pDiyaMesh = new THREE.Mesh(pDiyaGeo, pDiyaMat);
         pDiyaMesh.position.set(side * 2.8, 0.06, z);
         courtyardGroup.add(pDiyaMesh);
 
-        // Fluid glowing flame on each pathway diya
+        // Flame on each pathway diya
         const pFlameGeo = new THREE.ConeGeometry(0.06, 0.22, 10);
-        const pFlameMat = new THREE.MeshBasicMaterial({ color: 0xffb000 });
+        const pFlameMat = new THREE.MeshBasicMaterial({ color: 0xE8B947 });
         const pFlameMesh = new THREE.Mesh(pFlameGeo, pFlameMat);
         pFlameMesh.position.set(side * 2.8, 0.22, z);
         courtyardGroup.add(pFlameMesh);
 
-        const pLight = new THREE.PointLight(0xffb000, 0.7, 4.5);
+        const pLight = new THREE.PointLight(0xE8B947, 0.8, 4.5);
         pLight.position.set(side * 2.8, 0.32, z);
         courtyardGroup.add(pLight);
         pathwayDiyasLights.push(pLight);
       }
     }
 
-    // 8. THE SACRED DIYA: A TRUE WORK OF ART
+    // 8. THE SACRED HERO DIYA (HANDCRAFTED MADHUBANI TERRACOTTA)
     const centralDiyaGroup = new THREE.Group();
     centralDiyaGroup.position.set(0, 0.22, -2.4);
     centralDiyaGroup.scale.set(0.72, 0.72, 0.72);
     courtyardGroup.add(centralDiyaGroup);
 
-    // Ornate Carved Brass Thali Base Platform
+    // Carved Terracotta & Brass Thali Base Platform
     const platformGeo = new THREE.CylinderGeometry(3.2, 3.4, 0.25, 64);
     const platformMat = new THREE.MeshStandardMaterial({
       map: floorTex,
-      roughness: 0.4,
-      metalness: 0.2,
+      roughness: 0.45,
+      metalness: 0.15,
     });
     const platformMesh = new THREE.Mesh(platformGeo, platformMat);
     platformMesh.position.y = -0.12;
     if (!isSoftwareGl) platformMesh.receiveShadow = true;
     centralDiyaGroup.add(platformMesh);
 
-    // Terracotta Material for Handcrafted Diya
+    // Handcrafted Terracotta Diya Material
     const terracottaMat = new THREE.MeshStandardMaterial({
       map: clayTex,
-      roughness: 0.48,
-      metalness: 0.08,
-      color: 0xbd4b24,
+      roughness: 0.52,
+      metalness: 0.06,
+      color: 0xC65D38,
     });
 
-    // Handcrafted Asymmetrical Terracotta Diya Bowl (Lathe Geometry with Authentic Organic Curvature)
+    // Handcrafted Asymmetrical Terracotta Diya Bowl
     const lathePoints: THREE.Vector2[] = [
       new THREE.Vector2(0, 0.24),
       new THREE.Vector2(0.96, 0.28),
@@ -655,7 +650,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     }
     centralDiyaGroup.add(bowlMesh);
 
-    // Pinched Beak (Pouring Spout for Wick)
+    // Pouring Spout for Cotton Wick
     const beakGeo = new THREE.ConeGeometry(0.42, 0.78, 24);
     beakGeo.scale(1.3, 0.88, 1.5);
     const beakMesh = new THREE.Mesh(beakGeo, terracottaMat);
@@ -671,21 +666,21 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     ]);
     const wickGeo = new THREE.TubeGeometry(wickCurve, 28, 0.08, 12, false);
     const wickMat = new THREE.MeshStandardMaterial({
-      color: 0x22170f,
+      color: 0x211A17, // Madhubani Ink Black
       roughness: 0.96,
       metalness: 0.02,
     });
     const wickMesh = new THREE.Mesh(wickGeo, wickMat);
     centralDiyaGroup.add(wickMesh);
 
-    // Golden Ghee Reservoir inside Diya
+    // Golden Mustard Ghee Reservoir inside Diya
     const gheeGeo = new THREE.CylinderGeometry(1.2, 0.8, 0.1, 32);
     const gheeMat = new THREE.MeshStandardMaterial({
-      color: 0xffb000,
-      roughness: 0.1,
-      metalness: 0.3,
+      color: 0xE8B947,
+      roughness: 0.12,
+      metalness: 0.25,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.85,
     });
     const gheeMesh = new THREE.Mesh(gheeGeo, gheeMat);
     gheeMesh.position.set(0, 0.68, 0.4);
@@ -695,14 +690,14 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     wickTipNode.position.set(0, 1.22, 1.66);
     centralDiyaGroup.add(wickTipNode);
 
-    // 9. MULTI-PLANE FLOATING MARIGOLD & LOTUS PETALS
+    // 9. FLOATING MARIGOLD & LOTUS PETALS IN MADHUBANI PIGMENTS
     const petalCount = isSoftwareGl ? 20 : 45;
     const floatingPetalsGroup = new THREE.Group();
     scene.add(floatingPetalsGroup);
 
     const singlePetalGeo = new THREE.SphereGeometry(0.1, 14, 10);
     singlePetalGeo.scale(1.2, 0.22, 1.8);
-    const petalColors = [0xffb000, 0xff8f00, 0xff5722, 0xe91e63, 0x20c9c3];
+    const petalColors = [0xA82420, 0xE8B947, 0xD99A32, 0x47764B, 0x236C79];
     const petalData: Array<{
       mesh: THREE.Mesh;
       speedY: number;
@@ -717,7 +712,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       const pMat = new THREE.MeshStandardMaterial({
         color,
         roughness: 0.5,
-        metalness: 0.1,
+        metalness: 0.08,
         side: THREE.DoubleSide,
       });
       const pMesh = new THREE.Mesh(singlePetalGeo, pMat);
@@ -737,10 +732,10 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       });
     }
 
-    // 10. SACRED FLAME EMBERS PARTICLE SYSTEM (2D Canvas Overlay)
+    // 10. SACRED FLAME EMBERS (2D Canvas Overlay)
     const floatingEmbers: FloatingEmber[] = [];
     const spawnEmber = (originX: number, originY: number) => {
-      const colors = ['#FFF1D6', '#FFB000', '#FF5722', '#E91E63'];
+      const colors = ['#F4E6C8', '#E8B947', '#D99A32', '#A82420', '#C65D38'];
       floatingEmbers.push({
         x: originX + (Math.random() - 0.5) * 14,
         y: originY,
@@ -763,11 +758,9 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       setPhase('opening_gate');
       setInstructionText('COURTYARD REVEALED — Scroll to approach the Sacred Diya');
 
-      // Clink brass door rings
       leftHandleRing.rotation.z = Math.PI * 0.45;
       rightHandleRing.rotation.z = -Math.PI * 0.45;
 
-      // Animate bells swinging
       bellObjects.forEach((b) => {
         b.baseRotZ = (Math.random() - 0.5) * 0.4;
       });
@@ -823,7 +816,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
 
             flamePointLight.intensity = p * 12.0;
             flameGlowLight.intensity = p * 8.0;
-            ambientLight.color.setHSL(0.08, 0.88, 0.22 + p * 0.38);
+            ambientLight.color.setHSL(0.12, 0.85, 0.45 + p * 0.25);
 
             if (fElapsed > 1.2 && stateRef.current.phase !== 'emerging') {
               setPhase('emerging');
@@ -971,7 +964,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
         camera.lookAt(0, 0.78, -2.4);
 
         pathwayDiyasLights.forEach((light) => {
-          light.intensity = 0.6 + sp * 1.6;
+          light.intensity = 0.8 + sp * 1.8;
         });
 
         if (sp >= 0.94 && stateRef.current.phase === 'courtyard_walk') {
@@ -1064,12 +1057,87 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       renderer.render(scene, camera);
 
       // =========================================================================
-      // 2D HIGH-DPI CANVAS OVERLAY: ORGANIC FLAME, SPARKS & SACRED GLOW
+      // 2D HIGH-DPI CANVAS OVERLAY: MADHUBANI INK BORDERS, BIRDS & FLAME
       // =========================================================================
       if (oCtx) {
         oCtx.clearRect(0, 0, width, height);
 
-        // 1. Golden Sacred Spark Flight
+        // 1. Dynamic Animated Madhubani Scroll-Drawn Borders
+        const spProg = stateRef.current.scrollProgress;
+        if (spProg > 0.05) {
+          oCtx.save();
+          const borderProgress = Math.min(spProg * 1.25, 1);
+          const maxBorderW = Math.min(width * 0.35, 260) * borderProgress;
+
+          // Top-Left Madhubani Corner Vine
+          oCtx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+          oCtx.lineWidth = 3;
+          oCtx.beginPath();
+          oCtx.moveTo(0, 16);
+          oCtx.lineTo(maxBorderW, 16);
+          oCtx.stroke();
+
+          oCtx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+          oCtx.lineWidth = 2;
+          oCtx.beginPath();
+          oCtx.moveTo(0, 24);
+          oCtx.lineTo(maxBorderW * 0.9, 24);
+          oCtx.stroke();
+
+          // Sprouting Lotus Buds along border
+          for (let lx = 30; lx < maxBorderW; lx += 36) {
+            oCtx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
+            oCtx.beginPath();
+            oCtx.ellipse(lx, 20, 6, 4, 0, 0, Math.PI * 2);
+            oCtx.fill();
+            oCtx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+            oCtx.lineWidth = 1.5;
+            oCtx.stroke();
+          }
+
+          // Top-Right Corner Vine
+          oCtx.beginPath();
+          oCtx.moveTo(width, 16);
+          oCtx.lineTo(width - maxBorderW, 16);
+          oCtx.stroke();
+
+          oCtx.strokeStyle = MADHUBANI_PALETTE.vermilionRed;
+          oCtx.beginPath();
+          oCtx.moveTo(width, 24);
+          oCtx.lineTo(width - maxBorderW * 0.9, 24);
+          oCtx.stroke();
+
+          for (let rx = width - 30; rx > width - maxBorderW; rx -= 36) {
+            oCtx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
+            oCtx.beginPath();
+            oCtx.ellipse(rx, 20, 6, 4, 0, 0, Math.PI * 2);
+            oCtx.fill();
+            oCtx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+            oCtx.lineWidth = 1.5;
+            oCtx.stroke();
+          }
+          oCtx.restore();
+        }
+
+        // 2. Subtle Hand-Drawn Madhubani Bird (Suga) Gliding Gently across Sky
+        oCtx.save();
+        const birdX = (width * 0.2 + (time * 24)) % (width + 120) - 60;
+        const birdY = height * 0.18 + Math.sin(time * 1.5) * 14;
+        oCtx.translate(birdX, birdY);
+        oCtx.fillStyle = MADHUBANI_PALETTE.peacockBlue;
+        oCtx.beginPath();
+        oCtx.moveTo(0, 0);
+        oCtx.quadraticCurveTo(16, -22, 34, -18);
+        oCtx.quadraticCurveTo(20, -8, 8, -2);
+        oCtx.quadraticCurveTo(16, 22, 34, 18);
+        oCtx.quadraticCurveTo(16, 8, 0, 0);
+        oCtx.fill();
+        oCtx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+        oCtx.lineWidth = 2;
+        oCtx.stroke();
+        oCtx.restore();
+
+        // 3. Golden Sacred Spark Flight
         const sp = stateRef.current.sparkProgress;
         if (sp >= 0 && sp <= 1) {
           const { startX, startY, targetX, targetY } = stateRef.current.sparkCoords;
@@ -1077,9 +1145,9 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           const currY = THREE.MathUtils.lerp(startY, targetY, sp);
 
           oCtx.save();
-          oCtx.strokeStyle = '#FFB000';
+          oCtx.strokeStyle = MADHUBANI_PALETTE.mustardYellow;
           oCtx.lineWidth = 4;
-          oCtx.shadowColor = '#FF5722';
+          oCtx.shadowColor = MADHUBANI_PALETTE.vermilionRed;
           oCtx.shadowBlur = 18;
 
           oCtx.beginPath();
@@ -1095,7 +1163,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           oCtx.stroke();
 
           // Golden Sacred Star Finial
-          oCtx.fillStyle = '#FFF1D6';
+          oCtx.fillStyle = MADHUBANI_PALETTE.ivoryParchment;
           oCtx.font = '26px sans-serif';
           oCtx.textAlign = 'center';
           oCtx.textBaseline = 'middle';
@@ -1103,11 +1171,22 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           oCtx.restore();
         }
 
-        // 2. Beautiful Organic 2D Diya Flame Animation (Fluid 60FPS Bezier Curves)
+        // 4. Beautiful Organic 2D Diya Flame Animation in Madhubani Colors
         if (stateRef.current.isLit && stateRef.current.wickScreenPos.visible) {
           const wx = stateRef.current.wickScreenPos.x;
           const wy = stateRef.current.wickScreenPos.y;
           const progress = stateRef.current.lightingProgress;
+
+          // Progressive Warm Radiant Illumination spreading across surrounding painting
+          oCtx.save();
+          const spreadGrad = oCtx.createRadialGradient(wx, wy, 20, wx, wy, Math.max(width, height) * 0.85);
+          spreadGrad.addColorStop(0, `rgba(232, 185, 71, ${0.45 * progress})`);
+          spreadGrad.addColorStop(0.35, `rgba(217, 154, 50, ${0.28 * progress})`);
+          spreadGrad.addColorStop(0.7, `rgba(168, 36, 32, ${0.12 * progress})`);
+          spreadGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          oCtx.fillStyle = spreadGrad;
+          oCtx.fillRect(0, 0, width, height);
+          oCtx.restore();
 
           // Spawn floating firefly embers
           if (Math.random() < 0.35) {
@@ -1119,27 +1198,27 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           const fWave2 = Math.cos(time * 11.2) * 3.0;
           const fHeightMod = Math.sin(time * 5.0) * 6.0;
 
-          const baseW = 30 * progress;
-          const baseH = (88 + fHeightMod) * progress;
+          const baseW = 32 * progress;
+          const baseH = (92 + fHeightMod) * progress;
 
           oCtx.save();
           oCtx.translate(wx, wy);
 
-          // Outer Radiant Divine Halo (Translucent Radial Glow)
-          const haloGrad = oCtx.createRadialGradient(0, -baseH * 0.45, 10, 0, -baseH * 0.45, baseH * 1.5);
-          haloGrad.addColorStop(0, 'rgba(255, 176, 0, 0.45)');
-          haloGrad.addColorStop(0.5, 'rgba(230, 57, 70, 0.25)');
+          // Outer Radiant Divine Halo
+          const haloGrad = oCtx.createRadialGradient(0, -baseH * 0.45, 10, 0, -baseH * 0.45, baseH * 1.6);
+          haloGrad.addColorStop(0, 'rgba(232, 185, 71, 0.55)');
+          haloGrad.addColorStop(0.5, 'rgba(168, 36, 32, 0.3)');
           haloGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
           oCtx.fillStyle = haloGrad;
           oCtx.beginPath();
-          oCtx.arc(0, -baseH * 0.45, baseH * 1.5, 0, Math.PI * 2);
+          oCtx.arc(0, -baseH * 0.45, baseH * 1.6, 0, Math.PI * 2);
           oCtx.fill();
 
-          // Layer 1: Delicate Golden-Yellow Outer Flame
-          oCtx.fillStyle = '#FF5722';
-          oCtx.strokeStyle = '#FFF1D6';
-          oCtx.lineWidth = 2.5;
-          oCtx.shadowColor = '#FF8F00';
+          // Layer 1: Madhubani Deep Vermilion Outer Flame Envelope with Fine Ink Stroke
+          oCtx.fillStyle = MADHUBANI_PALETTE.vermilionRed;
+          oCtx.strokeStyle = MADHUBANI_PALETTE.inkBlack;
+          oCtx.lineWidth = 3;
+          oCtx.shadowColor = MADHUBANI_PALETTE.naturalTurmeric;
           oCtx.shadowBlur = 24;
 
           oCtx.beginPath();
@@ -1164,8 +1243,8 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           oCtx.fill();
           oCtx.stroke();
 
-          // Layer 2: Warm Saffron & Vermilion Mid-Flame
-          oCtx.fillStyle = '#FFB000';
+          // Layer 2: Mustard Yellow & Turmeric Mid-Flame
+          oCtx.fillStyle = MADHUBANI_PALETTE.mustardYellow;
           oCtx.beginPath();
           oCtx.moveTo(0, 0);
           oCtx.bezierCurveTo(
@@ -1188,7 +1267,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           oCtx.fill();
 
           // Layer 3: Warm Ivory Core
-          oCtx.fillStyle = '#FFF1D6';
+          oCtx.fillStyle = MADHUBANI_PALETTE.ivoryParchment;
           oCtx.beginPath();
           oCtx.moveTo(0, 0);
           oCtx.bezierCurveTo(-baseW * 0.35, -baseH * 0.25, -baseW * 0.25, -baseH * 0.5, 0, -baseH * 0.65);
@@ -1196,20 +1275,20 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
           oCtx.closePath();
           oCtx.fill();
 
-          // Layer 4: Sapphire Blue Flame Base around Wick
-          const blueGrad = oCtx.createRadialGradient(0, -6, 2, 0, -6, 22 * progress);
-          blueGrad.addColorStop(0, 'rgba(52, 120, 246, 0.95)');
-          blueGrad.addColorStop(0.6, 'rgba(32, 201, 195, 0.85)');
-          blueGrad.addColorStop(1, 'rgba(32, 201, 195, 0)');
+          // Layer 4: Peacock Blue Flame Base around Wick
+          const blueGrad = oCtx.createRadialGradient(0, -6, 2, 0, -6, 24 * progress);
+          blueGrad.addColorStop(0, 'rgba(35, 108, 121, 0.95)');
+          blueGrad.addColorStop(0.6, 'rgba(35, 108, 121, 0.8)');
+          blueGrad.addColorStop(1, 'rgba(35, 108, 121, 0)');
           oCtx.fillStyle = blueGrad;
           oCtx.beginPath();
-          oCtx.ellipse(0, -4, 16 * progress, 10 * progress, 0, 0, Math.PI * 2);
+          oCtx.ellipse(0, -4, 18 * progress, 11 * progress, 0, 0, Math.PI * 2);
           oCtx.fill();
 
           oCtx.restore();
         }
 
-        // 3. Render Floating Luminous Sparks & Embers
+        // 5. Render Floating Luminous Sparks & Embers
         for (let e = floatingEmbers.length - 1; e >= 0; e--) {
           const emb = floatingEmbers[e];
           emb.x += emb.vx;
@@ -1269,65 +1348,34 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden bg-gradient-to-b from-[#130722] via-[#240F38] to-[#0D0518] select-none touch-none z-50">
-      {/* 1. Indian Miniature-Painting Palace Pavilion Silhouettes in Celestial Twilight */}
-      <div className="absolute top-0 left-0 right-0 h-[65vh] pointer-events-none z-0 overflow-hidden opacity-90">
-        <svg viewBox="0 0 1200 600" preserveAspectRatio="xMidYMin slice" className="w-full h-full">
-          <defs>
-            <linearGradient id="palaceSandstoneGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#FFF1D6" stopOpacity="0.95" />
-              <stop offset="45%" stopColor="#FFD180" stopOpacity="0.8" />
-              <stop offset="100%" stopColor="#B34A26" stopOpacity="0.35" />
-            </linearGradient>
-            <linearGradient id="festiveGlow" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stopColor="#FF8F00" />
-              <stop offset="100%" stopColor="#E91E63" />
-            </linearGradient>
-            <filter id="folkGoldGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="5" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-          </defs>
+    <div className="fixed inset-0 w-full h-[100dvh] overflow-hidden bg-gradient-to-b from-[#FAF3E3] via-[#F4E6C8] to-[#EBD5AF] select-none touch-none z-50">
+      
+      {/* 1. Authentic Masterwork Madhubani Royal Palace Castle with Glowing Lights */}
+      <div className="absolute top-0 left-0 right-0 h-[68vh] pointer-events-none z-0 overflow-hidden">
+        <div className="relative w-full h-full">
+          <img
+            src={madhubaniCastleImg}
+            alt="Royal Madhubani Palace Castle Illuminated with Lights for Diwali"
+            className="w-full h-full object-cover object-top opacity-95 filter contrast-[1.04] brightness-105"
+          />
+          {/* Subtle bottom fade into parchment ground so it integrates seamlessly */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#F4E6C8]" />
 
-          {/* Intricate Rajasthani Haveli Chhatris & Scalloped Jharokhas */}
-          <g fill="url(#palaceSandstoneGrad)" stroke="#FFB000" strokeWidth="2.5">
-            {/* Left Chhatris & Multi-foil Arches */}
-            <path d="M0,600 L0,230 L75,230 L75,175 Q115,115 150,175 L150,230 L220,230 L220,150 Q260,80 300,150 L300,230 L380,230 L380,600 Z" />
-            {/* Right Chhatris & Multi-foil Arches */}
-            <path d="M1200,600 L1200,230 L1125,230 L1125,175 Q1085,115 1050,175 L1050,230 L980,230 L980,150 Q940,80 900,150 L900,230 L820,230 L820,600 Z" />
-            {/* Royal Central Pavilion & Onion Dome (Gumbad) */}
-            <path d="M400,600 L400,250 L460,250 L460,190 C460,120 530,40 600,20 C670,40 740,120 740,190 L740,250 L800,250 L800,600 Z" />
-          </g>
+          {/* Animated Festive Lights & Glowing Diyas on the Castle */}
+          <div className="absolute top-[32%] left-[26%] w-3 h-3 rounded-full bg-[#E8B947] shadow-[0_0_12px_#E8B947] animate-pulse" />
+          <div className="absolute top-[36%] left-[48%] w-3.5 h-3.5 rounded-full bg-[#E8B947] shadow-[0_0_15px_#E8B947] animate-pulse" style={{ animationDelay: '0.4s' }} />
+          <div className="absolute top-[32%] left-[74%] w-3 h-3 rounded-full bg-[#E8B947] shadow-[0_0_12px_#E8B947] animate-pulse" style={{ animationDelay: '0.8s' }} />
+          <div className="absolute top-[50%] left-[34%] w-2.5 h-2.5 rounded-full bg-[#D99A32] shadow-[0_0_10px_#D99A32] animate-pulse" style={{ animationDelay: '0.6s' }} />
+          <div className="absolute top-[50%] left-[66%] w-2.5 h-2.5 rounded-full bg-[#D99A32] shadow-[0_0_10px_#D99A32] animate-pulse" style={{ animationDelay: '1.0s' }} />
 
-          {/* Gold Kalash Finials with Radiance */}
-          <g fill="#FFB000" filter="url(#folkGoldGlow)">
-            <polygon points="595,20 600,-8 605,20" />
-            <polygon points="146,115 150,88 154,115" />
-            <polygon points="296,80 300,52 304,80" />
-            <polygon points="1046,115 1050,88 1054,115" />
-            <polygon points="896,80 900,52 904,80" />
-          </g>
-
-          {/* Illuminated Jharokha Windows with Warm Golden Lantern Light */}
-          <g fill="#FFB000">
-            <rect x="138" y="195" width="24" height="42" rx="12" stroke="#FFF1D6" strokeWidth="2.5" />
-            <rect x="288" y="170" width="24" height="45" rx="12" stroke="#FFF1D6" strokeWidth="2.5" />
-            <rect x="1038" y="195" width="24" height="42" rx="12" stroke="#FFF1D6" strokeWidth="2.5" />
-            <rect x="888" y="170" width="24" height="45" rx="12" stroke="#FFF1D6" strokeWidth="2.5" />
-            {/* Center Royal Arched Balconies */}
-            <rect x="525" y="200" width="30" height="52" rx="15" stroke="#FFF1D6" strokeWidth="3" />
-            <rect x="645" y="200" width="30" height="52" rx="15" stroke="#FFF1D6" strokeWidth="3" />
-            <rect x="585" y="115" width="30" height="54" rx="15" fill="#FF5722" stroke="#FFF1D6" strokeWidth="3" />
-          </g>
-
-          {/* Festive Draped Marigold Garlands on Palace Cornice */}
-          <path d="M460,250 Q530,278 600,250 Q670,278 740,250" fill="none" stroke="#FF5722" strokeWidth="6" strokeDasharray="10,6" />
-        </svg>
+          {/* Warm Golden Glow accents over palace windows and lanterns */}
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-4/5 h-1/2 bg-gradient-radial from-[#E8B947]/25 via-[#D99A32]/10 to-transparent blur-2xl pointer-events-none animate-pulse" />
+        </div>
       </div>
 
-      {/* 2. Atmospheric Festive Lighting Glows */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[900px] h-[600px] bg-[#FFB000]/22 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[700px] h-[700px] bg-[#E91E63]/22 rounded-full blur-[120px] pointer-events-none z-0 animate-pulse" />
+      {/* 2. Warm Earth & Turmeric Ambient Lighting Glows */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-[900px] h-[600px] bg-[#E8B947]/20 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-[700px] h-[700px] bg-[#C65D38]/18 rounded-full blur-[120px] pointer-events-none z-0 animate-pulse" />
 
       {/* 3. 3D WebGL Canvas Container */}
       <div
@@ -1336,7 +1384,7 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
         title="Touch or click to interact with the Indian Haveli Gateway"
       />
 
-      {/* 4. High-DPI 2D Canvas Overlay (Organic Flame & Sparks) */}
+      {/* 4. High-DPI 2D Canvas Overlay (Organic Flame & Madhubani Art Accents) */}
       <canvas
         ref={overlayCanvasRef}
         className="absolute inset-0 pointer-events-none w-full h-full z-20"
@@ -1352,60 +1400,70 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
             transform: 'translate(-50%, -50%)',
           }}
         >
-          <div className="w-48 h-48 sm:w-80 sm:h-80 rounded-full bg-radial from-[#FFF1D6] via-[#FFB000] to-transparent blur-md" />
+          <div className="w-48 h-48 sm:w-80 sm:h-80 rounded-full bg-radial from-[#F4E6C8] via-[#E8B947] to-transparent blur-md" />
         </div>
       )}
 
       {/* 6. Sacred Light Expansion Flash */}
       <div
-        className="absolute inset-0 bg-gradient-to-b from-[#FFF1D6] via-[#FFB000] to-[#E91E63] pointer-events-none transition-opacity duration-350 z-50"
+        className="absolute inset-0 bg-gradient-to-b from-[#F4E6C8] via-[#E8B947] to-[#A82420] pointer-events-none transition-opacity duration-350 z-50"
         style={{ opacity: flashOpacity }}
       />
 
-      {/* 7. Top Title Bar & Quick Skip */}
+      {/* 7. Top Title Bar & Ornamental Farman Skip Button */}
       <div className="absolute top-4 left-3 right-3 sm:top-6 sm:left-6 sm:right-6 flex items-center justify-between z-30 pointer-events-none">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#FFB000] animate-pulse shrink-0" />
-          <h1 className="text-[11px] sm:text-sm uppercase tracking-[0.25em] sm:tracking-[0.35em] font-serif text-[#FFB000] drop-shadow-[0_0_14px_rgba(255,176,0,0.85)] font-bold truncate">
-            THE LIGHT WITHIN
-          </h1>
+        
+        {/* Madhubani Display Heading: HAPPY DIWALI */}
+        <div className="flex items-center gap-2 sm:gap-3 bg-[#F4E6C8]/90 border-2 border-[#211A17] px-4 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-md backdrop-blur-sm">
+          <span className="text-base sm:text-xl text-[#A82420]">🪷</span>
+          <div className="flex flex-col">
+            <h1 className="text-sm sm:text-lg uppercase tracking-[0.2em] font-serif font-black text-[#A82420] leading-none">
+              HAPPY DIWALI
+            </h1>
+            <span className="text-[9px] sm:text-[10px] font-sans font-bold tracking-widest text-[#211A17]/80 uppercase mt-0.5">
+              Mithila Celebration
+            </span>
+          </div>
+          <span className="text-base sm:text-xl text-[#E8B947]">🪔</span>
         </div>
 
+        {/* Traditional Ornamental Invitation Plaque (Skip Button) */}
         <button
           onClick={handleFastSkip}
-          className="pointer-events-auto flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#130722]/90 border border-[#FFB000]/50 text-[11px] sm:text-xs font-semibold text-[#FFF1D6] hover:text-[#FFB000] hover:border-[#FFB000] transition-all cursor-pointer shadow-md backdrop-blur-md shrink-0"
-          title="Skip intro journey straight to celebration"
+          className="pointer-events-auto flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-[#F4E6C8] border-2 border-[#211A17] text-[11px] sm:text-xs font-serif font-bold text-[#211A17] hover:bg-[#E8B947] hover:text-[#211A17] transition-all cursor-pointer shadow-[2px_2px_0px_#211A17] hover:shadow-[3px_3px_0px_#211A17] active:translate-x-0.5 active:translate-y-0.5 shrink-0"
+          title="Enter celebration immediately"
         >
-          <span>Skip</span>
-          <FastForward className="w-3.5 h-3.5 text-[#FFB000]" />
+          <span>Enter</span>
+          <FastForward className="w-3.5 h-3.5 text-[#A82420]" />
         </button>
       </div>
 
       {/* 8. Bottom Progress Journey & Instruction Banner */}
       <div className="absolute bottom-6 sm:bottom-12 left-0 right-0 flex flex-col items-center justify-center pointer-events-none z-30 px-3 text-center">
         {(phase === 'courtyard_walk' || phase === 'at_diya') && (
-          <div className="w-44 sm:w-72 h-2.5 bg-black/40 rounded-full overflow-hidden border border-[#FFB000]/30 mb-2.5 backdrop-blur-sm shadow-inner">
+          <div className="w-44 sm:w-72 h-3 bg-[#F4E6C8] rounded-full overflow-hidden border-2 border-[#211A17] mb-2.5 shadow-sm">
             <div
-              className="h-full bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] transition-all duration-150 rounded-full"
+              className="h-full bg-gradient-to-r from-[#A82420] via-[#C65D38] to-[#E8B947] transition-all duration-150 rounded-full"
               style={{ width: `${Math.round(scrollProgress * 100)}%` }}
             />
           </div>
         )}
 
-        <div className="px-5 py-2.5 sm:px-7 sm:py-3 rounded-full bg-[#0E0616]/92 border-2 border-[#FFB000]/60 backdrop-blur-md shadow-[0_0_35px_rgba(255,176,0,0.35)] flex items-center justify-center gap-2.5 max-w-[92vw]">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#FFB000] shadow-[0_0_12px_#FF5722] animate-pulse shrink-0" />
-          <p className="text-[11px] sm:text-sm font-semibold tracking-wide text-[#FFF1D6] font-sans truncate">
+        <div className="px-5 py-2.5 sm:px-7 sm:py-3 rounded-2xl bg-[#F4E6C8]/96 border-2 border-[#211A17] shadow-[3px_3px_0px_#211A17] flex items-center justify-center gap-2.5 max-w-[92vw]">
+          <div className="w-2.5 h-2.5 rounded-full bg-[#A82420] border border-[#211A17] animate-pulse shrink-0" />
+          <p className="text-[11px] sm:text-sm font-bold tracking-wide text-[#211A17] font-serif truncate">
             {instructionText}
           </p>
         </div>
 
         {phase === 'courtyard_walk' && (
-          <div className="flex items-center gap-1.5 text-[10px] text-[#20C9C3] mt-2.5 tracking-widest uppercase font-semibold drop-shadow-sm animate-bounce">
-            <ArrowDown className="w-3.5 h-3.5 text-[#FFB000]" />
+          <div className="flex items-center gap-1.5 text-[10px] text-[#236C79] mt-2.5 tracking-widest uppercase font-bold drop-shadow-sm animate-bounce">
+            <ArrowDown className="w-3.5 h-3.5 text-[#A82420]" />
             <span>Scroll or drag down to walk forward</span>
           </div>
         )}
       </div>
+
     </div>
   );
 };

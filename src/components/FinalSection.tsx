@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Sparkles, RotateCcw, Compass, Heart, Flame } from 'lucide-react';
 import { soundManager } from '../utils/audio';
+import { MadhubaniCorner, MadhubaniDivider } from './MadhubaniCard';
 
 interface FinalSectionProps {
   onRestartExperience: () => void;
@@ -347,40 +348,40 @@ export const FinalSection: React.FC<FinalSectionProps> = ({
             revealPhase >= 4 ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-8'
           }`}
         >
-          {/* Ornate Folk-Art Emblem Box */}
-          <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#121A38]/95 via-[#0B1021]/95 to-[#160B12]/95 border-2 border-[#D4AF37] shadow-[0_0_40px_rgba(212,175,55,0.3),inset_0_0_20px_rgba(212,175,55,0.15)] overflow-hidden">
-            
-            {/* Corner Pattachitra Golden Rosettes */}
-            <div className="absolute top-2 left-2 text-[#D4AF37] text-xs pointer-events-none">✤</div>
-            <div className="absolute top-2 right-2 text-[#D4AF37] text-xs pointer-events-none">✤</div>
-            <div className="absolute bottom-2 left-2 text-[#D4AF37] text-xs pointer-events-none">✤</div>
-            <div className="absolute bottom-2 right-2 text-[#D4AF37] text-xs pointer-events-none">✤</div>
+          {/* Ornate Madhubani Folk-Art Emblem Box */}
+          <div className="relative p-7 sm:p-9 rounded-3xl bg-gradient-to-br from-[#240A10]/95 via-[#1A060A]/95 to-[#0F0305]/98 border-[3.5px] border-[#211A17] shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_35px_rgba(232,185,71,0.35)] overflow-hidden">
+            {/* Inner Double Gold Hairline Border */}
+            <div className="absolute inset-2 sm:inset-2.5 rounded-[22px] border-2 border-[#E8B947]/70 pointer-events-none z-10" />
+            <div className="absolute inset-0 bg-madhubani-katchni opacity-20 pointer-events-none" />
 
-            {/* Subtle Inner Hairline Border */}
-            <div className="absolute inset-2 border border-[#E5C158]/30 rounded-2xl pointer-events-none" />
+            {/* Corner Madhubani Lotus Spandrels */}
+            <MadhubaniCorner position="top-left" size={32} />
+            <MadhubaniCorner position="top-right" size={32} />
+            <MadhubaniCorner position="bottom-left" size={32} />
+            <MadhubaniCorner position="bottom-right" size={32} />
 
             {/* Team Kicker Heading */}
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <span className="w-5 h-[1px] bg-[#D4AF37]" />
-              <p className="text-xs sm:text-sm font-sans font-extrabold uppercase tracking-[0.28em] text-[#E5C158]">
+            <div className="relative z-10 flex items-center justify-center gap-2 mb-2">
+              <span className="w-6 h-[1.5px] bg-[#E8B947]" />
+              <p className="text-xs sm:text-sm font-sans font-extrabold uppercase tracking-[0.28em] text-[#E8B947]">
                 BUILT WITH PASSION BY
               </p>
-              <span className="w-5 h-[1px] bg-[#D4AF37]" />
+              <span className="w-6 h-[1.5px] bg-[#E8B947]" />
             </div>
 
             {/* Main Visual Highlight: BROKEN REPO */}
-            <div className="relative my-2 py-1">
-              <div className="absolute inset-0 blur-xl bg-[#E5C158]/20 rounded-full pointer-events-none" />
-              <h1 className="relative text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-widest text-royal-gold-gradient glow-royal-gold uppercase select-none drop-shadow-[0_0_25px_rgba(229,193,88,0.7)]">
+            <div className="relative z-10 my-2 py-1">
+              <div className="absolute inset-0 blur-xl bg-[#E8B947]/25 rounded-full pointer-events-none" />
+              <h1 className="relative text-3xl sm:text-5xl md:text-6xl font-serif font-black tracking-widest text-royal-gold-gradient glow-royal-gold uppercase select-none drop-shadow-[0_0_25px_rgba(232,185,71,0.8)]">
                 BROKEN REPO
               </h1>
             </div>
 
             {/* Subtle Indian Ornamental Detailing (Sahasrara & Tilak Accent) */}
-            <div className="flex items-center justify-center gap-3 text-xs text-[#FFF8E7]/75 mt-3 pt-3 border-t border-[#D4AF37]/25 font-light">
-              <span className="text-[#FFB74D]">✨</span>
+            <div className="relative z-10 flex items-center justify-center gap-3 text-xs text-[#FFF8E7]/85 mt-3 pt-3 border-t-2 border-[#E8B947]/30 font-serif">
+              <span className="text-[#A82420]">🪔</span>
               <span>A celebration created with passion & shared with everyone</span>
-              <span className="text-[#FFB74D]">✨</span>
+              <span className="text-[#A82420]">🪔</span>
             </div>
           </div>
         </div>

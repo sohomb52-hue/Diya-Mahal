@@ -6,6 +6,7 @@ import {
   generateFireworkPatternPoints,
   FireworkShape,
 } from '../utils/gameLogic';
+import { MadhubaniCorner, MadhubaniDivider } from './MadhubaniCard';
 
 interface Particle {
   x: number;
@@ -663,26 +664,32 @@ export const FirecrackerSimulator: React.FC = () => {
           </p>
         </div>
 
-        {/* Score & Rank HUD Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 mb-6 rounded-2xl bg-[#0B1021]/90 border border-[#D4AF37]/30 shadow-md backdrop-blur-sm text-[#FFF8E7]">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#E5C158]">
+        {/* Score & Rank HUD Bar with Madhubani Framing */}
+        <div className="relative flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5 mb-6 rounded-2xl bg-gradient-to-r from-[#240A10]/95 via-[#1B070B]/95 to-[#120508]/95 border-[3px] border-[#211A17] shadow-folk-3d backdrop-blur-sm text-[#FFF8E7] overflow-hidden">
+          <div className="absolute inset-1.5 rounded-[12px] border border-[#E8B947]/50 pointer-events-none" />
+          <MadhubaniCorner position="top-left" size={26} />
+          <MadhubaniCorner position="top-right" size={26} />
+          <MadhubaniCorner position="bottom-left" size={26} />
+          <MadhubaniCorner position="bottom-right" size={26} />
+
+          <div className="relative z-10 flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-[#A82420] to-[#E8B947] border border-[#FFF8E7]/50 text-[#211A17] shadow-sm">
               <Trophy className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-xs text-[#FFF1D6]/70 uppercase tracking-wider font-semibold">Rank & Title</div>
-              <div className="text-sm sm:text-base font-extrabold text-[#FFB000]">{rankTitle}</div>
+              <div className="text-[11px] text-[#E8B947] uppercase tracking-wider font-bold font-serif">Mithila Rank & Title</div>
+              <div className="text-base sm:text-lg font-extrabold text-royal-gold-gradient font-serif">{rankTitle}</div>
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="relative z-10 flex items-center gap-6">
             <div className="text-right">
-              <div className="text-xs text-[#FFF1D6]/70 uppercase tracking-wider font-semibold">Creativity Score</div>
-              <div className="text-xl sm:text-2xl font-black text-[#20C9C3]">{score.toLocaleString()}</div>
+              <div className="text-[11px] text-[#E8B947] uppercase tracking-wider font-bold font-serif">Creativity Score</div>
+              <div className="text-xl sm:text-2xl font-black text-[#E8B947] font-mono">{score.toLocaleString()}</div>
             </div>
 
             {comboMultiplier > 1 && (
-              <div className="px-3 py-1 rounded-full bg-gradient-to-r from-[#FF2E88] to-[#FF5722] text-[#0F1126] font-black text-xs animate-bounce shadow-lg">
+              <div className="px-3.5 py-1 rounded-full bg-gradient-to-r from-[#A82420] to-[#E8B947] text-[#211A17] font-black text-xs animate-bounce shadow-lg border border-[#FFF8E7]/60">
                 {comboMultiplier}x COMBO!
               </div>
             )}
@@ -690,7 +697,7 @@ export const FirecrackerSimulator: React.FC = () => {
         </div>
 
         {/* 5 Firecracker Selection Stage Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5 mb-6">
           {FIRECRACKER_TYPES.map((fc) => {
             const isSelected = selectedType === fc.id;
             return (
@@ -700,33 +707,43 @@ export const FirecrackerSimulator: React.FC = () => {
                   setSelectedType(fc.id);
                   if (soundEnabled) soundManager.playClick();
                 }}
-                className={`group relative p-4 rounded-2xl border text-left transition-all duration-300 cursor-pointer flex flex-col justify-between ${
+                className={`group relative p-4 rounded-2xl border-[2.5px] text-left transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#1B254B] to-[#0F1126] border-[#FFB000] shadow-[0_0_25px_rgba(255,176,0,0.4)] scale-105 z-10'
-                    : 'bg-[#160B2B]/70 border-[#008C95]/30 hover:border-[#20C9C3]/60 hover:bg-[#160B2B]'
+                    ? 'bg-gradient-to-b from-[#3D140C] to-[#1F070A] border-[#E8B947] shadow-[0_0_25px_rgba(232,185,71,0.45)] scale-105 z-10'
+                    : 'bg-[#140609]/85 border-[#211A17] hover:border-[#E8B947]/70 hover:bg-[#1A0A0E]'
                 }`}
               >
+                {/* Inner double border on selected card */}
+                {isSelected && (
+                  <div className="absolute inset-1 rounded-xl border border-[#E8B947]/40 pointer-events-none" />
+                )}
                 <div>
-                  <div className="text-2xl mb-1 group-hover:scale-110 transition-transform">{fc.icon}</div>
-                  <div className="font-extrabold text-sm text-[#FFF1D6]">{fc.name}</div>
-                  <div className="text-[11px] font-medium text-[#20C9C3]">{fc.hindi}</div>
+                  <div className="text-2xl mb-1.5 group-hover:scale-110 transition-transform filter drop-shadow">{fc.icon}</div>
+                  <div className="font-bold font-serif text-sm text-[#FFF8E7]">{fc.name}</div>
+                  <div className="text-[11px] font-medium text-[#E8B947] font-serif">{fc.hindi}</div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between text-[10px] text-[#FFF1D6]/60 border-t border-white/10 pt-2">
+                <div className="mt-3 flex items-center justify-between text-[10px] text-[#FFF8E7]/75 border-t border-[#E8B947]/20 pt-2 font-mono">
                   <span>+{fc.points} Pts</span>
-                  <Flame className="w-3 h-3 text-[#FF5722]" />
+                  <Flame className="w-3.5 h-3.5 text-[#A82420]" />
                 </div>
               </button>
             );
           })}
         </div>
 
-        {/* Main Sky Interactive Stage */}
+        {/* Main Sky Interactive Stage with Madhubani Double Border */}
         <div
-          className={`relative rounded-3xl overflow-hidden border-2 border-[#008C95]/60 bg-[#0F1126] shadow-[0_0_50px_rgba(0,140,149,0.35)] ${
+          className={`relative rounded-3xl overflow-hidden border-[3.5px] border-[#211A17] bg-[#0A0305] shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(212,175,55,0.2)] ${
             isFullscreen ? 'fixed inset-4 z-50 h-[calc(100vh-2rem)]' : 'h-[460px]'
           }`}
         >
+          {/* Inner Double Gold Hairline */}
+          <div className="absolute inset-2 rounded-[20px] border border-[#E8B947]/40 pointer-events-none z-20" />
+          <MadhubaniCorner position="top-left" size={28} className="z-30" />
+          <MadhubaniCorner position="top-right" size={28} className="z-30" />
+          <MadhubaniCorner position="bottom-left" size={28} className="z-30" />
+          <MadhubaniCorner position="bottom-right" size={28} className="z-30" />
           <canvas
             ref={canvasRef}
             onMouseDown={handleCanvasMouseDown}
