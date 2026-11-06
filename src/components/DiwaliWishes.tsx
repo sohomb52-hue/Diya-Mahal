@@ -118,7 +118,7 @@ export const DiwaliWishes: React.FC = () => {
   };
 
   return (
-    <section id="wishes" className="relative w-full py-24 px-4 bg-gradient-to-b from-[#0B1021] via-[#141C38] to-[#0B1021] overflow-hidden">
+    <section id="wishes" className="relative w-full py-4 sm:py-6 px-2 sm:px-4 bg-gradient-to-b from-[#0B1021] via-[#141C38] to-[#0B1021] overflow-hidden rounded-3xl">
       <div className="relative z-10 max-w-5xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">

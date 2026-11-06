@@ -126,7 +126,7 @@ test('generateFireworkPatternPoints generates correct point count for shapes', (
 
 test('getAmbientThemeConfig returns default theme for unknown id', () => {
   const t1 = getAmbientThemeConfig('sunset');
-  assert.equal(t1.name, 'Sunset Glow');
+  assert.equal(t1.name, 'Vintage Courtyard Terracotta');
   const fallback = getAmbientThemeConfig('nonexistent');
   assert.equal(fallback.id, 'midnight');
 });

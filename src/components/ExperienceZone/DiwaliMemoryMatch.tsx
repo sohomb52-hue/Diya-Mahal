@@ -156,24 +156,31 @@ export const DiwaliMemoryMatch: React.FC = () => {
             key={card.id}
             onClick={() => handleCardClick(card.id)}
             disabled={card.isMatched}
-            className={`aspect-square rounded-2xl border-2 transition-all duration-300 transform perspective-1000 flex flex-col items-center justify-center p-2 cursor-pointer ${
-              card.isFlipped || card.isMatched
-                ? 'bg-gradient-to-br from-[#283593] via-[#E91E63] to-[#FF5722] border-[#FFB000] rotate-y-180 shadow-[0_0_20px_rgba(255,176,0,0.4)]'
-                : 'bg-[#14183B] border-[#E91E63]/50 hover:border-[#FFB000] hover:scale-105 shadow-md'
-            }`}
+            className="aspect-square rounded-2xl relative w-full h-full cursor-pointer [perspective:1000px] focus:outline-none"
+            aria-label={card.isFlipped || card.isMatched ? card.name : "Flipped card hidden"}
           >
-            {card.isFlipped || card.isMatched ? (
-              <div className="flex flex-col items-center justify-center animate-fade-in">
-                <span className="text-2xl sm:text-3xl">{card.symbol}</span>
-                <span className="text-[10px] text-[#FFF1D6] font-semibold mt-1 truncate max-w-full">
+            <div
+              className={`w-full h-full rounded-2xl border-2 transition-transform duration-500 [transform-style:preserve-3d] relative ${
+                card.isFlipped || card.isMatched
+                  ? '[transform:rotateY(180deg)] border-[#FFB000] shadow-[0_0_20px_rgba(255,176,0,0.4)]'
+                  : 'border-[#E91E63]/50 hover:border-[#FFB000] hover:scale-105 shadow-md'
+              }`}
+            >
+              {/* Card Back (Unflipped Face) */}
+              <div className="absolute inset-0 w-full h-full rounded-2xl bg-[#14183B] flex items-center justify-center p-2 [backface-visibility:hidden]">
+                <div className="w-full h-full rounded-xl border border-dashed border-[#FFB000]/25 flex items-center justify-center bg-[#0F1126]/60">
+                  <Sparkles className="w-5 h-5 text-[#FFB000]/60" />
+                </div>
+              </div>
+
+              {/* Card Front (Flipped Face - rotated 180deg so when container flips 180deg, text is perfectly upright and unmirrored) */}
+              <div className="absolute inset-0 w-full h-full rounded-2xl bg-gradient-to-br from-[#283593] via-[#E91E63] to-[#FF5722] flex flex-col items-center justify-center p-2 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                <span className="text-2xl sm:text-3xl select-none">{card.symbol}</span>
+                <span className="text-[10px] sm:text-xs text-[#FFF1D6] font-semibold mt-1 truncate max-w-full text-center select-none">
                   {card.name}
                 </span>
               </div>
-            ) : (
-              <div className="w-full h-full rounded-xl border border-dashed border-[#FFB000]/25 flex items-center justify-center bg-[#0F1126]/60">
-                <Sparkles className="w-5 h-5 text-[#FFB000]/60" />
-              </div>
-            )}
+            </div>
           </button>
         ))}
       </div>

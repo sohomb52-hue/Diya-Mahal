@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sparkles, ChevronRight, ChevronLeft, ArrowRight, X, Key, Flame } from 'lucide-react';
 import { soundManager } from '../utils/audio';
 
@@ -73,15 +73,15 @@ export const PALACE_DOORS_2D: PalaceDoor2DItem[] = [
   },
   {
     id: 5,
-    key: 'passport',
-    title: 'The Festival Passport',
-    subtitle: 'Collect Royal Stamps & Craft Diwali Cards',
-    badge: 'DOOR 5 — PASSPORT & WISHES',
+    key: 'wishes',
+    title: 'The Greeting Card Studio',
+    subtitle: 'Craft Custom Diwali Wish Cards & Download PNG',
+    badge: 'DOOR 5 — GREETING CARD STUDIO',
     accentColor: '#008C95',
     doorBg: 'from-[#082226] via-[#0E353B] to-[#05171A]',
     frameBorder: 'border-[#008C95]',
-    patternIcon: '📜',
-    description: 'View your official festival achievement stamps and craft greeting cards.',
+    patternIcon: '💌',
+    description: 'Craft personalized golden Diwali wishes with festive borders and download PNG cards.',
   },
   {
     id: 6,
@@ -105,6 +105,35 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
   const [activeDoorIndex, setActiveDoorIndex] = useState(0);
   const [doorState, setDoorState] = useState<'corridor' | 'opening' | 'inside'>('corridor');
   const [handleRotated, setHandleRotated] = useState(false);
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash;
+      if (hash === '#wishes' || hash === '#cards' || hash === '#passport') {
+        setActiveDoorIndex(4);
+        setDoorState('inside');
+      } else if (hash === '#games' || hash === '#rangoli') {
+        setActiveDoorIndex(0);
+        setDoorState('inside');
+      } else if (hash === '#diyas' || hash === '#lights') {
+        setActiveDoorIndex(1);
+        setDoorState('inside');
+      } else if (hash === '#memory') {
+        setActiveDoorIndex(2);
+        setDoorState('inside');
+      } else if (hash === '#fireworks') {
+        setActiveDoorIndex(3);
+        setDoorState('inside');
+      } else if (hash === '#finale') {
+        setActiveDoorIndex(5);
+        setDoorState('inside');
+      }
+    };
+
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   const currentDoor = PALACE_DOORS_2D[activeDoorIndex];
 

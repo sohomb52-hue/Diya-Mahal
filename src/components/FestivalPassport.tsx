@@ -65,7 +65,11 @@ const INITIAL_STAMPS: AchievementStamp[] = [
   },
 ];
 
-export const FestivalPassport: React.FC = () => {
+interface FestivalPassportProps {
+  initialTab?: 'stamps' | 'wishes';
+}
+
+export const FestivalPassport: React.FC<FestivalPassportProps> = ({ initialTab = 'wishes' }) => {
   const [stamps, setStamps] = useState<AchievementStamp[]>(() => {
     try {
       const saved = localStorage.getItem('diwali_festival_passport_stamps');
@@ -82,7 +86,7 @@ export const FestivalPassport: React.FC = () => {
     return INITIAL_STAMPS;
   });
 
-  const [activeSubTab, setActiveSubTab] = useState<'stamps' | 'wishes'>('stamps');
+  const [activeSubTab, setActiveSubTab] = useState<'stamps' | 'wishes'>(initialTab);
 
   useEffect(() => {
     try {
