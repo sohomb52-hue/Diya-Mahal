@@ -142,6 +142,85 @@
   background-size: 20px 20px;
 }
 
+/* Warli Geometric Art Motif (Celebration triangles, solar radiance, sacred rhythm) */
+.bg-warli-pattern {
+  background-image:
+    radial-gradient(circle, rgba(212, 175, 55, 0.12) 2px, transparent 2px),
+    linear-gradient(45deg, rgba(255, 248, 231, 0.04) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 248, 231, 0.04) 25%, transparent 25%);
+  background-size: 32px 32px, 16px 16px, 16px 16px;
+}
+
+/* Madhubani Katchni Delicate Fine Line Hatching Pattern */
+.bg-madhubani-katchni {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(212, 175, 55, 0.06),
+    rgba(212, 175, 55, 0.06) 1.5px,
+    transparent 1.5px,
+    transparent 8px
+  );
+}
+
+/* Handcrafted Indian Folk Art Parchment & Paper Texture */
+.bg-folk-parchment {
+  background-color: #1A0D10;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 100% 100%, rgba(168, 66, 43, 0.15) 0%, transparent 60%),
+    radial-gradient(rgba(255, 248, 231, 0.04) 1px, transparent 0);
+  background-size: 100% 100%, 100% 100%, 20px 20px;
+}
+
+/* Authentic Deep Maroon Folk Lacquer Background */
+.bg-maroon-folk {
+  background: linear-gradient(145deg, #3A0C13 0%, #26070B 60%, #150306 100%);
+}
+
+/* Sun-baked Terracotta Clay Background */
+.bg-terracotta-folk {
+  background: linear-gradient(145deg, #7A2E1C 0%, #541D10 60%, #361008 100%);
+}
+
+/* Delicate 3D Indian Folk Art Layered Depth & Shadow */
+.shadow-folk-3d {
+  box-shadow:
+    0 16px 40px -10px rgba(10, 3, 5, 0.85),
+    0 4px 12px -2px rgba(15, 5, 8, 0.6),
+    0 0 0 1px rgba(212, 175, 55, 0.35),
+    inset 0 1px 1px 0 rgba(255, 248, 231, 0.2);
+}
+
+.shadow-card-elevated {
+  box-shadow:
+    0 20px 50px -12px rgba(0, 0, 0, 0.8),
+    0 0 25px rgba(212, 175, 55, 0.18),
+    inset 0 1px 0 rgba(255, 248, 231, 0.25);
+}
+
+/* 3D Perspective Card Wrapper */
+.card-folk-3d {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.card-folk-3d:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow:
+    0 24px 60px -12px rgba(10, 3, 5, 0.95),
+    0 0 35px rgba(229, 193, 88, 0.32),
+    inset 0 1px 1px 0 rgba(255, 248, 231, 0.3);
+}
+
+/* Traditional Indian Double-Line Border */
+.border-folk-double {
+  border: 3px double rgba(212, 175, 55, 0.6);
+}
+
+/* Fine White Rice-Flour Alpana Dot Border */
+.border-folk-alpana {
+  border: 2px dashed rgba(255, 248, 231, 0.35);
+}
+
 /* Indian Folk Art Gold Radiance */
 .glow-folk-gold {
   filter: drop-shadow(0 0 16px rgba(255, 176, 0, 0.65)) drop-shadow(0 0 35px rgba(230, 57, 70, 0.4));

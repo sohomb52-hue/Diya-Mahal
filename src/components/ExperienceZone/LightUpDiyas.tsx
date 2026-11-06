@@ -87,56 +87,61 @@ export const LightUpDiyas: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-6 bg-[#0F1126]/90 p-6 rounded-3xl border border-[#008C95]/40 backdrop-blur-md shadow-2xl w-full max-w-3xl mx-auto">
+    <div className="flex flex-col items-center gap-6 bg-[#1A0A0E]/95 p-6 md:p-8 rounded-3xl border-2 border-[#D4AF37]/50 shadow-folk-3d backdrop-blur-xl w-full max-w-3xl mx-auto relative overflow-hidden">
+      {/* Background Madhubani Hatching Pattern */}
+      <div className="absolute inset-0 bg-madhubani-katchni opacity-15 pointer-events-none" />
+
       {/* HUD Header */}
-      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#008C95]/30 pb-4">
+      <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#D4AF37]/25 pb-4 z-10">
         <div>
-          <h3 className="text-xl font-bold font-serif text-[#FFB000] flex items-center gap-2">
-            <Flame className="w-5 h-5 text-[#20C9C3]" />
-            <span>Light Up The Courtyard</span>
+          <h3 className="text-xl font-bold font-serif text-[#E5C158] flex items-center gap-2 drop-shadow-sm">
+            <Flame className="w-5 h-5 text-[#FF9800]" />
+            <span>Courtyard of Lights</span>
           </h3>
-          <p className="text-xs text-[#FFF1D6]/70 mt-1">
-            Click on every unlit diya to awaken the colourful festive lights!
+          <p className="text-xs text-[#FFF8E7]/70 mt-1">
+            Touch every terracotta diya to awaken the sacred festive glow!
           </p>
         </div>
 
         {/* Status Counters */}
-        <div className="flex items-center gap-4">
-          <div className="px-3.5 py-1.5 rounded-xl bg-[#002B30]/80 border border-[#008C95]/40 flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#FFB000]" />
-            <span className="text-xs font-semibold text-[#FFF1D6]">
-              Lit: <strong className="text-[#FFB000]">{litCount} / {diyas.length}</strong>
+        <div className="flex items-center gap-3">
+          <div className="px-3.5 py-1.5 rounded-xl bg-[#120508] border border-[#D4AF37]/40 flex items-center gap-2 shadow-sm">
+            <Sparkles className="w-4 h-4 text-[#E5C158]" />
+            <span className="text-xs font-semibold text-[#FFF8E7]">
+              Lit: <strong className="text-[#E5C158] font-mono">{litCount} / {diyas.length}</strong>
             </span>
           </div>
 
           {isTimedMode && (
-            <div className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-2 ${
-              timeLeft < 8 ? 'bg-red-900/60 border-red-500 text-red-200 animate-pulse' : 'bg-[#002B30]/80 border-[#FF5722]/40 text-[#FFF1D6]'
+            <div className={`px-3.5 py-1.5 rounded-xl border flex items-center gap-2 shadow-sm ${
+              timeLeft < 8 ? 'bg-[#58111A]/80 border-red-500 text-red-200 animate-pulse' : 'bg-[#120508] border-[#A8422B]/50 text-[#FFF8E7]'
             }`}>
-              <Timer className="w-4 h-4 text-[#FF5722]" />
-              <span className="text-xs font-bold tabular-nums">{timeLeft}s</span>
+              <Timer className="w-4 h-4 text-[#FF9800]" />
+              <span className="text-xs font-bold tabular-nums font-mono">{timeLeft}s</span>
             </div>
           )}
 
           <button
             onClick={handleReset}
-            className="p-2 rounded-xl bg-[#002B30] border border-[#008C95]/40 text-[#FFF1D6] hover:border-[#20C9C3] transition-colors"
+            className="p-2 rounded-xl bg-[#120508] border border-[#D4AF37]/40 text-[#FFF8E7] hover:border-[#E5C158] transition-colors cursor-pointer shadow-sm"
             title="Reset Diyas"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-4 h-4 text-[#E5C158]" />
           </button>
         </div>
       </div>
 
       {/* Mode Switcher */}
-      <div className="flex items-center gap-2 p-1 rounded-xl bg-[#002B30]/80 border border-[#008C95]/40">
+      <div className="flex items-center gap-2 p-1 rounded-xl bg-[#120508] border border-[#D4AF37]/40 z-10 shadow-sm">
         <button
           onClick={() => {
             setIsTimedMode(false);
             handleReset();
           }}
-          className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-            !isTimedMode ? 'bg-[#008C95] text-white shadow-sm' : 'text-[#FFF1D6]/70 hover:text-white'
+          className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            !isTimedMode
+              ? 'bg-gradient-to-r from-[#8C3214] to-[#C59B27] text-white shadow-sm font-bold'
+              : 'text-[#FFF8E7]/70 hover:text-white'
           }`}
         >
           Relaxed Mode
@@ -146,44 +151,46 @@ export const LightUpDiyas: React.FC = () => {
             setIsTimedMode(true);
             handleReset();
           }}
-          className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-            isTimedMode ? 'bg-[#008C95] text-white shadow-sm' : 'text-[#FFF1D6]/70 hover:text-white'
+          className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+            isTimedMode
+              ? 'bg-gradient-to-r from-[#8C3214] to-[#C59B27] text-white shadow-sm font-bold'
+              : 'text-[#FFF8E7]/70 hover:text-white'
           }`}
         >
           30s Challenge
         </button>
       </div>
 
-      {/* Courtyard Interactive Diya Canvas Area with Peacock Teal and Marigold Mandalas */}
-      <div className="relative w-full aspect-[4/3] max-w-lg bg-gradient-to-b from-[#002B30] to-[#0F1126] rounded-2xl border-2 border-[#20C9C3]/40 overflow-hidden shadow-[inner_0_0_40px_rgba(0,0,0,0.8)]">
+      {/* Courtyard Interactive Diya Canvas Area with Terracotta Pavers & Rangoli Floor */}
+      <div className="relative w-full aspect-[4/3] max-w-lg bg-gradient-to-b from-[#2D0D14] via-[#1D070C] to-[#120407] rounded-2xl border-2 border-[#D4AF37]/50 overflow-hidden shadow-[inner_0_0_40px_rgba(0,0,0,0.85)] z-10">
         {/* Floor Mandala Geometry Pattern */}
-        <div className="absolute inset-0 pointer-events-none opacity-25 flex items-center justify-center">
-          <div className="w-64 h-64 rounded-full border-2 border-dashed border-[#20C9C3] animate-spin-slow" />
-          <div className="absolute w-40 h-40 rounded-full border border-[#FFB000]" />
-          <div className="absolute w-20 h-20 rounded-full border border-[#E91E63]" />
+        <div className="absolute inset-0 pointer-events-none opacity-30 flex items-center justify-center">
+          <div className="w-64 h-64 rounded-full border-2 border-dashed border-[#D4AF37] animate-spin-slow" />
+          <div className="absolute w-44 h-44 rounded-full border border-[#FF9800]" />
+          <div className="absolute w-24 h-24 rounded-full border border-[#E63946]" />
         </div>
 
-        {/* Diyas Positioned in Mandala Pattern */}
+        {/* Diyas Positioned in Sacred Mandala Pattern */}
         {diyas.map((d) => (
           <button
             key={d.id}
             onClick={() => handleDiyaClick(d.id)}
             style={{ left: `${d.x}%`, top: `${d.y}%` }}
             className={`absolute -translate-x-1/2 -translate-y-1/2 group transition-all duration-300 cursor-pointer focus:outline-none ${
-              d.isLit ? 'scale-110' : 'hover:scale-105 opacity-80 hover:opacity-100'
+              d.isLit ? 'scale-110' : 'hover:scale-105 opacity-85 hover:opacity-100'
             }`}
           >
             {/* Diya Graphics with Multi-coloured Flame */}
             <div className="relative flex flex-col items-center">
               {/* Flame (Visible when lit) */}
               {d.isLit && (
-                <div className="absolute -top-6 animate-flame z-10 flex flex-col items-center">
+                <div className="absolute -top-7 animate-flame z-10 flex flex-col items-center">
                   {/* Glowing Flame Core with Diya's Distinctive Color */}
                   <div
                     className="w-4 h-7 shadow-lg"
                     style={{
-                      background: `linear-gradient(to top, ${d.color}, #FFF1D6)`,
-                      boxShadow: `0 0 18px ${d.color}`,
+                      background: `linear-gradient(to top, ${d.color}, #FFF8E7)`,
+                      boxShadow: `0 0 20px ${d.color}`,
                       borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
                     }}
                   />
@@ -195,15 +202,21 @@ export const LightUpDiyas: React.FC = () => {
                 </div>
               )}
 
-              {/* Clay Diya Bowl */}
+              {/* Clay Diya Bowl with Handcrafted Terracotta Finish */}
               <svg viewBox="0 0 60 30" className="w-12 h-6 sm:w-14 sm:h-7 drop-shadow-md">
                 <path
                   d="M5,5 Q30,32 55,5 Q45,28 30,28 Q15,28 5,5 Z"
-                  fill={d.isLit ? '#A8431D' : '#6E2A12'}
-                  stroke={d.isLit ? d.color : '#3D1508'}
+                  fill={d.isLit ? '#A8422B' : '#6E2008'}
+                  stroke={d.isLit ? '#E5C158' : '#3E1005'}
                   strokeWidth="2"
                 />
-                <ellipse cx="30" cy="5" rx="25" ry="4" fill={d.isLit ? '#D48817' : '#3A180C'} />
+                <ellipse cx="30" cy="5" rx="25" ry="4" fill={d.isLit ? '#C59B27' : '#361008'} />
+                {/* Hand-painted Alpana Rim Dots */}
+                <circle cx="16" cy="14" r="1.2" fill="#FFF8E7" opacity="0.8" />
+                <circle cx="23" cy="20" r="1.2" fill="#FFF8E7" opacity="0.8" />
+                <circle cx="30" cy="22" r="1.5" fill="#FFF8E7" opacity="0.9" />
+                <circle cx="37" cy="20" r="1.2" fill="#FFF8E7" opacity="0.8" />
+                <circle cx="44" cy="14" r="1.2" fill="#FFF8E7" opacity="0.8" />
               </svg>
             </div>
           </button>
@@ -211,17 +224,17 @@ export const LightUpDiyas: React.FC = () => {
 
         {/* Victory Overlay Modal */}
         {isVictorious && (
-          <div className="absolute inset-0 bg-[#0F1126]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
-            <Trophy className="w-16 h-16 text-[#FFB000] mb-3 animate-bounce" />
-            <h4 className="text-3xl font-bold font-serif text-festive-gradient mb-2">
+          <div className="absolute inset-0 bg-[#140609]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20 border-2 border-[#D4AF37]/60">
+            <Trophy className="w-16 h-16 text-[#E5C158] mb-3 animate-bounce" />
+            <h4 className="text-3xl font-bold font-serif text-royal-gold-gradient mb-2">
               Courtyard Illuminated!
             </h4>
-            <p className="text-sm text-[#FFF1D6]/80 max-w-xs mb-6">
-              You lit all {diyas.length} festive diyas and brought warmth and radiance to the courtyard!
+            <p className="text-sm text-[#FFF8E7]/85 max-w-xs mb-6">
+              You lit all {diyas.length} festive diyas and brought warmth and radiance to the royal courtyard!
             </p>
             <button
               onClick={handleReset}
-              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#008C95] via-[#20C9C3] to-[#FFB000] text-[#0F1126] font-bold text-sm shadow-lg hover:scale-105 transition-all"
+              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] font-bold text-sm shadow-md hover:scale-105 transition-all cursor-pointer border border-[#FFF8E7]/40"
             >
               Play Again ✨
             </button>
@@ -230,15 +243,15 @@ export const LightUpDiyas: React.FC = () => {
 
         {/* Time Over Overlay Modal */}
         {!isGameActive && isTimedMode && timeLeft === 0 && !isVictorious && (
-          <div className="absolute inset-0 bg-[#0F1126]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20">
+          <div className="absolute inset-0 bg-[#140609]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center animate-fade-in z-20 border-2 border-[#D4AF37]/60">
             <Timer className="w-12 h-12 text-red-400 mb-3" />
             <h4 className="text-2xl font-bold font-serif text-red-300 mb-2">Time Expired!</h4>
-            <p className="text-sm text-[#FFF1D6]/80 max-w-xs mb-4">
+            <p className="text-sm text-[#FFF8E7]/80 max-w-xs mb-4">
               You lit {litCount} out of {diyas.length} diyas in 30 seconds.
             </p>
             <button
               onClick={handleReset}
-              className="px-5 py-2 rounded-full bg-[#E63946] text-white font-bold text-xs hover:scale-105 transition-all"
+              className="px-5 py-2 rounded-full bg-[#8C3214] text-white font-bold text-xs hover:scale-105 transition-all cursor-pointer border border-[#E5C158]/50"
             >
               Try Again 🔄
             </button>

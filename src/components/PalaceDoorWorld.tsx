@@ -197,25 +197,31 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
 
   return (
     <div className="relative w-full min-h-screen py-8 px-4 flex flex-col justify-center">
+      {/* Background Warli Motif & Subtle Ambient Lighting */}
+      <div className="absolute inset-0 bg-warli-pattern opacity-10 pointer-events-none" />
+
       {/* Corridor Active Door Presentation (Visible in 'corridor' & 'opening' modes) */}
       {doorState !== 'inside' && (
         <div className="max-w-3xl mx-auto w-full flex flex-col items-center justify-center my-auto min-h-[75vh]">
           
-          {/* Ornate 2D Illustrated Indian Archway & Physical Swing Door Frame */}
-          <div className="relative w-full max-w-md aspect-[3/4] my-6 rounded-t-full p-4 bg-[#090C18] border-4 border-[#D4AF37] shadow-[0_0_50px_rgba(212,175,55,0.25)] flex flex-col justify-between items-center overflow-hidden">
+          {/* Handcrafted Indian Folk Art Haveli Archway & 3D Perspective Door Frame */}
+          <div className="relative w-full max-w-md aspect-[3/4] my-6 rounded-t-full p-4 bg-[#140609] border-4 border-[#D4AF37] shadow-folk-3d flex flex-col justify-between items-center overflow-hidden">
             
-            {/* Top Rajasthani Scalloped Arch Trim & Marigold Garland */}
-            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#D4AF37]/25 to-transparent flex items-center justify-center pointer-events-none z-20">
-              <svg viewBox="0 0 400 60" className="w-full h-full text-[#D4AF37]">
+            {/* Top Rajasthani Scalloped Arch Trim, Warli Frieze & Marigold Garland */}
+            <div className="absolute top-0 left-0 right-0 h-18 bg-gradient-to-b from-[#D4AF37]/30 via-[#A8422B]/20 to-transparent flex items-center justify-center pointer-events-none z-20">
+              <svg viewBox="0 0 400 70" className="w-full h-full text-[#D4AF37]">
                 {/* Traditional Scalloped Arch */}
                 <path
-                  d="M0,0 Q100,50 200,30 Q300,50 400,0 L400,20 Q300,60 200,45 Q100,60 0,20 Z"
+                  d="M0,0 Q100,55 200,32 Q300,55 400,0 L400,24 Q300,65 200,48 Q100,65 0,24 Z"
                   fill="currentColor"
-                  fillOpacity="0.4"
+                  fillOpacity="0.45"
                 />
+                {/* Warli Sun at Arch Apex */}
+                <circle cx="200" cy="22" r="7" fill="#E5C158" />
+                <path d="M190,22 L210,22 M200,12 L200,32 M193,15 L207,29 M193,29 L207,15" stroke="#140609" strokeWidth="1.5" />
                 {/* Strung Marigold Garland */}
                 <path
-                  d="M20,10 Q110,40 200,25 Q290,40 380,10"
+                  d="M20,12 Q110,42 200,28 Q290,42 380,12"
                   fill="none"
                   stroke="#FF9800"
                   strokeWidth="3.5"
@@ -224,14 +230,14 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
               </svg>
             </div>
 
-            {/* Hanging Brass Temple Bells on Left & Right with Chain */}
+            {/* Swaying Brass Temple Bells on Left & Right with Dynamic Physical Motion */}
             <div className="absolute top-3 left-4 text-[#E5C158] z-20 flex flex-col items-center animate-bounce" style={{ animationDuration: '3.4s' }}>
               <div className="w-[1.5px] h-4 bg-[#D4AF37]" />
-              <div className="text-lg">🔔</div>
+              <div className="text-lg drop-shadow-[0_0_8px_rgba(229,193,88,0.7)]">🔔</div>
             </div>
             <div className="absolute top-3 right-4 text-[#E5C158] z-20 flex flex-col items-center animate-bounce" style={{ animationDuration: '2.8s' }}>
               <div className="w-[1.5px] h-4 bg-[#D4AF37]" />
-              <div className="text-lg">🔔</div>
+              <div className="text-lg drop-shadow-[0_0_8px_rgba(229,193,88,0.7)]">🔔</div>
             </div>
 
             {/* Glowing Golden Portal Light Beam (Revealed behind the opening doors) */}
@@ -244,90 +250,101 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
               <div className="text-4xl text-[#0B1021] animate-spin" style={{ animationDuration: '10s' }}>✨</div>
             </div>
 
-            {/* 2D PHYSICAL DOOR SWING CONTAINER (CSS 3D Perspective Hinge Rotation) */}
+            {/* 3D PHYSICAL PERSPECTIVE DOOR SWING CONTAINER */}
             <div
               className="relative w-full h-full z-10 flex cursor-pointer group"
               style={{ perspective: '1200px' }}
               onClick={() => handleOpenDoor(activeDoorIndex)}
             >
-              {/* LEFT 2D DOOR LEAF (Hinge on Left) */}
+              {/* LEFT DOOR LEAF (Hinge on Left) */}
               <div
-                className={`w-1/2 h-full bg-gradient-to-br ${currentDoor.doorBg} border-r border-[#D4AF37]/50 p-4 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-left ${
+                className={`w-1/2 h-full bg-gradient-to-br ${currentDoor.doorBg} border-r-2 border-[#D4AF37]/60 p-3.5 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-left relative ${
                   doorState === 'opening' ? '-rotate-y-[105deg] opacity-20' : 'rotate-y-0 group-hover:-rotate-y-6'
                 }`}
               >
-                {/* Carved Door Pattern Panels */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/40 bg-black/30 flex items-center justify-center text-3xl shadow-inner">
-                  {currentDoor.patternIcon}
+                {/* Top Carved Panel (Folk Art Icon & Madhubani Border) */}
+                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
+                  <div className="absolute inset-0 bg-madhubani-katchni opacity-25" />
+                  <span className="relative z-10 drop-shadow-md">{currentDoor.patternIcon}</span>
                 </div>
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/40 bg-black/30 flex items-center justify-center text-xl text-[#E5C158] font-serif font-bold">
-                  🪔
+
+                {/* Center Carved Diya Motif */}
+                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] font-serif font-bold relative shadow-inner">
+                  <span className="drop-shadow-[0_0_10px_rgba(229,193,88,0.6)]">🪔</span>
                 </div>
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/40 bg-black/30 flex items-center justify-center text-2xl text-[#E5C158]">
-                  🌸
+
+                {/* Bottom Sacred Lotus Rosette */}
+                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] relative shadow-inner">
+                  <span className="drop-shadow-md">🌸</span>
                 </div>
               </div>
 
-              {/* RIGHT 2D DOOR LEAF (Hinge on Right) */}
+              {/* RIGHT DOOR LEAF (Hinge on Right) */}
               <div
-                className={`w-1/2 h-full bg-gradient-to-bl ${currentDoor.doorBg} border-l border-[#D4AF37]/50 p-4 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-right relative ${
+                className={`w-1/2 h-full bg-gradient-to-bl ${currentDoor.doorBg} border-l-2 border-[#D4AF37]/60 p-3.5 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-right relative ${
                   doorState === 'opening' ? 'rotate-y-[105deg] opacity-20' : 'rotate-y-0 group-hover:rotate-y-6'
                 }`}
               >
-                {/* Carved Door Pattern Panels */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/40 bg-black/30 flex items-center justify-center text-3xl shadow-inner">
-                  {currentDoor.patternIcon}
+                {/* Top Carved Panel */}
+                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
+                  <div className="absolute inset-0 bg-madhubani-katchni opacity-25" />
+                  <span className="relative z-10 drop-shadow-md">{currentDoor.patternIcon}</span>
                 </div>
 
-                {/* Ornate Antique Brass Handle Ring */}
+                {/* 3D Ornate Antique Brass Handle Ring with Lion-Head Escutcheon */}
                 <div
-                  className={`absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#A8422B] border-2 border-[#FFF8E7] shadow-[0_0_15px_rgba(212,175,55,0.7)] flex items-center justify-center transition-transform duration-300 ${
+                  className={`absolute left-1.5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-[#E5C158] via-[#C59B27] to-[#8C3214] border-2 border-[#FFF8E7] shadow-[0_4px_16px_rgba(0,0,0,0.8),0_0_18px_rgba(229,193,88,0.7)] flex items-center justify-center transition-transform duration-300 z-20 ${
                     handleRotated ? '-rotate-45 scale-110' : 'group-hover:rotate-12'
                   }`}
                 >
-                  <div className="w-6 h-6 rounded-full border-2 border-[#0B1021]" />
+                  <div className="w-6 h-6 rounded-full border-2 border-[#1A0B0E] bg-[#C59B27]/40 shadow-inner" />
                 </div>
 
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/40 bg-black/30 flex items-center justify-center text-xl text-[#E5C158] font-serif font-bold">
-                  🪔
+                {/* Center Carved Diya Motif */}
+                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] font-serif font-bold relative shadow-inner">
+                  <span className="drop-shadow-[0_0_10px_rgba(229,193,88,0.6)]">🪔</span>
                 </div>
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/40 bg-black/30 flex items-center justify-center text-2xl text-[#E5C158]">
-                  🌸
+
+                {/* Bottom Sacred Lotus Rosette */}
+                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] relative shadow-inner">
+                  <span className="drop-shadow-md">🌸</span>
                 </div>
               </div>
 
             </div>
 
-            {/* Bottom Door Step Threshold */}
-            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-[#D4AF37] via-[#A8422B] to-[#D4AF37] z-20" />
+            {/* Bottom Door Step Threshold with Terracotta & Brass Inlay */}
+            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-[#D4AF37] via-[#8C3214] to-[#D4AF37] z-20 shadow-md" />
           </div>
 
-          {/* Active Door Information & Action Box */}
-          <div className="w-full max-w-lg p-6 rounded-3xl bg-[#0B1021]/92 border-2 border-[#D4AF37]/45 backdrop-blur-md shadow-[0_0_40px_rgba(0,0,0,0.8),0_0_20px_rgba(212,175,55,0.15)] text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-[#004D54]/45 border border-[#D4AF37]/40 text-[#E5C158] text-xs font-extrabold tracking-wider mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#E5C158]" />
+          {/* Active Door Information & Action Box with Handcrafted 3D Depth */}
+          <div className="w-full max-w-lg p-6 rounded-3xl bg-[#1A0A0E]/94 border-2 border-[#D4AF37]/50 backdrop-blur-md shadow-folk-3d text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-madhubani-katchni opacity-10 pointer-events-none" />
+
+            {/* Clean Unboxed Metadata Badge */}
+            <div className="flex items-center justify-center gap-2 text-xs font-semibold text-[#E5C158] tracking-widest uppercase mb-2">
               <span>{currentDoor.badge}</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-royal-gold-gradient mb-2">
+            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-royal-gold-gradient mb-2 drop-shadow-md">
               {currentDoor.title}
             </h2>
 
-            <p className="text-xs sm:text-sm text-[#FFF8E7]/80 font-light mb-5">
+            <p className="text-xs sm:text-sm text-[#FFF8E7]/80 font-light mb-6">
               {currentDoor.subtitle}
             </p>
 
             <button
               onClick={() => handleOpenDoor(activeDoorIndex)}
               disabled={doorState === 'opening'}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#A8422B] via-[#C59B27] to-[#E5C158] text-[#0B1021] font-extrabold text-base border border-[#FFF8E7]/40 shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:shadow-[0_0_40px_rgba(229,193,88,0.7)] hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] font-extrabold text-base border border-[#FFF8E7]/50 shadow-[0_8px_25px_rgba(212,175,55,0.4),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_12px_35px_rgba(229,193,88,0.7)] hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-3 cursor-pointer group"
             >
               <span>{doorState === 'opening' ? 'Opening Door...' : `Open Door ${currentDoor.id} & Enter`}</span>
               <ArrowRight className="w-5 h-5 text-[#0B1021] group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Prev / Next Door Navigation Buttons */}
-            <div className="flex items-center justify-between mt-4 pt-3 border-t border-[#D4AF37]/20 text-xs font-semibold text-[#FFF8E7]/70">
+            <div className="flex items-center justify-between mt-5 pt-3 border-t border-[#D4AF37]/25 text-xs font-semibold text-[#FFF8E7]/75">
               <button
                 onClick={() => handleSelectDoorFromNav(Math.max(0, activeDoorIndex - 1))}
                 disabled={activeDoorIndex === 0}
@@ -357,12 +374,12 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
 
       {/* 3. Chamber Feature Mount Overlay (Revealed when doorState === 'inside') */}
       {doorState === 'inside' && (
-        <div className="relative z-30 min-h-screen bg-[#0B1021]/96 py-8 px-3 sm:px-6 animate-fade-in flex flex-col justify-between">
+        <div className="relative z-30 min-h-screen bg-[#120508]/96 py-8 px-3 sm:px-6 animate-fade-in flex flex-col justify-between">
           
-          {/* Chamber Header Control Bar */}
-          <div className="max-w-6xl mx-auto w-full mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#004D54]/60 border border-[#D4AF37]/40 backdrop-blur-md shadow-xl">
+          {/* Chamber Header Control Bar with Folk Art Styling */}
+          <div className="max-w-6xl mx-auto w-full mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#200A10]/90 border-2 border-[#D4AF37]/45 backdrop-blur-md shadow-folk-3d">
             <div className="flex items-center gap-3">
-              <span className="px-3 py-1 rounded-lg bg-gradient-to-r from-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold uppercase">
+              <span className="px-3 py-1 rounded-lg bg-gradient-to-r from-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold uppercase shadow-sm">
                 Chamber {currentDoor.id} of 6
               </span>
               <div>
@@ -378,7 +395,7 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
             <div className="flex items-center gap-3">
               <button
                 onClick={handleStepBackToCorridor}
-                className="px-4 py-2 rounded-xl bg-[#0B1021] border border-[#D4AF37]/40 text-xs font-bold text-[#FFF8E7] hover:border-[#E5C158] flex items-center gap-2 transition-all cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-[#140609] border border-[#D4AF37]/50 text-xs font-bold text-[#FFF8E7] hover:border-[#E5C158] flex items-center gap-2 transition-all cursor-pointer shadow-sm"
               >
                 <X className="w-4 h-4 text-[#A8422B]" />
                 <span>Exit Chamber</span>
@@ -386,7 +403,7 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
 
               <button
                 onClick={handleNextDoor}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#A8422B] via-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold shadow-md hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] text-xs font-extrabold shadow-md hover:brightness-110 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <span>Next Door</span>
                 <ChevronRight className="w-4 h-4" />
@@ -410,11 +427,11 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
           </div>
 
           {/* Chamber Footer */}
-          <div className="max-w-6xl mx-auto w-full mt-10 pt-4 border-t border-[#008C95]/30 flex items-center justify-between text-xs text-[#FFF1D6]/60">
+          <div className="max-w-6xl mx-auto w-full mt-10 pt-4 border-t border-[#D4AF37]/25 flex items-center justify-between text-xs text-[#FFF8E7]/65">
             <span>🪔 Diwali Palace Chamber Navigation</span>
             <button
               onClick={handleStepBackToCorridor}
-              className="hover:text-[#FFB000] underline cursor-pointer"
+              className="hover:text-[#E5C158] underline cursor-pointer transition-colors"
             >
               Return to Palace Corridor
             </button>

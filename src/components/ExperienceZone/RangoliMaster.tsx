@@ -183,10 +183,13 @@ export const RangoliMaster: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 bg-[#0F1126]/90 p-6 rounded-3xl border border-[#008C95]/40 backdrop-blur-md shadow-2xl">
-      {/* Canvas Viewport */}
-      <div className="relative flex flex-col items-center">
-        <div className="relative rounded-full overflow-hidden border-4 border-[#20C9C3]/70 shadow-[0_0_35px_rgba(32,201,195,0.35)] touch-none cursor-crosshair">
+    <div className="flex flex-col lg:flex-row items-center justify-center gap-8 bg-[#1A0A0E]/95 p-6 md:p-8 rounded-3xl border-2 border-[#D4AF37]/50 shadow-folk-3d backdrop-blur-xl relative overflow-hidden">
+      {/* Background Madhubani Hatching Pattern */}
+      <div className="absolute inset-0 bg-madhubani-katchni opacity-15 pointer-events-none" />
+
+      {/* Canvas Viewport with Antique Brass & Carved Teak Frame */}
+      <div className="relative flex flex-col items-center z-10">
+        <div className="relative rounded-full overflow-hidden border-4 border-[#D4AF37] shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(212,175,55,0.35)] touch-none cursor-crosshair">
           <canvas
             ref={canvasRef}
             onMouseDown={startDrawing}
@@ -196,20 +199,20 @@ export const RangoliMaster: React.FC = () => {
             onTouchStart={startDrawing}
             onTouchMove={draw}
             onTouchEnd={stopDrawing}
-            className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[480px] md:h-[480px] bg-[#0F1126]"
+            className="w-[320px] h-[320px] sm:w-[420px] sm:h-[420px] md:w-[480px] md:h-[480px] bg-[#120508]"
           />
         </div>
 
         {/* Completion Message Modal Overlay */}
         {isCompleted && (
-          <div className="mt-4 p-4 rounded-xl bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] text-white text-center shadow-lg animate-fade-in flex items-center justify-between gap-4 w-full max-w-md">
+          <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] text-center shadow-folk-3d animate-fade-in flex items-center justify-between gap-4 w-full max-w-md border border-[#FFF8E7]/50">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#FFF1D6]" />
-              <span className="font-semibold text-sm">Rangoli Masterpiece Complete!</span>
+              <Sparkles className="w-5 h-5 text-[#0B1021]" />
+              <span className="font-bold text-sm">Rangoli Masterpiece Complete!</span>
             </div>
             <button
               onClick={handleDownload}
-              className="px-3 py-1.5 rounded-lg bg-[#0F1126] text-[#FFB000] text-xs font-bold hover:bg-white hover:text-[#0F1126] transition-colors flex items-center gap-1"
+              className="px-3.5 py-1.5 rounded-xl bg-[#1A0A0E] text-[#E5C158] text-xs font-bold hover:bg-white hover:text-[#0B1021] transition-all flex items-center gap-1.5 shadow-sm cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
               <span>Save</span>
@@ -218,23 +221,23 @@ export const RangoliMaster: React.FC = () => {
         )}
       </div>
 
-      {/* Control Panel */}
-      <div className="flex flex-col gap-6 w-full max-w-xs text-[#FFF1D6]">
+      {/* Control Panel with Handcrafted Parchment & Brass Accents */}
+      <div className="flex flex-col gap-6 w-full max-w-xs text-[#FFF8E7] z-10">
         {/* Title */}
         <div>
-          <h3 className="text-xl font-bold font-serif text-[#FFB000] flex items-center gap-2">
-            <Paintbrush className="w-5 h-5 text-[#E91E63]" />
-            <span>Rangoli Studio</span>
+          <h3 className="text-xl font-bold font-serif text-[#E5C158] flex items-center gap-2 drop-shadow-sm">
+            <Paintbrush className="w-5 h-5 text-[#FFB000]" />
+            <span>Rangoli Atelier</span>
           </h3>
-          <p className="text-xs text-[#FFF1D6]/70 mt-1">
-            Draw symmetrical patterns by dragging across the circular canvas.
+          <p className="text-xs text-[#FFF8E7]/70 mt-1">
+            Draw symmetrical sacred patterns across the canvas.
           </p>
         </div>
 
         {/* Color Swatches */}
         <div>
-          <label className="text-xs font-semibold uppercase tracking-wider text-[#FFB000] block mb-2">
-            Festival Palette
+          <label className="text-xs font-semibold uppercase tracking-wider text-[#E5C158] block mb-2 font-serif">
+            Festive Pigments
           </label>
           <div className="grid grid-cols-4 gap-2.5">
             {RANGOLI_COLORS.map((c) => (
@@ -244,8 +247,10 @@ export const RangoliMaster: React.FC = () => {
                   soundManager.playClick();
                   setSelectedColor(c.hex);
                 }}
-                className={`w-9 h-9 rounded-full border-2 transition-transform ${
-                  selectedColor === c.hex ? 'border-white scale-110 shadow-[0_0_12px_white]' : 'border-transparent hover:scale-105'
+                className={`w-9 h-9 rounded-full border-2 transition-transform cursor-pointer shadow-md ${
+                  selectedColor === c.hex
+                    ? 'border-white scale-110 shadow-[0_0_14px_rgba(255,255,255,0.8)]'
+                    : 'border-[#D4AF37]/40 hover:scale-105 hover:border-[#E5C158]'
                 }`}
                 style={{ backgroundColor: c.hex }}
                 title={c.name}
@@ -256,7 +261,7 @@ export const RangoliMaster: React.FC = () => {
 
         {/* Symmetry Selector */}
         <div>
-          <label className="text-xs font-semibold uppercase tracking-wider text-[#FFB000] block mb-2">
+          <label className="text-xs font-semibold uppercase tracking-wider text-[#E5C158] block mb-2 font-serif">
             Mandala Symmetry
           </label>
           <div className="grid grid-cols-4 gap-2">
@@ -267,10 +272,10 @@ export const RangoliMaster: React.FC = () => {
                   soundManager.playClick();
                   setSymmetry(m);
                 }}
-                className={`py-1.5 text-xs font-bold rounded-lg border transition-all ${
+                className={`py-1.5 text-xs font-bold rounded-xl border transition-all cursor-pointer ${
                   symmetry === m
-                    ? 'bg-[#E91E63] text-white border-[#FFB000]'
-                    : 'bg-[#0F1126]/80 text-[#FFF1D6]/80 border-[#008C95]/40 hover:border-[#20C9C3]'
+                    ? 'bg-gradient-to-r from-[#8C3214] to-[#C59B27] text-white border-[#E5C158] shadow-md scale-105'
+                    : 'bg-[#120508]/85 text-[#FFF8E7]/80 border-[#D4AF37]/35 hover:border-[#E5C158]'
                 }`}
               >
                 {m === 1 ? 'Free' : `${m}-Fold`}
@@ -281,9 +286,9 @@ export const RangoliMaster: React.FC = () => {
 
         {/* Brush Thickness Slider */}
         <div>
-          <div className="flex justify-between text-xs font-semibold text-[#FFB000] mb-1">
+          <div className="flex justify-between text-xs font-semibold text-[#E5C158] mb-1 font-serif">
             <span>Brush Size</span>
-            <span>{brushSize}px</span>
+            <span className="font-mono">{brushSize}px</span>
           </div>
           <input
             type="range"
@@ -291,7 +296,7 @@ export const RangoliMaster: React.FC = () => {
             max="20"
             value={brushSize}
             onChange={(e) => setBrushSize(Number(e.target.value))}
-            className="w-full accent-[#E91E63] cursor-pointer"
+            className="w-full accent-[#E5C158] cursor-pointer"
           />
         </div>
 
@@ -300,17 +305,17 @@ export const RangoliMaster: React.FC = () => {
           <button
             onClick={handleUndo}
             disabled={history.length <= 1}
-            className="flex-1 py-2 rounded-xl bg-[#0F1126] border border-[#008C95]/40 text-xs font-medium hover:border-[#FFB000] disabled:opacity-40 flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 py-2 rounded-xl bg-[#120508] border border-[#D4AF37]/40 text-xs font-medium hover:border-[#E5C158] disabled:opacity-40 flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm"
           >
-            <Undo className="w-3.5 h-3.5" />
+            <Undo className="w-3.5 h-3.5 text-[#E5C158]" />
             <span>Undo</span>
           </button>
 
           <button
             onClick={handleClear}
-            className="flex-1 py-2 rounded-xl bg-[#0F1126] border border-[#008C95]/40 text-xs font-medium hover:border-[#FFB000] flex items-center justify-center gap-1.5 transition-colors"
+            className="flex-1 py-2 rounded-xl bg-[#120508] border border-[#D4AF37]/40 text-xs font-medium hover:border-[#E5C158] flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-sm"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-3.5 h-3.5 text-[#E5C158]" />
             <span>Reset</span>
           </button>
         </div>
@@ -318,9 +323,9 @@ export const RangoliMaster: React.FC = () => {
         {/* Complete CTA */}
         <button
           onClick={handleFinishRangoli}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#E91E63] via-[#FF5722] to-[#FFB000] text-white font-bold text-sm shadow-md hover:shadow-[0_0_20px_rgba(233,30,99,0.5)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#8C3214] via-[#C59B27] to-[#E5C158] text-[#0B1021] font-extrabold text-sm border border-[#FFF8E7]/50 shadow-[0_8px_25px_rgba(212,175,55,0.4),inset_0_1px_1px_rgba(255,255,255,0.4)] hover:shadow-[0_12px_35px_rgba(229,193,88,0.7)] hover:scale-[1.02] active:scale-95 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer"
         >
-          <Sparkles className="w-4 h-4" />
+          <Sparkles className="w-4 h-4 text-[#0B1021]" />
           <span>Complete Rangoli ✨</span>
         </button>
       </div>
