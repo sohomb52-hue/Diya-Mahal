@@ -87,13 +87,13 @@ export const PALACE_DOORS_2D: PalaceDoor2DItem[] = [
     id: 6,
     key: 'finale',
     title: 'The Grand Finale',
-    subtitle: 'Receive Royal Blessings & Celebratory Finale',
-    badge: 'DOOR 6 — ROYAL BLESSINGS',
+    subtitle: 'A Heartfelt Thank You & Celebratory Tribute',
+    badge: 'DOOR 6 — THE GRAND FINALE',
     accentColor: '#D4AF37',
     doorBg: 'from-[#2B1F08] via-[#45320D] to-[#1A1304]',
     frameBorder: 'border-[#D4AF37]',
-    patternIcon: '👑',
-    description: 'Conclude your journey with virtual blessings and celebratory light.',
+    patternIcon: '✨',
+    description: 'Step into the starlit courtyard of gratitude and celebration.',
   },
 ];
 
@@ -401,7 +401,12 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
             {activeDoorIndex === 2 && <DiwaliMemoryMatch />}
             {activeDoorIndex === 3 && <FirecrackerSimulator />}
             {activeDoorIndex === 4 && <FestivalPassport />}
-            {activeDoorIndex === 5 && <FinalSection onRestartExperience={onRestartExperience} />}
+            {activeDoorIndex === 5 && (
+              <FinalSection
+                onRestartExperience={onRestartExperience}
+                onBackToCorridor={handleStepBackToCorridor}
+              />
+            )}
           </div>
 
           {/* Chamber Footer */}
