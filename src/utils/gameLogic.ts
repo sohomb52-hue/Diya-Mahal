@@ -145,7 +145,7 @@ export function calculateFirecrackerScore(
   return { newScore, comboMultiplier: multiplier, rankTitle };
 }
 
-export type FireworkShape = 'chrysanthemum' | 'ring' | 'star' | 'spiral' | 'shower' | 'heart';
+export type FireworkShape = 'chrysanthemum' | 'ring' | 'star' | 'spiral' | 'shower';
 
 /**
  * Generates initial particle velocity vectors for custom firework shapes.
@@ -193,16 +193,6 @@ export function generateFireworkPatternPoints(
         const spd = speedFactor * (0.6 + Math.random() * 0.9);
         vx = Math.cos(angle) * spd;
         vy = Math.sin(angle) * spd * 1.2;
-        break;
-      }
-      case 'heart': {
-        // Parametric heart burst
-        const t = (i * Math.PI * 2) / count;
-        const hx = 16 * Math.pow(Math.sin(t), 3);
-        const hy = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
-        const scale = speedFactor * 0.26;
-        vx = hx * scale;
-        vy = hy * scale;
         break;
       }
       case 'chrysanthemum':
