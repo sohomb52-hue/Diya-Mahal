@@ -11,7 +11,7 @@
  */
 
 export type AudioScene = 'opening' | 'lighting' | 'reveal' | 'main';
-export type FestiveTuneId = 'tune-palace-fusion' | 'tune-keherwa' | 'tune-garba' | 'tune-yaman' | 'tune-bhangra';
+export type FestiveTuneId = 'tune-palace-fusion' | 'tune-keherwa' | 'tune-garba' | 'tune-yaman' | 'tune-bhangra' | 'tune-ambient';
 
 export interface FestiveTuneConfig {
   id: FestiveTuneId;
@@ -49,7 +49,7 @@ export const FESTIVE_TUNES: FestiveTuneConfig[] = [
   },
   {
     id: 'tune-yaman',
-    name: 'Lakshmi Puja Harmonium',
+    name: 'Peaceful Temple Flute',
     hindiName: 'लक्ष्मी पूजा बाँसुरी',
     icon: '🪈',
     description: 'Serene Temple Flute & Harmonium in Raag Yaman (98 BPM)',
@@ -57,11 +57,19 @@ export const FESTIVE_TUNES: FestiveTuneConfig[] = [
   },
   {
     id: 'tune-bhangra',
-    name: 'Explosive Dhol Parade',
+    name: 'Festive Celebration Dhol',
     hindiName: 'धमाकेदार ढोल गर्जना',
     icon: '🎆',
     description: 'High-octane Punjabi Dhol & Shehnai fanfare (134 BPM)',
     bpm: 134,
+  },
+  {
+    id: 'tune-ambient',
+    name: 'Ambient Night Sounds',
+    hindiName: 'शांत रात्रि वातावरण',
+    icon: '🌌',
+    description: 'Tranquil night breeze and serene cricket chirps under the starlit sky',
+    bpm: 60,
   },
 ];
 
@@ -421,6 +429,13 @@ class SoundManager {
       const step = this.stepCount % 8;
 
       switch (this.currentTuneId) {
+        case 'tune-ambient': {
+          // Night Crickets & Serene Breeze
+          if (step % 2 === 0 && Math.random() > 0.3) {
+            this.playNightCricketChirp();
+          }
+          break;
+        }
         case 'tune-garba': {
           // Garba 6/8 Fast Rhythm
           if (step === 0 || step === 3) this.triggerManjira(0.4);
@@ -485,6 +500,7 @@ class SoundManager {
       'tune-garba': [293.66, 369.99, 392.0, 440.0, 523.25, 493.88, 440.0, 392.0, 369.99, 329.63, 293.66, 440.0], // Raag Desh
       'tune-yaman': [329.63, 415.3, 440.0, 493.88, 554.37, 622.25, 659.25, 493.88, 415.3, 329.63], // Raag Yaman
       'tune-bhangra': [293.66, 349.23, 392.0, 415.3, 466.16, 523.25, 587.33, 622.25, 587.33, 523.25, 466.16, 415.3], // Raag Bhairavi
+      'tune-ambient': [293.66, 369.99, 440.0, 587.33, 659.25], // Pentatonic
     };
 
     const isPalaceFusion = this.currentTuneId === 'tune-palace-fusion';
@@ -571,6 +587,12 @@ class SoundManager {
       const noteFreq = currentScale[this.melodyStep % currentScale.length];
 
       switch (this.currentTuneId) {
+        case 'tune-ambient': {
+          if (this.melodyStep % 4 === 0 && Math.random() > 0.3) {
+            this.playBansuriNote(noteFreq, 0.16);
+          }
+          break;
+        }
         case 'tune-garba': {
           if (isMain) {
             this.playSitarNote(noteFreq, 0.35);
@@ -897,6 +919,27 @@ class SoundManager {
 
     osc.start(now);
     osc.stop(now + 0.6);
+  }
+
+  /**
+   * Night Cricket Chirp Synthesizer for Ambient Night Mode
+   */
+  private playNightCricketChirp() {
+    if (!this.ctx || !this.sfxGain || this.isMuted) return;
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(4600 + Math.random() * 400, now);
+
+    gain.gain.setValueAtTime(0.012, now);
+    gain.gain.setValueAtTime(0.025, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+
+    osc.connect(gain);
+    gain.connect(this.sfxGain);
+    osc.start(now);
+    osc.stop(now + 0.09);
   }
 
   /**

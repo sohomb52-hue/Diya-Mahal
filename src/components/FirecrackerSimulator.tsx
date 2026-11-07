@@ -1,12 +1,27 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Sparkles, Rocket as RocketIcon, Volume2, VolumeX, Maximize2, Minimize2, RotateCcw, Flame, Trophy, Play } from 'lucide-react';
-import { soundManager } from '../utils/audio';
+import {
+  Sparkles,
+  Volume2,
+  VolumeX,
+  Maximize2,
+  Minimize2,
+  RotateCcw,
+  Flame,
+  Trophy,
+  Play,
+  Pause,
+  Square,
+  Music,
+  Palette,
+  Grid,
+} from 'lucide-react';
+import { soundManager, FestiveTuneId } from '../utils/audio';
 import {
   calculateFirecrackerScore,
   generateFireworkPatternPoints,
   FireworkShape,
 } from '../utils/gameLogic';
-import { MadhubaniCorner, MadhubaniDivider } from './MadhubaniCard';
+import { MadhubaniBox, MadhubaniCorner, MadhubaniDivider } from './MadhubaniCard';
 
 interface Particle {
   x: number;
@@ -55,16 +70,53 @@ interface ActiveBomb {
 
 type FirecrackerType = 'fuljhuri' | 'anar' | 'chakri' | 'bomb' | 'rocket';
 
-const FIREWORK_COLORS = [
-  '#FF2E88', // Hot Pink
-  '#E63946', // Sindoor Red
-  '#FF5722', // Vermilion Orange
-  '#FFB000', // Marigold Yellow
-  '#20C9C3', // Turquoise
-  '#3478F6', // Electric Blue
-  '#2E9D50', // Leaf Green
-  '#E91E63', // Rani Pink
-  '#FFF1D6', // Warm Gold
+// Customisation Options
+export interface ColorOption {
+  id: string;
+  name: string;
+  colors: string[];
+  swatchGradient: string;
+}
+
+export const COLOR_OPTIONS: ColorOption[] = [
+  { id: 'gold', name: 'Gold', colors: ['#FFD166', '#FFB000', '#FFF1D6', '#E8B947'], swatchGradient: 'from-[#FFE082] via-[#FFB000] to-[#B87A04]' },
+  { id: 'royal-blue', name: 'Royal Blue', colors: ['#3478F6', '#236C79', '#60A5FA', '#1E40AF'], swatchGradient: 'from-[#60A5FA] via-[#3478F6] to-[#1E3A8A]' },
+  { id: 'crimson-red', name: 'Crimson Red', colors: ['#E63946', '#A82420', '#F87171', '#DC2626'], swatchGradient: 'from-[#F87171] via-[#E63946] to-[#991B1B]' },
+  { id: 'purple', name: 'Purple', colors: ['#A855F7', '#8B5CF6', '#C084FC', '#7E22CE'], swatchGradient: 'from-[#C084FC] via-[#A855F7] to-[#6B21A8]' },
+  { id: 'emerald-green', name: 'Emerald Green', colors: ['#2E9D50', '#10B981', '#34D399', '#059669'], swatchGradient: 'from-[#34D399] via-[#10B981] to-[#047857]' },
+  { id: 'rose-pink', name: 'Rose Pink', colors: ['#FF2E88', '#E91E63', '#F472B6', '#F43F5E'], swatchGradient: 'from-[#F472B6] via-[#FF2E88] to-[#BE185D]' },
+  { id: 'multicolour', name: 'Multicolour', colors: ['#FF2E88', '#E63946', '#FF5722', '#FFB000', '#20C9C3', '#3478F6', '#2E9D50', '#A855F7'], swatchGradient: 'from-[#FF2E88] via-[#FFB000] to-[#20C9C3]' },
+];
+
+export interface PatternOption {
+  id: FireworkShape;
+  name: string;
+  hindiName: string;
+  icon: string;
+}
+
+export const PATTERN_OPTIONS: PatternOption[] = [
+  { id: 'chrysanthemum', name: 'Classic Burst', hindiName: 'क्लासिक बर्स्ट', icon: '🎆' },
+  { id: 'star', name: 'Starburst', hindiName: 'तारा पुंज', icon: '⭐' },
+  { id: 'ring', name: 'Ring Explosion', hindiName: 'रिंग धमाका', icon: '⭕' },
+  { id: 'spiral', name: 'Spiral', hindiName: 'सर्पिल', icon: '🌀' },
+  { id: 'heart', name: 'Heart Burst', hindiName: 'हृदय चक्र', icon: '❤️' },
+  { id: 'shower', name: 'Sparkling Rain', hindiName: 'झरना', icon: '✨' },
+];
+
+export interface MusicOption {
+  id: string; // 'no-music' or FestiveTuneId
+  name: string;
+  hindiName: string;
+  icon: string;
+}
+
+export const MUSIC_OPTIONS: MusicOption[] = [
+  { id: 'tune-palace-fusion', name: 'Traditional Instrumental', hindiName: 'राजसी लोक संगम', icon: '🪕' },
+  { id: 'tune-yaman', name: 'Peaceful Flute', hindiName: 'शांतिपूर्ण बाँसुरी', icon: '🪈' },
+  { id: 'tune-bhangra', name: 'Festive Celebration', hindiName: 'उत्सव ढोल गर्जना', icon: '🥁' },
+  { id: 'tune-ambient', name: 'Ambient Night Sounds', hindiName: 'शांत रात्रि वातावरण', icon: '🌌' },
+  { id: 'no-music', name: 'No Music', hindiName: 'संगीत बंद', icon: '🔇' },
 ];
 
 const FIRECRACKER_TYPES: Array<{
@@ -117,7 +169,7 @@ const FIRECRACKER_TYPES: Array<{
     name: 'Rocket',
     hindi: 'रॉकेट (Aerial Burst)',
     icon: '🚀',
-    description: 'Launches skyward and explodes into chrysanthemums, stars & spirals.',
+    description: 'Launches skyward and explodes into custom fireworks patterns.',
     points: 50,
     color: '#3478F6',
   },
@@ -125,10 +177,19 @@ const FIRECRACKER_TYPES: Array<{
 
 export const FirecrackerSimulator: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [selectedType, setSelectedType] = useState<FirecrackerType>('anar');
+  const [selectedType, setSelectedType] = useState<FirecrackerType>('rocket');
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [screenFlash, setScreenFlash] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Customisation States
+  const [selectedColorId, setSelectedColorId] = useState<string>('gold');
+  const [selectedPatternId, setSelectedPatternId] = useState<FireworkShape>('chrysanthemum');
+  const [selectedMusicId, setSelectedMusicId] = useState<string>('tune-palace-fusion');
+
+  // Display Controls States
+  const [isAutoDisplayRunning, setIsAutoDisplayRunning] = useState<boolean>(false);
+  const [isAutoDisplayPaused, setIsAutoDisplayPaused] = useState<boolean>(false);
 
   // Score & Combo HUD State
   const [score, setScore] = useState(0);
@@ -145,6 +206,39 @@ export const FirecrackerSimulator: React.FC = () => {
   const fuljhuriActiveRef = useRef(false);
   const fuljhuriPosRef = useRef<{ x: number; y: number } | null>(null);
   const comboResetTimerRef = useRef<number | null>(null);
+
+  // Sync sound state with soundManager
+  useEffect(() => {
+    const unsubscribe = soundManager.subscribe((isMuted, _scene, tuneId) => {
+      setSoundEnabled(!isMuted);
+      if (isMuted) {
+        setSelectedMusicId('no-music');
+      } else {
+        setSelectedMusicId(tuneId);
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  // Handle Music Option Change
+  const handleMusicChange = (musicId: string) => {
+    setSelectedMusicId(musicId);
+    if (musicId === 'no-music') {
+      soundManager.setMute(true);
+    } else {
+      soundManager.setMute(false);
+      soundManager.setTune(musicId as FestiveTuneId);
+      soundManager.startFestiveMusic();
+    }
+  };
+
+  // Color Helper function
+  const getRandomColorForOption = useCallback((colorId: string): string => {
+    const opt = COLOR_OPTIONS.find((c) => c.id === colorId) || COLOR_OPTIONS[0];
+    return opt.colors[Math.floor(Math.random() * opt.colors.length)];
+  }, []);
 
   // Add score & update combo helper
   const triggerScore = useCallback((type: 'anar' | 'fuljhuri' | 'bomb' | 'chakri' | 'rocket' | 'grand_finale') => {
@@ -172,6 +266,42 @@ export const FirecrackerSimulator: React.FC = () => {
     });
   }, []);
 
+  // Automatic Display Loop Timer Effect
+  useEffect(() => {
+    if (!isAutoDisplayRunning || isAutoDisplayPaused) return;
+
+    const interval = setInterval(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      const countToLaunch = Math.random() > 0.65 ? 2 : 1;
+      for (let k = 0; k < countToLaunch; k++) {
+        const x = Math.random() * (canvas.width - 160) + 80;
+        const targetY = Math.random() * 180 + 50;
+        const color = getRandomColorForOption(selectedColorId);
+        const shape = selectedPatternId;
+
+        rocketsRef.current.push({
+          x,
+          y: canvas.height - 30,
+          targetY,
+          vy: -11 - Math.random() * 3.5,
+          color,
+          shape,
+        });
+      }
+
+      if (soundEnabled) {
+        soundManager.playRocketSound();
+      }
+      triggerScore('rocket');
+    }, 850);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isAutoDisplayRunning, isAutoDisplayPaused, selectedColorId, selectedPatternId, soundEnabled, getRandomColorForOption, triggerScore]);
+
   // Main Canvas Render Loop
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -182,7 +312,7 @@ export const FirecrackerSimulator: React.FC = () => {
     const resize = () => {
       const parent = canvas.parentElement;
       canvas.width = parent ? parent.clientWidth : window.innerWidth;
-      canvas.height = isFullscreen ? window.innerHeight - 100 : 500;
+      canvas.height = isFullscreen ? window.innerHeight - 100 : 480;
     };
     resize();
     window.addEventListener('resize', resize);
@@ -245,7 +375,7 @@ export const FirecrackerSimulator: React.FC = () => {
       // 1. Fuljhuri (Sparkler Cursor Effect)
       if (fuljhuriActiveRef.current && fuljhuriPosRef.current) {
         const { x, y } = fuljhuriPosRef.current;
-        const color = FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)];
+        const color = getRandomColorForOption(selectedColorId);
         for (let i = 0; i < 4; i++) {
           const angle = Math.random() * Math.PI * 2;
           const spd = Math.random() * 4 + 1;
@@ -411,7 +541,7 @@ export const FirecrackerSimulator: React.FC = () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
     };
-  }, [isFullscreen]);
+  }, [isFullscreen, getRandomColorForOption, selectedColorId]);
 
   // Shape Explosion Trigger
   const triggerShapeExplosion = (x: number, y: number, color: string, shape: FireworkShape) => {
@@ -421,7 +551,7 @@ export const FirecrackerSimulator: React.FC = () => {
     setScreenFlash(true);
     setTimeout(() => setScreenFlash(false), 100);
 
-    const patternPoints = generateFireworkPatternPoints(shape, 80, 5.5);
+    const patternPoints = generateFireworkPatternPoints(shape, 85, 5.5);
     patternPoints.forEach((pt) => {
       particlesRef.current.push({
         x,
@@ -445,6 +575,8 @@ export const FirecrackerSimulator: React.FC = () => {
     setScreenFlash(true);
     setTimeout(() => setScreenFlash(false), 180);
 
+    const burstColor = getRandomColorForOption(selectedColorId);
+
     // Shockwave particles ring
     for (let i = 0; i < 90; i++) {
       const angle = (i * Math.PI * 2) / 90;
@@ -454,7 +586,7 @@ export const FirecrackerSimulator: React.FC = () => {
         y,
         vx: Math.cos(angle) * speed,
         vy: Math.sin(angle) * speed,
-        color: i % 2 === 0 ? '#E63946' : '#FFB000',
+        color: i % 2 === 0 ? burstColor : '#FFB000',
         alpha: 1,
         decay: 0.025,
         size: 3.5,
@@ -473,6 +605,8 @@ export const FirecrackerSimulator: React.FC = () => {
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+    const activeColor = getRandomColorForOption(selectedColorId);
+
     if (selectedType === 'fuljhuri') {
       fuljhuriActiveRef.current = true;
       fuljhuriPosRef.current = { x, y };
@@ -487,7 +621,7 @@ export const FirecrackerSimulator: React.FC = () => {
         y: Math.min(y, canvas.height - 35),
         life: 0,
         maxLife: 100,
-        color: FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)],
+        color: activeColor,
       });
       if (soundEnabled) soundManager.playAnarSound();
       triggerScore('anar');
@@ -501,7 +635,7 @@ export const FirecrackerSimulator: React.FC = () => {
         angle: 0,
         life: 0,
         maxLife: 90,
-        color: FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)],
+        color: activeColor,
       });
       if (soundEnabled) soundManager.playChakriSound();
       triggerScore('chakri');
@@ -520,15 +654,13 @@ export const FirecrackerSimulator: React.FC = () => {
     }
 
     if (selectedType === 'rocket') {
-      const shapes: FireworkShape[] = ['chrysanthemum', 'ring', 'star', 'spiral', 'shower'];
-      const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
       rocketsRef.current.push({
         x,
         y: canvas.height - 30,
         targetY: Math.max(50, y),
         vy: -11 - Math.random() * 4,
-        color: FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)],
-        shape: randomShape,
+        color: activeColor,
+        shape: selectedPatternId,
       });
       if (soundEnabled) soundManager.playRocketSound();
       triggerScore('rocket');
@@ -549,6 +681,22 @@ export const FirecrackerSimulator: React.FC = () => {
     fuljhuriPosRef.current = null;
   };
 
+  // Display Controls Handlers
+  const handleStartDisplay = () => {
+    setIsAutoDisplayRunning(true);
+    setIsAutoDisplayPaused(false);
+  };
+
+  const handlePauseResumeDisplay = () => {
+    setIsAutoDisplayPaused((prev) => !prev);
+  };
+
+  const handleStopDisplay = () => {
+    setIsAutoDisplayRunning(false);
+    setIsAutoDisplayPaused(false);
+    handleClearCanvas();
+  };
+
   // Grand Finale Launcher
   const handleGrandFinale = () => {
     const canvas = canvasRef.current;
@@ -558,13 +706,13 @@ export const FirecrackerSimulator: React.FC = () => {
       soundManager.playRevealCelebration();
     }
 
-    const shapes: FireworkShape[] = ['chrysanthemum', 'ring', 'star', 'spiral', 'shower'];
+    const shapes = PATTERN_OPTIONS.map((p) => p.id);
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       setTimeout(() => {
         const x = Math.random() * (canvas.width - 200) + 100;
         const targetY = Math.random() * 180 + 60;
-        const color = FIREWORK_COLORS[i % FIREWORK_COLORS.length];
+        const color = getRandomColorForOption(selectedColorId);
         const shape = shapes[i % shapes.length];
 
         rocketsRef.current.push({
@@ -575,58 +723,10 @@ export const FirecrackerSimulator: React.FC = () => {
           color,
           shape,
         });
-      }, i * 160);
+      }, i * 150);
     }
 
     triggerScore('grand_finale');
-  };
-
-  // Surprise Show Randomizer
-  const handleSurpriseShow = () => {
-    const randomItem = FIRECRACKER_TYPES[Math.floor(Math.random() * FIRECRACKER_TYPES.length)];
-    setSelectedType(randomItem.id);
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    // Trigger mock interaction at center
-    const x = canvas.width / 2 + (Math.random() - 0.5) * 200;
-
-    if (randomItem.id === 'anar') {
-      activeAnarsRef.current.push({
-        x,
-        y: canvas.height - 40,
-        life: 0,
-        maxLife: 100,
-        color: randomItem.color,
-      });
-      if (soundEnabled) soundManager.playAnarSound();
-      triggerScore('anar');
-    } else if (randomItem.id === 'rocket') {
-      rocketsRef.current.push({
-        x,
-        y: canvas.height - 30,
-        targetY: 100,
-        vy: -12,
-        color: randomItem.color,
-        shape: 'star',
-      });
-      if (soundEnabled) soundManager.playRocketSound();
-      triggerScore('rocket');
-    } else if (randomItem.id === 'chakri') {
-      activeChakrisRef.current.push({
-        x,
-        y: canvas.height - 40,
-        angle: 0,
-        life: 0,
-        maxLife: 90,
-        color: randomItem.color,
-      });
-      if (soundEnabled) soundManager.playChakriSound();
-      triggerScore('chakri');
-    } else {
-      handleGrandFinale();
-    }
   };
 
   const handleClearCanvas = () => {
@@ -647,25 +747,25 @@ export const FirecrackerSimulator: React.FC = () => {
         <div className="absolute inset-0 bg-[#E5C158]/15 pointer-events-none transition-opacity duration-100 z-20" />
       )}
 
-      <div className="relative z-10 max-w-6xl mx-auto">
+      <div className="relative z-10 max-w-6xl mx-auto space-y-6">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#141C38]/90 border border-[#D4AF37]/35 text-[#E5C158] text-xs font-semibold mb-3 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
             <Sparkles className="w-4 h-4 text-[#E5C158]" />
-            <span>Interactive Pyrotechnics Stage</span>
+            <span>Interactive Pyrotechnics & Digital Display Stage</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-bold font-serif text-royal-gold-gradient glow-royal-gold mb-3">
-            Diwali Firecracker Simulator
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold font-serif text-royal-gold-gradient glow-royal-gold mb-3">
+            Digital Fireworks Display
           </h2>
 
-          <p className="text-sm sm:text-base text-[#FFF8E7]/80 max-w-2xl mx-auto">
-            Choose your traditional Diwali firecracker below, then tap or draw anywhere on the dark night sky to launch eco-friendly digital light shows!
+          <p className="text-sm sm:text-base text-[#FFF8E7]/80 max-w-2xl mx-auto font-light">
+            Customise your fireworks colours, explosion patterns, and background music, then launch or start a continuous digital light show!
           </p>
         </div>
 
         {/* Score & Rank HUD Bar with Madhubani Framing */}
-        <div className="relative flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5 mb-6 rounded-2xl bg-gradient-to-r from-[#240A10]/95 via-[#1B070B]/95 to-[#120508]/95 border-[3px] border-[#211A17] shadow-folk-3d backdrop-blur-sm text-[#FFF8E7] overflow-hidden">
+        <div className="relative flex flex-wrap items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#240A10]/95 via-[#1B070B]/95 to-[#120508]/95 border-[3px] border-[#211A17] shadow-folk-3d backdrop-blur-sm text-[#FFF8E7] overflow-hidden">
           <div className="absolute inset-1.5 rounded-[12px] border border-[#E8B947]/50 pointer-events-none" />
           <MadhubaniCorner position="top-left" size={26} />
           <MadhubaniCorner position="top-right" size={26} />
@@ -696,8 +796,119 @@ export const FirecrackerSimulator: React.FC = () => {
           </div>
         </div>
 
-        {/* 5 Firecracker Selection Stage Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3.5 mb-6">
+        {/* CUSTOMISATION PANELS CONTAINER */}
+        <MadhubaniBox variant="maroon" className="p-5 sm:p-7 space-y-6" cornerSize={36}>
+          {/* 1. FIREWORK COLOUR SELECTION */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Palette className="w-4 h-4 text-[#E8B947]" />
+              <h3 className="text-sm font-bold font-serif uppercase tracking-wider text-[#E8B947]">
+                1. Firework Colour Selection
+              </h3>
+            </div>
+            <div className="flex flex-wrap items-center gap-2.5">
+              {COLOR_OPTIONS.map((col) => {
+                const isSelected = selectedColorId === col.id;
+                return (
+                  <button
+                    key={col.id}
+                    onClick={() => {
+                      setSelectedColorId(col.id);
+                      if (soundEnabled) soundManager.playClick();
+                    }}
+                    className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border-2 ${
+                      isSelected
+                        ? 'border-[#E8B947] bg-[#140609] text-[#FFF8E7] shadow-[0_0_15px_rgba(232,185,71,0.4)] scale-105'
+                        : 'border-[#211A17] bg-[#140609]/60 text-[#FFF8E7]/75 hover:border-[#E8B947]/50'
+                    }`}
+                  >
+                    <span
+                      className={`w-3.5 h-3.5 rounded-full border border-white/40 shadow-sm bg-gradient-to-r ${col.swatchGradient}`}
+                    />
+                    <span>{col.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <MadhubaniDivider className="my-2" />
+
+          {/* 2. FIREWORK PATTERN SELECTION */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Grid className="w-4 h-4 text-[#E8B947]" />
+              <h3 className="text-sm font-bold font-serif uppercase tracking-wider text-[#E8B947]">
+                2. Firework Pattern Selection
+              </h3>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+              {PATTERN_OPTIONS.map((pat) => {
+                const isSelected = selectedPatternId === pat.id;
+                return (
+                  <button
+                    key={pat.id}
+                    onClick={() => {
+                      setSelectedPatternId(pat.id);
+                      setSelectedType('rocket'); // Set active cracker mode to Rocket when choosing custom pattern
+                      if (soundEnabled) soundManager.playClick();
+                    }}
+                    className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${
+                      isSelected
+                        ? 'border-[#E8B947] bg-gradient-to-br from-[#3D140C] to-[#1F070A] text-[#FFF8E7] shadow-[0_0_15px_rgba(232,185,71,0.4)] scale-[1.02]'
+                        : 'border-[#211A17] bg-[#140609]/70 text-[#FFF8E7]/75 hover:border-[#E8B947]/50'
+                    }`}
+                  >
+                    <div className="text-xl mb-1">{pat.icon}</div>
+                    <div>
+                      <div className="font-serif font-bold text-xs text-[#FFF8E7]">{pat.name}</div>
+                      <div className="text-[10px] text-[#E8B947] font-serif">{pat.hindiName}</div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <MadhubaniDivider className="my-2" />
+
+          {/* 3. BACKGROUND MUSIC SELECTION */}
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <Music className="w-4 h-4 text-[#E8B947]" />
+              <h3 className="text-sm font-bold font-serif uppercase tracking-wider text-[#E8B947]">
+                3. Background Music Selection
+              </h3>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+              {MUSIC_OPTIONS.map((mus) => {
+                const isSelected = selectedMusicId === mus.id;
+                return (
+                  <button
+                    key={mus.id}
+                    onClick={() => handleMusicChange(mus.id)}
+                    className={`p-3 rounded-xl border-2 text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                      isSelected
+                        ? 'border-[#E8B947] bg-gradient-to-r from-[#A82420] via-[#C65D38] to-[#E8B947] text-[#211A17] font-bold shadow-[0_0_15px_rgba(232,185,71,0.4)]'
+                        : 'border-[#211A17] bg-[#140609]/70 text-[#FFF8E7]/80 hover:border-[#E8B947]/50'
+                    }`}
+                  >
+                    <span className="text-lg shrink-0">{mus.icon}</span>
+                    <div className="overflow-hidden">
+                      <div className="font-serif text-xs truncate leading-tight">{mus.name}</div>
+                      <div className={`text-[10px] font-serif truncate ${isSelected ? 'text-[#211A17]/80' : 'text-[#E8B947]'}`}>
+                        {mus.hindiName}
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </MadhubaniBox>
+
+        {/* 5 Traditional Cracker Types Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {FIRECRACKER_TYPES.map((fc) => {
             const isSelected = selectedType === fc.id;
             return (
@@ -707,23 +918,22 @@ export const FirecrackerSimulator: React.FC = () => {
                   setSelectedType(fc.id);
                   if (soundEnabled) soundManager.playClick();
                 }}
-                className={`group relative p-4 rounded-2xl border-[2.5px] text-left transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden ${
+                className={`group relative p-3.5 rounded-2xl border-[2.5px] text-left transition-all duration-300 cursor-pointer flex flex-col justify-between overflow-hidden ${
                   isSelected
-                    ? 'bg-gradient-to-b from-[#3D140C] to-[#1F070A] border-[#E8B947] shadow-[0_0_25px_rgba(232,185,71,0.45)] scale-105 z-10'
+                    ? 'bg-gradient-to-b from-[#3D140C] to-[#1F070A] border-[#E8B947] shadow-[0_0_20px_rgba(232,185,71,0.45)] scale-102 z-10'
                     : 'bg-[#140609]/85 border-[#211A17] hover:border-[#E8B947]/70 hover:bg-[#1A0A0E]'
                 }`}
               >
-                {/* Inner double border on selected card */}
                 {isSelected && (
                   <div className="absolute inset-1 rounded-xl border border-[#E8B947]/40 pointer-events-none" />
                 )}
                 <div>
-                  <div className="text-2xl mb-1.5 group-hover:scale-110 transition-transform filter drop-shadow">{fc.icon}</div>
-                  <div className="font-bold font-serif text-sm text-[#FFF8E7]">{fc.name}</div>
-                  <div className="text-[11px] font-medium text-[#E8B947] font-serif">{fc.hindi}</div>
+                  <div className="text-2xl mb-1 group-hover:scale-110 transition-transform filter drop-shadow">{fc.icon}</div>
+                  <div className="font-bold font-serif text-xs sm:text-sm text-[#FFF8E7]">{fc.name}</div>
+                  <div className="text-[10px] font-medium text-[#E8B947] font-serif">{fc.hindi}</div>
                 </div>
 
-                <div className="mt-3 flex items-center justify-between text-[10px] text-[#FFF8E7]/75 border-t border-[#E8B947]/20 pt-2 font-mono">
+                <div className="mt-2.5 flex items-center justify-between text-[10px] text-[#FFF8E7]/75 border-t border-[#E8B947]/20 pt-1.5 font-mono">
                   <span>+{fc.points} Pts</span>
                   <Flame className="w-3.5 h-3.5 text-[#A82420]" />
                 </div>
@@ -735,7 +945,7 @@ export const FirecrackerSimulator: React.FC = () => {
         {/* Main Sky Interactive Stage with Madhubani Double Border */}
         <div
           className={`relative rounded-3xl overflow-hidden border-[3.5px] border-[#211A17] bg-[#0A0305] shadow-[0_16px_50px_rgba(0,0,0,0.9),0_0_30px_rgba(212,175,55,0.2)] ${
-            isFullscreen ? 'fixed inset-4 z-50 h-[calc(100vh-2rem)]' : 'h-[460px]'
+            isFullscreen ? 'fixed inset-4 z-50 h-[calc(100vh-2rem)]' : 'h-[480px]'
           }`}
         >
           {/* Inner Double Gold Hairline */}
@@ -744,6 +954,7 @@ export const FirecrackerSimulator: React.FC = () => {
           <MadhubaniCorner position="top-right" size={28} className="z-30" />
           <MadhubaniCorner position="bottom-left" size={28} className="z-30" />
           <MadhubaniCorner position="bottom-right" size={28} className="z-30" />
+
           <canvas
             ref={canvasRef}
             onMouseDown={handleCanvasMouseDown}
@@ -753,42 +964,97 @@ export const FirecrackerSimulator: React.FC = () => {
             className="w-full h-full block cursor-crosshair"
           />
 
-          {/* Controls Bar Overlay Top */}
-          <div className="absolute top-4 left-4 right-4 flex items-center justify-between pointer-events-none z-20">
-            <div className="flex items-center gap-2 bg-[#0F1126]/90 px-3.5 py-1.5 rounded-full border border-[#008C95]/40 text-xs text-[#FFF1D6] backdrop-blur-md shadow-md">
+          {/* Active Mode Banner Top Left */}
+          <div className="absolute top-4 left-4 pointer-events-none z-30">
+            <div className="flex items-center gap-2 bg-[#140609]/90 px-3.5 py-1.5 rounded-xl border border-[#E8B947]/50 text-xs text-[#FFF8E7] backdrop-blur-md shadow-md">
               <span className="text-base">
                 {FIRECRACKER_TYPES.find((t) => t.id === selectedType)?.icon}
               </span>
-              <span className="font-bold text-[#FFB000]">
-                Active Mode: {FIRECRACKER_TYPES.find((t) => t.id === selectedType)?.name}
+              <span className="font-bold font-serif text-[#E8B947]">
+                Mode: {FIRECRACKER_TYPES.find((t) => t.id === selectedType)?.name}
               </span>
             </div>
+          </div>
 
-            <div className="flex items-center gap-2 pointer-events-auto">
+          {/* DISPLAY CONTROLS TOOLBAR OVERLAY TOP RIGHT */}
+          <div className="absolute top-4 right-4 flex items-center gap-2 pointer-events-auto z-30">
+            {/* Start Fireworks Display Button */}
+            {!isAutoDisplayRunning ? (
               <button
-                onClick={handleClearCanvas}
-                className="p-2 rounded-full bg-[#0F1126]/90 border border-[#008C95]/50 text-[#FFF1D6] hover:border-[#FFB000] hover:text-[#FFB000] transition-all cursor-pointer backdrop-blur-md shadow-md"
-                title="Clear Canvas Sparks"
+                onClick={handleStartDisplay}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#A82420] via-[#C65D38] to-[#E8B947] text-[#211A17] font-bold text-xs hover:scale-105 transition-all cursor-pointer shadow-md flex items-center gap-1.5 border border-[#FFF8E7]/40"
+                title="Start Continuous Fireworks Display"
               >
-                <RotateCcw className="w-4 h-4" />
+                <Play className="w-3.5 h-3.5 fill-[#211A17]" />
+                <span className="hidden sm:inline">Start Display</span>
               </button>
+            ) : (
+              <>
+                {/* Pause / Resume Button */}
+                <button
+                  onClick={handlePauseResumeDisplay}
+                  className="px-3.5 py-2 rounded-xl bg-[#140609]/90 border-2 border-[#E8B947] text-[#E8B947] font-bold text-xs hover:scale-105 transition-all cursor-pointer backdrop-blur-md shadow-md flex items-center gap-1.5"
+                  title={isAutoDisplayPaused ? 'Resume Display' : 'Pause Display'}
+                >
+                  {isAutoDisplayPaused ? (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-[#E8B947]" />
+                      <span>Resume</span>
+                    </>
+                  ) : (
+                    <>
+                      <Pause className="w-3.5 h-3.5 fill-[#E8B947]" />
+                      <span>Pause</span>
+                    </>
+                  )}
+                </button>
 
-              <button
-                onClick={() => setSoundEnabled(!soundEnabled)}
-                className="p-2 rounded-full bg-[#0F1126]/90 border border-[#008C95]/50 text-[#FFF1D6] hover:border-[#FFB000] transition-all cursor-pointer backdrop-blur-md shadow-md"
-                title={soundEnabled ? 'Mute Pyrotechnic Sounds' : 'Enable Pyrotechnic Sounds'}
-              >
-                {soundEnabled ? <Volume2 className="w-4 h-4 text-[#FFB000]" /> : <VolumeX className="w-4 h-4 text-red-400" />}
-              </button>
+                {/* Stop Button */}
+                <button
+                  onClick={handleStopDisplay}
+                  className="px-3 py-2 rounded-xl bg-[#A82420] border border-[#FFF8E7]/40 text-[#FFF8E7] font-bold text-xs hover:scale-105 transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+                  title="Stop Display"
+                >
+                  <Square className="w-3.5 h-3.5 fill-[#FFF8E7]" />
+                  <span className="hidden sm:inline">Stop</span>
+                </button>
+              </>
+            )}
 
-              <button
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                className="p-2 rounded-full bg-[#0F1126]/90 border border-[#008C95]/50 text-[#FFF1D6] hover:border-[#20C9C3] transition-all cursor-pointer backdrop-blur-md shadow-md"
-                title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              >
-                {isFullscreen ? <Minimize2 className="w-4 h-4 text-[#20C9C3]" /> : <Maximize2 className="w-4 h-4 text-[#20C9C3]" />}
-              </button>
-            </div>
+            {/* Clear Canvas */}
+            <button
+              onClick={handleClearCanvas}
+              className="p-2 rounded-xl bg-[#140609]/90 border border-[#E8B947]/50 text-[#FFF8E7] hover:border-[#E8B947] hover:text-[#E8B947] transition-all cursor-pointer backdrop-blur-md shadow-md"
+              title="Clear Canvas Sparks"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+
+            {/* Music / Audio Toggle */}
+            <button
+              onClick={() => soundManager.toggleMute()}
+              className="p-2 rounded-xl bg-[#140609]/90 border border-[#E8B947]/50 text-[#FFF8E7] hover:border-[#E8B947] transition-all cursor-pointer backdrop-blur-md shadow-md"
+              title={soundEnabled ? 'Mute Audio' : 'Enable Audio'}
+            >
+              {soundEnabled ? (
+                <Volume2 className="w-4 h-4 text-[#E8B947]" />
+              ) : (
+                <VolumeX className="w-4 h-4 text-red-400" />
+              )}
+            </button>
+
+            {/* Fullscreen Toggle */}
+            <button
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="p-2 rounded-xl bg-[#140609]/90 border border-[#E8B947]/50 text-[#FFF8E7] hover:border-[#E8B947] transition-all cursor-pointer backdrop-blur-md shadow-md"
+              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-4 h-4 text-[#E8B947]" />
+              ) : (
+                <Maximize2 className="w-4 h-4 text-[#E8B947]" />
+              )}
+            </button>
           </div>
         </div>
 
@@ -796,25 +1062,18 @@ export const FirecrackerSimulator: React.FC = () => {
         <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={handleGrandFinale}
-            className="group px-7 py-3.5 rounded-full bg-gradient-to-r from-[#FF2E88] via-[#FF5722] to-[#FFB000] text-[#0F1126] font-extrabold text-base sm:text-lg shadow-[0_0_30px_rgba(255,46,136,0.5)] hover:shadow-[0_0_50px_rgba(255,176,0,0.8)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 cursor-pointer"
+            className="group px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#A82420] via-[#C65D38] to-[#E8B947] text-[#211A17] font-extrabold text-base sm:text-lg shadow-[0_0_30px_rgba(232,185,71,0.5)] hover:shadow-[0_0_50px_rgba(232,185,71,0.8)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2.5 cursor-pointer border-2 border-[#211A17]"
           >
-            <Sparkles className="w-5 h-5 text-[#0F1126] group-hover:rotate-45 transition-transform" />
-            <span>GRAND FINALE SPECTACLE 🎆</span>
-          </button>
-
-          <button
-            onClick={handleSurpriseShow}
-            className="px-6 py-3.5 rounded-full bg-[#160B2B] border border-[#20C9C3]/50 text-[#20C9C3] font-bold text-sm hover:border-[#FFB000] hover:text-[#FFB000] transition-all duration-300 flex items-center gap-2 cursor-pointer shadow-md"
-          >
-            <Play className="w-4 h-4" />
-            <span>Surprise Show Randomizer</span>
+            <Sparkles className="w-5 h-5 text-[#211A17] group-hover:rotate-45 transition-transform" />
+            <span className="font-serif">GRAND FINALE SPECTACLE 🎆</span>
           </button>
         </div>
 
-        <p className="text-center text-[11px] text-[#FFF1D6]/50 mt-4 italic">
+        <p className="text-center text-[11px] text-[#FFF8E7]/60 mt-4 italic font-serif">
           *Safe, digital-only festive pyrotechnic simulation designed exclusively for joyful online Diwali celebration.
         </p>
       </div>
     </section>
   );
 };
+
