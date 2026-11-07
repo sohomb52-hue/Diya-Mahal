@@ -12,6 +12,7 @@ import {
   MADHUBANI_PALETTE,
 } from './3d/folkArtTextures';
 import madhubaniCastleImg from '../assets/images/madhubani_palace_castle_1793991171920.jpg';
+import madhubaniCityImg from '../assets/images/madhubani_city_painting_1794029794946.jpg';
 
 interface OpeningDiyaScreenProps {
   onUnlocked: () => void;
@@ -275,9 +276,9 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
     wallTex.wrapS = THREE.RepeatWrapping;
     wallTex.wrapT = THREE.RepeatWrapping;
 
-    // Deep Horizon Indian Madhubani Royal Palace Castle Panorama
+    // Deep Horizon Indian Madhubani City Painting Panorama
     const texLoader = new THREE.TextureLoader();
-    const backdropTex = texLoader.load(madhubaniCastleImg);
+    const backdropTex = texLoader.load(madhubaniCityImg);
     backdropTex.colorSpace = THREE.SRGBColorSpace;
     backdropTex.anisotropy = maxAnisotropy;
 
@@ -1354,8 +1355,8 @@ export const OpeningDiyaScreen: React.FC<OpeningDiyaScreenProps> = ({ onUnlocked
       <div className="absolute top-0 left-0 right-0 h-[68vh] pointer-events-none z-0 overflow-hidden">
         <div className="relative w-full h-full">
           <img
-            src={madhubaniCastleImg}
-            alt="Royal Madhubani Palace Castle Illuminated with Lights for Diwali"
+            src={madhubaniCityImg}
+            alt="Royal Madhubani City Painting Illuminated with Lights for Diwali"
             className="w-full h-full object-cover object-top opacity-95 filter contrast-[1.04] brightness-105"
           />
           {/* Subtle bottom fade into parchment ground so it integrates seamlessly */}

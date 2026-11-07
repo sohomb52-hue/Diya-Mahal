@@ -205,40 +205,47 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
       {doorState !== 'inside' && (
         <div className="max-w-3xl mx-auto w-full flex flex-col items-center justify-center my-auto min-h-[75vh]">
           
-          {/* Handcrafted Indian Folk Art Haveli Archway & 3D Perspective Door Frame */}
-          <div className="relative w-full max-w-md aspect-[3/4] my-6 rounded-t-full p-4 bg-[#140609] border-4 border-[#D4AF37] shadow-folk-3d flex flex-col justify-between items-center overflow-hidden">
+          {/* Handcrafted Indian Folk Art Haveli Rectangular Palace Door Frame */}
+          <div className="relative w-full max-w-md aspect-[3/4.2] my-6 rounded-2xl p-4 bg-gradient-to-b from-[#1E090D] via-[#140609] to-[#0A0305] border-[4px] border-[#211A17] shadow-[0_20px_60px_rgba(0,0,0,0.95),0_0_30px_rgba(212,175,55,0.3)] flex flex-col justify-between items-center overflow-hidden">
             
-            {/* Top Rajasthani Scalloped Arch Trim, Warli Frieze & Marigold Garland */}
-            <div className="absolute top-0 left-0 right-0 h-18 bg-gradient-to-b from-[#D4AF37]/30 via-[#A8422B]/20 to-transparent flex items-center justify-center pointer-events-none z-20">
-              <svg viewBox="0 0 400 70" className="w-full h-full text-[#D4AF37]">
-                {/* Traditional Scalloped Arch */}
+            {/* Inner Double Gold Hairline Border & Madhubani Corner Spandrels on Frame */}
+            <div className="absolute inset-1.5 rounded-[12px] border-2 border-[#E8B947]/70 pointer-events-none z-30" />
+            <MadhubaniCorner position="top-left" size={32} className="z-30" />
+            <MadhubaniCorner position="top-right" size={32} className="z-30" />
+            <MadhubaniCorner position="bottom-left" size={32} className="z-30" />
+            <MadhubaniCorner position="bottom-right" size={32} className="z-30" />
+
+            {/* Top Rectangular Carved Lintel Pediment with Sahasrara Solar Wheel & Toran Garland */}
+            <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-[#2C0D12] via-[#1F070A] to-transparent border-b-2 border-[#E8B947]/60 flex items-center justify-between px-6 pointer-events-none z-20">
+              <svg viewBox="0 0 400 50" className="w-full h-full text-[#E8B947]">
+                {/* Carved Lintel Double-Line Frieze */}
+                <rect x="0" y="2" width="400" height="30" fill="#140609" stroke="#211A17" strokeWidth="2" />
+                <rect x="4" y="6" width="392" height="22" fill="#2A0B10" stroke="#E8B947" strokeWidth="1" strokeDasharray="3,3" />
+                
+                {/* Central Sahasrara Solar Wheel */}
+                <circle cx="200" cy="17" r="10" fill="#A82420" stroke="#211A17" strokeWidth="1.5" />
+                <circle cx="200" cy="17" r="5" fill="#E8B947" />
+                <path d="M185,17 L215,17 M200,2 L200,32 M190,7 L210,27 M190,27 L210,7" stroke="#E8B947" strokeWidth="1" />
+                
+                {/* Hanging Marigold Toran Garland */}
                 <path
-                  d="M0,0 Q100,55 200,32 Q300,55 400,0 L400,24 Q300,65 200,48 Q100,65 0,24 Z"
-                  fill="currentColor"
-                  fillOpacity="0.45"
-                />
-                {/* Warli Sun at Arch Apex */}
-                <circle cx="200" cy="22" r="7" fill="#E5C158" />
-                <path d="M190,22 L210,22 M200,12 L200,32 M193,15 L207,29 M193,29 L207,15" stroke="#140609" strokeWidth="1.5" />
-                {/* Strung Marigold Garland */}
-                <path
-                  d="M20,12 Q110,42 200,28 Q290,42 380,12"
+                  d="M10,32 Q100,48 200,38 Q300,48 390,32"
                   fill="none"
                   stroke="#FF9800"
                   strokeWidth="3.5"
-                  strokeDasharray="8,6"
+                  strokeDasharray="6,4"
                 />
               </svg>
             </div>
 
             {/* Swaying Brass Temple Bells on Left & Right with Dynamic Physical Motion */}
-            <div className="absolute top-3 left-4 text-[#E5C158] z-20 flex flex-col items-center animate-bounce" style={{ animationDuration: '3.4s' }}>
-              <div className="w-[1.5px] h-4 bg-[#D4AF37]" />
-              <div className="text-lg drop-shadow-[0_0_8px_rgba(229,193,88,0.7)]">🔔</div>
+            <div className="absolute top-2 left-4 text-[#E8B947] z-20 flex flex-col items-center animate-bounce" style={{ animationDuration: '3.4s' }}>
+              <div className="w-[1.5px] h-5 bg-[#E8B947]" />
+              <div className="text-xl drop-shadow-[0_0_10px_rgba(232,185,71,0.8)]">🔔</div>
             </div>
-            <div className="absolute top-3 right-4 text-[#E5C158] z-20 flex flex-col items-center animate-bounce" style={{ animationDuration: '2.8s' }}>
-              <div className="w-[1.5px] h-4 bg-[#D4AF37]" />
-              <div className="text-lg drop-shadow-[0_0_8px_rgba(229,193,88,0.7)]">🔔</div>
+            <div className="absolute top-2 right-4 text-[#E8B947] z-20 flex flex-col items-center animate-bounce" style={{ animationDuration: '2.8s' }}>
+              <div className="w-[1.5px] h-5 bg-[#E8B947]" />
+              <div className="text-xl drop-shadow-[0_0_10px_rgba(232,185,71,0.8)]">🔔</div>
             </div>
 
             {/* Glowing Golden Portal Light Beam (Revealed behind the opening doors) */}
@@ -247,67 +254,95 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
                 doorState === 'opening' ? 'opacity-100 scale-105' : 'opacity-35'
               }`}
             >
-              <div className="w-36 h-36 rounded-full bg-[#FFF8E7]/80 blur-2xl animate-pulse" />
-              <div className="text-4xl text-[#0B1021] animate-spin" style={{ animationDuration: '10s' }}>✨</div>
+              <div className="w-40 h-40 rounded-full bg-[#FFF8E7]/80 blur-2xl animate-pulse" />
+              <div className="text-5xl text-[#0B1021] animate-spin" style={{ animationDuration: '10s' }}>✨</div>
             </div>
 
-            {/* 3D PHYSICAL PERSPECTIVE DOOR SWING CONTAINER */}
+            {/* 3D PHYSICAL PERSPECTIVE RECTANGULAR DOOR SWING CONTAINER */}
             <div
-              className="relative w-full h-full z-10 flex cursor-pointer group"
+              className="relative w-full h-full z-10 flex cursor-pointer group mt-10 mb-2"
               style={{ perspective: '1200px' }}
               onClick={() => handleOpenDoor(activeDoorIndex)}
             >
               {/* LEFT DOOR LEAF (Hinge on Left) */}
               <div
-                className={`w-1/2 h-full bg-gradient-to-br ${currentDoor.doorBg} border-r-2 border-[#D4AF37]/60 p-3.5 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-left relative ${
+                className={`w-1/2 h-full bg-gradient-to-br ${currentDoor.doorBg} border-r-2 border-[#211A17] p-2.5 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-left relative ${
                   doorState === 'opening' ? '-rotate-y-[105deg] opacity-20' : 'rotate-y-0 group-hover:-rotate-y-6'
                 }`}
               >
-                {/* Top Carved Panel (Folk Art Icon & Madhubani Border) */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
-                  <div className="absolute inset-0 bg-madhubani-katchni opacity-25" />
-                  <span className="relative z-10 drop-shadow-md">{currentDoor.patternIcon}</span>
+                {/* Left Leaf Inner Brass Hairline */}
+                <div className="absolute inset-1 rounded-lg border border-[#E8B947]/50 pointer-events-none" />
+
+                {/* Vertical Brass Rivet Studs */}
+                <div className="absolute right-1 top-2 bottom-2 flex flex-col justify-between text-[8px] text-[#E8B947] pointer-events-none opacity-80">
+                  <span>♦</span><span>♦</span><span>♦</span><span>♦</span><span>♦</span>
                 </div>
 
-                {/* Center Carved Diya Motif */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] font-serif font-bold relative shadow-inner">
-                  <span className="drop-shadow-[0_0_10px_rgba(229,193,88,0.6)]">🪔</span>
+                {/* Panel 1: Top Carved Icon & Madhubani Katchni Panel */}
+                <div className="w-full h-20 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex flex-col items-center justify-center shadow-inner relative overflow-hidden">
+                  <div className="absolute inset-0 bg-madhubani-katchni opacity-30" />
+                  <span className="relative z-10 text-2xl drop-shadow-md">{currentDoor.patternIcon}</span>
                 </div>
 
-                {/* Bottom Sacred Lotus Rosette */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] relative shadow-inner">
+                {/* Panel 2: Upper Middle Chamber Badge Niche */}
+                <div className="w-full h-16 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex items-center justify-center text-lg text-[#E8B947] relative shadow-inner">
+                  <span className="drop-shadow-md">🦚</span>
+                </div>
+
+                {/* Panel 3: Center Carved Illuminated Diya Motif */}
+                <div className="w-full h-20 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex flex-col items-center justify-center text-2xl text-[#E8B947] font-serif font-bold relative shadow-inner">
+                  <span className="drop-shadow-[0_0_12px_rgba(232,185,71,0.8)]">🪔</span>
+                </div>
+
+                {/* Panel 4: Bottom Sacred Lotus Rosette */}
+                <div className="w-full h-20 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex items-center justify-center text-xl text-[#E8B947] relative shadow-inner">
                   <span className="drop-shadow-md">🌸</span>
                 </div>
               </div>
 
               {/* RIGHT DOOR LEAF (Hinge on Right) */}
               <div
-                className={`w-1/2 h-full bg-gradient-to-bl ${currentDoor.doorBg} border-l-2 border-[#D4AF37]/60 p-3.5 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-right relative ${
+                className={`w-1/2 h-full bg-gradient-to-bl ${currentDoor.doorBg} border-l-2 border-[#211A17] p-2.5 flex flex-col justify-between shadow-2xl transition-transform duration-900 ease-out origin-right relative ${
                   doorState === 'opening' ? 'rotate-y-[105deg] opacity-20' : 'rotate-y-0 group-hover:rotate-y-6'
                 }`}
               >
-                {/* Top Carved Panel */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-3xl shadow-inner relative overflow-hidden">
-                  <div className="absolute inset-0 bg-madhubani-katchni opacity-25" />
-                  <span className="relative z-10 drop-shadow-md">{currentDoor.patternIcon}</span>
+                {/* Right Leaf Inner Brass Hairline */}
+                <div className="absolute inset-1 rounded-lg border border-[#E8B947]/50 pointer-events-none" />
+
+                {/* Vertical Brass Rivet Studs */}
+                <div className="absolute left-1 top-2 bottom-2 flex flex-col justify-between text-[8px] text-[#E8B947] pointer-events-none opacity-80">
+                  <span>♦</span><span>♦</span><span>♦</span><span>♦</span><span>♦</span>
                 </div>
 
-                {/* 3D Ornate Antique Brass Handle Ring with Lion-Head Escutcheon */}
+                {/* Panel 1: Top Carved Icon */}
+                <div className="w-full h-20 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex flex-col items-center justify-center shadow-inner relative overflow-hidden">
+                  <div className="absolute inset-0 bg-madhubani-katchni opacity-30" />
+                  <span className="relative z-10 text-2xl drop-shadow-md">{currentDoor.patternIcon}</span>
+                </div>
+
+                {/* 3D Ornate Antique Lion-Head Escutcheon & Brass Handle Ring */}
                 <div
-                  className={`absolute left-1.5 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-gradient-to-br from-[#E5C158] via-[#C59B27] to-[#8C3214] border-2 border-[#FFF8E7] shadow-[0_4px_16px_rgba(0,0,0,0.8),0_0_18px_rgba(229,193,88,0.7)] flex items-center justify-center transition-transform duration-300 z-20 ${
+                  className={`absolute left-0 -translate-x-1/2 top-1/2 -translate-y-1/2 w-14 h-14 rounded-full bg-gradient-to-br from-[#E8B947] via-[#C59B27] to-[#8C3214] border-2 border-[#FFF8E7] shadow-[0_6px_20px_rgba(0,0,0,0.9),0_0_20px_rgba(232,185,71,0.8)] flex items-center justify-center transition-transform duration-300 z-20 ${
                     handleRotated ? '-rotate-45 scale-110' : 'group-hover:rotate-12'
                   }`}
                 >
-                  <div className="w-6 h-6 rounded-full border-2 border-[#1A0B0E] bg-[#C59B27]/40 shadow-inner" />
+                  <div className="w-7 h-7 rounded-full border-2 border-[#1A0B0E] bg-[#C59B27]/40 shadow-inner flex items-center justify-center text-xs text-[#FFF8E7]">
+                    🦁
+                  </div>
                 </div>
 
-                {/* Center Carved Diya Motif */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] font-serif font-bold relative shadow-inner">
-                  <span className="drop-shadow-[0_0_10px_rgba(229,193,88,0.6)]">🪔</span>
+                {/* Panel 2: Upper Middle Chamber Badge Niche */}
+                <div className="w-full h-16 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex items-center justify-center text-lg text-[#E8B947] relative shadow-inner">
+                  <span className="drop-shadow-md">🦚</span>
                 </div>
 
-                {/* Bottom Sacred Lotus Rosette */}
-                <div className="w-full h-24 rounded-2xl border-2 border-[#D4AF37]/50 bg-[#16060A]/60 flex items-center justify-center text-2xl text-[#E5C158] relative shadow-inner">
+                {/* Panel 3: Center Carved Diya Motif */}
+                <div className="w-full h-20 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex flex-col items-center justify-center text-2xl text-[#E8B947] font-serif font-bold relative shadow-inner">
+                  <span className="drop-shadow-[0_0_12px_rgba(232,185,71,0.8)]">🪔</span>
+                </div>
+
+                {/* Panel 4: Bottom Sacred Lotus Rosette */}
+                <div className="w-full h-20 rounded-xl border-2 border-[#E8B947]/60 bg-[#16060A]/80 flex items-center justify-center text-xl text-[#E8B947] relative shadow-inner">
                   <span className="drop-shadow-md">🌸</span>
                 </div>
               </div>
@@ -315,7 +350,7 @@ export const PalaceDoorWorld: React.FC<PalaceDoorWorldProps> = ({ onRestartExper
             </div>
 
             {/* Bottom Door Step Threshold with Terracotta & Brass Inlay */}
-            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-[#D4AF37] via-[#8C3214] to-[#D4AF37] z-20 shadow-md" />
+            <div className="absolute bottom-0 left-0 right-0 h-4 bg-gradient-to-r from-[#E8B947] via-[#8C3214] to-[#E8B947] z-20 shadow-md border-t border-[#211A17]" />
           </div>
 
           {/* Active Door Information & Action Box with Authentic Madhubani Double-Line Framing */}

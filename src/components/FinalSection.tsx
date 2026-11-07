@@ -46,6 +46,7 @@ export const FinalSection: React.FC<FinalSectionProps> = ({
 
   // Play celebration audio and initiate progressive cinematic staged reveal
   useEffect(() => {
+    soundManager.setScene('final-thankyou');
     soundManager.playRevealCelebration();
 
     const t1 = setTimeout(() => setRevealPhase(1), 300);

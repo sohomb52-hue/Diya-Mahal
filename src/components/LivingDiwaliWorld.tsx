@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { getLivingWorldScene, calculateHalftoneDotRadius } from '../utils/gameLogic';
+import madhubaniCityImg from '../assets/images/madhubani_city_painting_1794029794946.jpg';
 
 interface LivingDiwaliWorldProps {
   isUnlocked: boolean;
@@ -200,37 +201,53 @@ export const LivingDiwaliWorld: React.FC<LivingDiwaliWorldProps> = ({ isUnlocked
       });
     }
 
-    // 5. SCENE 4: CITY OF LIGHTS (3D Building Rooftop & Window Silhouettes)
+    // 5. SCENE 4: CITY OF LIGHTS (3D DETAILED MADHUBANI CITY PAINTING BACKDROP)
     const cityGroup = new THREE.Group();
     scene.add(cityGroup);
 
-    const windowLights: THREE.Mesh[] = [];
-    const windowMat = new THREE.MeshBasicMaterial({ color: 0xffd166 });
+    const texLoader = new THREE.TextureLoader();
+    const madhubaniCityTex = texLoader.load(madhubaniCityImg);
+    madhubaniCityTex.colorSpace = THREE.SRGBColorSpace;
 
-    const buildingMat = new THREE.MeshStandardMaterial({
-      color: 0x090b18,
-      roughness: 0.8,
+    // 3D Panoramic Backdrop Wall featuring the Detailed Madhubani City Painting
+    const cityBackdropGeo = new THREE.PlaneGeometry(32, 18);
+    const cityBackdropMat = new THREE.MeshStandardMaterial({
+      map: madhubaniCityTex,
+      roughness: 0.5,
       metalness: 0.1,
+      side: THREE.DoubleSide,
     });
+    const cityBackdropMesh = new THREE.Mesh(cityBackdropGeo, cityBackdropMat);
+    cityBackdropMesh.position.set(0, 4.5, -11.5);
+    cityGroup.add(cityBackdropMesh);
 
-    for (let b = 0; b < (isSoftwareGl ? 8 : 16); b++) {
-      const bw = 1.2 + Math.random() * 0.8;
-      const bh = 2.5 + Math.random() * 3.5;
+    // Flanking 3D Haveli Facades textured with Madhubani artwork for stereoscopic depth
+    const windowLights: THREE.Mesh[] = [];
+    const windowMat = new THREE.MeshBasicMaterial({ color: 0xffe082 });
+
+    for (let b = 0; b < (isSoftwareGl ? 6 : 12); b++) {
+      const bw = 1.4 + Math.random() * 0.8;
+      const bh = 3.0 + Math.random() * 3.5;
       const bd = 1.2 + Math.random() * 0.8;
 
       const bGeo = new THREE.BoxGeometry(bw, bh, bd);
-      const bMesh = new THREE.Mesh(bGeo, buildingMat);
+      const bMat = new THREE.MeshStandardMaterial({
+        map: madhubaniCityTex,
+        roughness: 0.6,
+        metalness: 0.1,
+      });
+      const bMesh = new THREE.Mesh(bGeo, bMat);
 
-      const bx = (b % 2 === 0 ? 1 : -1) * (4.2 + Math.random() * 2);
+      const bx = (b % 2 === 0 ? 1 : -1) * (4.5 + Math.random() * 2);
       const by = bh / 2 - 2;
-      const bz = -b * 2.2 - 2;
+      const bz = -b * 2.0 - 1;
 
       bMesh.position.set(bx, by, bz);
       cityGroup.add(bMesh);
 
       // Add glowing windows on buildings
-      for (let wy = 0.5; wy < bh - 0.5; wy += 0.8) {
-        const wGeo = new THREE.PlaneGeometry(0.2, 0.3);
+      for (let wy = 0.5; wy < bh - 0.5; wy += 0.9) {
+        const wGeo = new THREE.PlaneGeometry(0.24, 0.35);
         const wMesh = new THREE.Mesh(wGeo, windowMat);
         wMesh.position.set(bx > 0 ? bx - bw / 2 - 0.01 : bx + bw / 2 + 0.01, by - bh / 2 + wy, bz);
         wMesh.rotation.y = bx > 0 ? -Math.PI / 2 : Math.PI / 2;

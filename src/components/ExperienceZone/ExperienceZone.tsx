@@ -10,6 +10,10 @@ type GameTab = 'rangoli' | 'diyas' | 'memory';
 export const ExperienceZone: React.FC = () => {
   const [activeTab, setActiveTab] = useState<GameTab>('rangoli');
 
+  React.useEffect(() => {
+    soundManager.setScene('festive-games');
+  }, []);
+
   const handleTabChange = (tab: GameTab) => {
     soundManager.playClick();
     setActiveTab(tab);
